@@ -19,5 +19,5 @@
     <h1>APP</h1>
     <b>vardas: {{name}}</b> <br/>
     <b>el. paštas: {{email}}</b> <br/>
-    <button @click="doLogout">{{ ct }} Atsijungti</button>
+    <button @click="doLogout">Atsijungti</button>
 </template>
