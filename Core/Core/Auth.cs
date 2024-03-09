@@ -5,14 +5,16 @@ using System.Text.Json;
 using System.Text;
 
 public class Auth {
+    private Users Users;
     private JsonWebTokenHandler Handler;
     private SigningCredentials Credentials;
     private SymmetricSecurityKey Key;
     private string Issuer;
     private GoogleJsonWebSignature.ValidationSettings GoogleValidationSettings;
 
-    public Auth(string key, string issuer, string googleClientId) {
+    public Auth(Users users, string key, string issuer, string googleClientId) {
         Handler = new JsonWebTokenHandler();
+        Users = users;
         Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         Credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
         Issuer = issuer;
@@ -49,7 +51,7 @@ public class Auth {
         return Handler.CreateToken(tokenDescriptor);
     }
 
-    private bool ValidateGoogleJWT(string token, ref string email) {
+    private bool ValidateGoogleJWT(string token, ref string email, ref string name) {
         try {
             var payload = GoogleJsonWebSignature.ValidateAsync(token, GoogleValidationSettings).Result;
 
@@ -57,6 +59,7 @@ public class Auth {
                 return false;
 
             email = payload.Email;
+            name = payload.Name;
 
             return true;
         }
@@ -78,9 +81,14 @@ public class Auth {
                 return Results.BadRequest(new {Error = "jwttoken is not specified."});
 
             string email = string.Empty;
+            string name = string.Empty;
 
-            if (!ValidateGoogleJWT(req.JwtToken, ref email))
+            if (!ValidateGoogleJWT(req.JwtToken, ref email, ref name))
                 return Results.BadRequest(new {Error = "jwttoken is invalid."});
+
+            if (!Users.UserExists(email)) {
+                Users.AddUser(email, name);
+            }
 
             string jwt = GenerateJWT(email, new TimeSpan(1, 0, 0, 0));
 
