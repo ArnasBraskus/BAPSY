@@ -90,9 +90,11 @@ public class Auth {
                 Users.AddUser(email, name);
             }
 
-            string jwt = GenerateJWT(email, new TimeSpan(1, 0, 0, 0));
+            var validity = new TimeSpan(1, 0, 0, 0);
 
-            return Results.Ok(new {Token = jwt});
+            string jwt = GenerateJWT(email, validity);
+
+            return Results.Ok(new {Token = jwt, Validity = validity.TotalSeconds});
         });
     }
 }
