@@ -8,7 +8,7 @@
         const response = await apiDoPostUnauthenticated('/api/auth/google', {jwttoken: res.credential});
         const data = await response.json();
 
-        setCookie('api-token', data['token'], 1 * 24 * 60 * 60);
+        setCookie('api-token', data['token'], data['validity']);
 
         router.push({path: 'app'});
     }
