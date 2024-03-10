@@ -1,20 +1,21 @@
 <script setup>
-    import router from '../router'
-    import { decodeCredential } from 'vue3-google-login'
-    import { getCookie, setCookie } from '../utils/cookies.js'
-    import { apiDoPostUnauthenticated, apiDoGet } from '../utils/api.js'
+import router from '../router'
+import { decodeCredential } from 'vue3-google-login'
+import { getCookie, setCookie } from '../utils/cookies.js'
+import { apiDoPostUnauthenticated, apiDoGet } from '../utils/api.js'
 
-    async function loginCallback(res) {
-        const response = await apiDoPostUnauthenticated('/api/auth/google', {jwttoken: res.credential});
-        const data = await response.json();
+async function loginCallback(res) {
+  const response = await apiDoPostUnauthenticated('/api/auth/google', { jwttoken: res.credential });
+  const data = await response.json();
 
-        setCookie('api-token', data['token'], data['validity']);
+  setCookie('api-token', data['token'], data['validity']);
 
-        router.push({path: 'app'});
-    }
+  router.push({ path: 'app' });
+}
 </script>
 
 <template>
-  <h1>LOGIN</h1>
-  <GoogleLogin :callback="loginCallback"/>
+  <div>
+    <GoogleLogin :callback="loginCallback" />
+  </div>
 </template>
