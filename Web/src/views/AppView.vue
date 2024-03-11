@@ -61,7 +61,7 @@
 
                                 </div>
                             </div>
-                            <button @click="doLogout">Atsijungti</button>
+                            <button class="cta-button"@click="doLogout">Logout</button>
                         </div>
                         <RouterView />
                     </div>
@@ -72,25 +72,6 @@
 </template>
 
 <style scoped>
-    button {
-        align-self: unset;
-        background-color: var(--secondary-color);
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        margin: 10px;
-        transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    button:active {
-        background-color: #004080;
-    }
     .info{
         text-align: left;
         color: var(--quaternary-color);

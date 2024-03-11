@@ -7,8 +7,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f9f9f9;
-
-    
+ 
 }
 
 .darker {
@@ -28,6 +27,27 @@ header {
     background-color: var(--primary-color);
 
 }
+
+.cta-button {
+    font-size: large;
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  
+  .cta-button:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  .cta-button:active {
+          background-color: #004080;
+      }
+  
 
 h1 {
     margin: 0;
@@ -80,4 +100,11 @@ footer {
     --secondary-color: #B99470;
     --tertiary-color: #F1E4C3;
     --quaternary-color: #F2E9E4;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    background-size: auto;
+    min-height: 100vh;
 }
