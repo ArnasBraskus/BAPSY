@@ -2,7 +2,10 @@
 import router from '../router'
 import { decodeCredential } from 'vue3-google-login'
 import { getCookie, setCookie } from '../utils/cookies.js'
-import { apiDoPostUnauthenticated, apiDoGet } from '../utils/api.js'
+    import { apiDoPostUnauthenticated, apiDoGet } from '../utils/api.js'
+    import { RouterView } from 'vue-router'
+    import Header from '../Components/Header.vue'
+    import Footer from '../Components/Footer.vue'
 
 async function loginCallback(res) {
   const response = await apiDoPostUnauthenticated('/api/auth/google', { jwttoken: res.credential });
@@ -15,7 +18,19 @@ async function loginCallback(res) {
 </script>
 
 <template>
-  <div>
-    <GoogleLogin :callback="loginCallback" />
-  </div>
+    <div>
+        <Header />
+        <div id="app" class="image-container">
+
+            <main class="darker ">
+                <div>
+                    <div>
+                        <GoogleLogin :callback="loginCallback" />
+                    </div>
+                    <RouterView />
+                </div>
+            </main>
+        </div>
+        <Footer />
+    </div>
 </template>

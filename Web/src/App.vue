@@ -5,19 +5,8 @@ import Footer from './Components/Footer.vue'
 </script>
 
 <template>
-  <div>
-    <Header />
-    <div id="app" class="image-container">
-      
-      <main class="darker ">
-        <div>
-          
-          <RouterView />
-        </div>
-      </main>
-    </div>
-    <Footer />
-  </div>
+
+                    <RouterView />
 </template>
 
 <style>

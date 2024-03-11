@@ -2,7 +2,7 @@
     <footer class="footer">
         <div>
 
-            &copy; {{ new Date().getFullYear() }} babsy
+            &copy; {{ new Date().getFullYear() }} bapsy
         </div>
     </footer>
 </template>
