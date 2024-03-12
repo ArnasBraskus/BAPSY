@@ -34,18 +34,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
-    if (to.meta.requiresAuth && !isLoggedIn()) {
-        return {
-            path: '/login',
-            query: {redirect: to.fullPath}
-        }
-    }
+  if (to.meta.requiresAuth && !isLoggedIn()) {
+    return {
+      path: '/login',
+      query: {redirect: to.fullPath}
+    };
+  }
 
-    if (to.meta.hideForAuth && isLoggedIn()) {
-        return {
-            path: '/app'
-        }
-    }
+  if (to.meta.hideForAuth && isLoggedIn()) {
+    return {
+      path: '/app'
+    };
+  }
 });
 
 export default router;
