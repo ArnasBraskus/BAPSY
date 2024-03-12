@@ -6,25 +6,24 @@ import Footer from '../Components/Footer.vue'
 
 <template>
     <div>
-        <Header />
         <div id="app" class="image-container">
+            <Header />
 
             <main class="darker ">
                 <div>
                     <div class="home">
-                        
                         <h1>Welcome to Our Book Reading Progress Tracker</h1>
 
                         <p>This is a platform where you can keep track of your reading progress, discover new books, and more.</p>
-                        
                         <button class="cta-button" @click="$router.push('login')">Login to Get Started</button>
                        <!--  <RouterLink to="/login" class="cta-button">Login </RouterLink> -->
                     </div>
                     <RouterView />
                 </div>
             </main>
+
+            <Footer />
         </div>
-        <Footer />
     </div>
 </template>
 

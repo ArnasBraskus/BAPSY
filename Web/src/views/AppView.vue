@@ -41,11 +41,9 @@
     <button v-if="isLoggedIn" @click="doLogout">Log Out</button>
     <button v-else @click="doLogin">Log In</button>
     -->
-
             </nav>
         </header>
             <div id="app" class="image-container">
-
                 <main class="darker ">
                     <div>
                         <div>
@@ -66,8 +64,8 @@
                         <RouterView />
                     </div>
                 </main>
+                <Footer />
             </div>
-            <Footer />
 </div>
 </template>
 

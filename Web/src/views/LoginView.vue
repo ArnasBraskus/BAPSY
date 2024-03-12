@@ -19,8 +19,8 @@ async function loginCallback(res) {
 
 <template>
     <div>
-        <Header />
         <div id="app" class="image-container">
+            <Header />
 
             <main class="darker ">
                 <div>
@@ -30,7 +30,7 @@ async function loginCallback(res) {
                     <RouterView />
                 </div>
             </main>
+            <Footer />
         </div>
-        <Footer />
     </div>
 </template>
