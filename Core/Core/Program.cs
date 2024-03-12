@@ -16,12 +16,15 @@ var services = builder.Services;
 
 Auth auth = new Auth(users, conf.JwtSecretKey, conf.JwtIssuer, conf.GoogleApiClientId);
 
-services.AddAuthentication(options => {
+services.AddAuthentication(options =>
+{
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(o => {
-    o.TokenValidationParameters = new TokenValidationParameters() {
+}).AddJwtBearer(o =>
+{
+    o.TokenValidationParameters = new TokenValidationParameters()
+    {
         ValidIssuer = auth.GetIssuer(),
         ValidAudience = auth.GetAudience(),
         IssuerSigningKey = auth.GetSigningKey(),
@@ -32,7 +35,8 @@ services.AddAuthentication(options => {
     };
 });
 
-builder.Services.AddAuthorization(options => {
+builder.Services.AddAuthorization(options =>
+{
     options.AddPolicy("Users", policy => policy.RequireAuthenticatedUser());
 });
 
@@ -44,16 +48,17 @@ app.UseAuthorization();
 app.MapGet("/", () => "Authenticated.").RequireAuthorization("Users");
 app.MapGet("/noauth", () => "No authentication.");
 
-app.MapGet("/profile", (HttpContext context) => {
+app.MapGet("/profile", (HttpContext context) =>
+{
     var email = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
 
     if (email == null)
-        return Results.BadRequest(new {Error = "Authentication error."});
+        return Results.BadRequest(new { Error = "Authentication error." });
 
     User? user = users.FindUser(email.Value);
 
     if (user == null)
-        return Results.BadRequest(new {Error = "User profile not found."});
+        return Results.BadRequest(new { Error = "User profile not found." });
 
     return Results.Ok(new { Email = user.Email, Name = user.Name });
 }).RequireAuthorization("Users");

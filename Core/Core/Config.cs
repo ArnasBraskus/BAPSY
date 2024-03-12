@@ -1,10 +1,12 @@
-public sealed class Config {
+public sealed class Config
+{
     public required string GoogleApiClientId { get; set; } = null!;
     public required string JwtIssuer { get; set; } = null!;
     public required string JwtSecretKey { get; set; } = null!;
     public required string DatabasePath { get; set; } = null!;
 
-    public static Config Read(string file) {
+    public static Config Read(string file)
+    {
         IConfigurationRoot configRoot = new ConfigurationBuilder().AddJsonFile(file)
                                                                   .AddEnvironmentVariables()
                                                                   .Build();
