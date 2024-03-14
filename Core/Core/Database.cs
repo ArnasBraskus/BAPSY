@@ -9,6 +9,15 @@ public class Database
         Connection = new SqliteConnection($"Data Source={path}");
     }
 
+    public Database()
+    {
+        Connection = new SqliteConnection("Data Source=:memory:");
+    }
+
+    public void Create(string schema) {
+        ExecuteNonQuery(schema);
+    }
+
     public bool Open()
     {
         try
