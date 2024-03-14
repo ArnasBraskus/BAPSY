@@ -47,6 +47,17 @@ public class Users
 
     public bool AddUser(string email, string name)
     {
-        DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", new Dictionary<string, dynamic> { { "$email", email }, { "$name", name } });
+        if (email.Length == 0 || name.Length == 0)
+            return false;
+
+        try {
+            DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", new Dictionary<string, dynamic> { { "$email", email }, { "$name", name } });
+        }
+        catch (SqliteException e) {
+            Console.WriteLine(e.Message);
+            return false;
+        }
+
+        return true;
     }
 }
