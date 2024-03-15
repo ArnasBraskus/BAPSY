@@ -1,6 +1,8 @@
 using Google.Apis.Auth;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 using System.Text;
 
@@ -36,6 +38,29 @@ public class Auth
     public SymmetricSecurityKey GetSigningKey()
     {
         return Key;
+    }
+
+    public void Add(IServiceCollection services)
+    {
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidIssuer = Issuer,
+                ValidAudience = Issuer,
+                IssuerSigningKey = Key,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true
+            };
+        });
+
     }
 
     private string GenerateJWT(string subject, TimeSpan expires)

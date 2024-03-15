@@ -1,110 +1,115 @@
 body {
-    font-family: Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    background-color: var(--tertiary-color);
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: var(--tertiary-color);
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
 
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
- 
+.image-container {
+  background-image: url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .darker {
-    background-color: rgba(0, 0, 0, 0.5);
-    height: auto;
-    flex: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  height: auto;
+  flex: 1;
 }
 
 header {
-    background-color: #333;
-    padding: 20px;
-    color: #FFFFEC;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: var(--primary-color);
-
+  background-color: #333;
+  padding: 20px;
+  color: #FFFFEC;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--primary-color);
 }
 
 .cta-button {
-    font-size: large;
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: var(--primary-color);
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-  
-  .cta-button:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-  .cta-button:active {
-          background-color: #004080;
-      }
-  
+  font-size: large;
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: var(--primary-color);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.cta-button:active {
+  background-color: #004080;
+}
 
 h1 {
-    margin: 0;
-    color: var(--quaternary-color);
+  margin: 0;
+  color: var(--quaternary-color);
 }
 
 header h1 {
-    margin: 0;
-    font-size: 24px;
+  margin: 0;
+  font-size: 24px;
 }
 
 header nav {
-    display: flex;
-    gap: 20px;
-    align-self: right;
-    padding-right: 20px;
+  display: flex;
+  gap: 20px;
+  align-self: right;
+  padding-right: 20px;
 }
 
 header nav a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-    transition: color 0.3s ease;
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease;
 }
 
 header nav a:hover {
-    color: var(--secondary-color);
+  color: var(--secondary-color);
 }
 
 main {
-    padding: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-    text-align: center;
-
+  padding: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
 }
 
 footer {
-    background-color: #333;
-    padding: 5px;
-    text-align: center;
-    color: var(--secondary-color);
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+  background-color: #333;
+  padding: 5px;
+  text-align: center;
+  color: var(--secondary-color);
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 :root {
-    --primary-color: #5F6F52;
-    --secondary-color: #B99470;
-    --tertiary-color: #F1E4C3;
-    --quaternary-color: #F2E9E4;
+  --primary-color: #5F6F52;
+  --secondary-color: #B99470;
+  --tertiary-color: #F1E4C3;
+  --quaternary-color: #F2E9E4;
 }
 
 #app {
-    display: flex;
-    flex-direction: column;
-    background-size: auto;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-size: auto;
+  min-height: 100vh;
 }

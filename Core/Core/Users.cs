@@ -32,8 +32,32 @@ public class Users
         return new User(id, email, name);
     }
 
-    public void AddUser(string email, string name)
+    public User? FindUser(int id) {
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT email, name FROM users WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
+
+        if (reader == null)
+            return null;
+
+        string email = reader.GetString(0);
+        string name = reader.GetString(1);
+
+        return new User(id, email, name);
+
+    }
+
+    public bool AddUser(string email, string name)
     {
-        DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", new Dictionary<string, dynamic> { { "$email", email }, { "$name", name } });
+        if (email.Length == 0 || name.Length == 0)
+            return false;
+
+        try {
+            DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", new Dictionary<string, dynamic> { { "$email", email }, { "$name", name } });
+        }
+        catch (SqliteException e) {
+            Console.WriteLine(e.Message);
+            return false;
+        }
+
+        return true;
     }
 }
