@@ -1,15 +1,12 @@
 <script setup>
 import router from '../router'
-import { setCookie } from '../utils/cookies.js'
-import { apiDoPostUnauthenticated, } from '../utils/api.js'
+import { requestToken } from '../utils/auth.js'
 import Header from '../Components/Header.vue'
 import Footer from '../Components/Footer.vue'
 
 async function loginCallback(res) {
-  const response = await apiDoPostUnauthenticated('/api/auth/google', { jwttoken: res.credential });
-  const data = await response.json();
-
-  setCookie('api-token', data['token'], data['validity']);
+  if (!await requestToken(res.credential))
+    return;
 
   router.push({ path: 'app' });
 }
