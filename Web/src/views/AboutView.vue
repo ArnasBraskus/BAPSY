@@ -1,6 +1,19 @@
+<script setup>
+import Header from '../Components/Header.vue';
+import Footer from '../Components/Footer.vue';
+</script>
+
 <template>
-  <h1>About Page</h1>
-  <p>Welcome to the About page!</p>
+  <div id="app" class="image-container">
+    <Header />
+
+    <main class="darker">
+      <h1>About Page</h1>
+      <p>Welcome to the About page!</p>
+    </main>
+
+    <Footer />
+  </div>
 </template>
 
 
