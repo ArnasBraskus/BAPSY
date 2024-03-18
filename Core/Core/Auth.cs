@@ -2,8 +2,7 @@ using Google.Apis.Auth;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
+using System.Security.Claims;
 using System.Text;
 
 public class Auth
@@ -23,6 +22,15 @@ public class Auth
         Credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
         Issuer = issuer;
         GoogleValidationSettings = new GoogleJsonWebSignature.ValidationSettings() { Audience = new string[] { googleClientId } };
+    }
+
+    public static string? GetNameIdentifier(HttpContext context) {
+        var email = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+        if (email == null)
+            return null;
+
+        return email.Value;
     }
 
     public String GetIssuer()
@@ -63,7 +71,7 @@ public class Auth
 
     }
 
-    private string GenerateJWT(string subject, TimeSpan expires)
+    public string GenerateJWT(string subject, TimeSpan expires)
     {
         var claims = new Dictionary<string, object>{
             {JwtRegisteredClaimNames.Sub, subject}
@@ -83,7 +91,7 @@ public class Auth
         return Handler.CreateToken(tokenDescriptor);
     }
 
-    private bool ValidateGoogleJWT(string token, ref string email, ref string name)
+    public bool ValidateGoogleJWT(string token, ref string email, ref string name)
     {
         try
         {
@@ -101,39 +109,5 @@ public class Auth
         {
             return false;
         }
-    }
-
-    private class GoogleAuthRequest
-    {
-        public string JwtToken { get; set; } = null!;
-    };
-
-    public void Map(WebApplication app)
-    {
-        app.MapPost("/auth/google", async (HttpRequest request) =>
-        {
-            var stream = await new StreamReader(request.Body).ReadToEndAsync();
-            var req = JsonSerializer.Deserialize<GoogleAuthRequest>(stream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            if (req == null || req.JwtToken == null)
-                return Results.BadRequest(new { Error = "jwttoken is not specified." });
-
-            string email = string.Empty;
-            string name = string.Empty;
-
-            if (!ValidateGoogleJWT(req.JwtToken, ref email, ref name))
-                return Results.BadRequest(new { Error = "jwttoken is invalid." });
-
-            if (!Users.UserExists(email))
-            {
-                Users.AddUser(email, name);
-            }
-
-            var validity = new TimeSpan(1, 0, 0, 0);
-
-            string jwt = GenerateJWT(email, validity);
-
-            return Results.Ok(new { Token = jwt, Validity = validity.TotalSeconds });
-        });
     }
 }

@@ -1,5 +1,3 @@
-using System.Security.Claims;
-
 Config conf = Config.Read("config.json");
 
 Database db = new Database(conf.DatabasePath);
@@ -25,24 +23,10 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", () => "Authenticated.").RequireAuthorization("Users");
-app.MapGet("/noauth", () => "No authentication.");
+AuthApi authApi = new AuthApi(auth, users);
+UserApi userApi = new UserApi(users);
 
-app.MapGet("/profile", (HttpContext context) =>
-{
-    var email = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-
-    if (email == null)
-        return Results.BadRequest(new { Error = "Authentication error." });
-
-    User? user = users.FindUser(email.Value);
-
-    if (user == null)
-        return Results.BadRequest(new { Error = "User profile not found." });
-
-    return Results.Ok(new { Email = user.Email, Name = user.Name });
-}).RequireAuthorization("Users");
-
-auth.Map(app);
+userApi.Map(app);
+authApi.Map(app);
 
 app.Run();
