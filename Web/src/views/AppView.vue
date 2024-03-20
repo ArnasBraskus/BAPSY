@@ -15,7 +15,7 @@ const name = ref('');
 const email = ref('');
 
 (async () => {
-  const response = await apiDoGet('/api/profile');
+  const response = await apiDoGet('/api/user/profile');
   const data = await response.json();
 
   apistatus.value = response.statusText;
