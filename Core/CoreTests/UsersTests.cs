@@ -48,7 +48,7 @@ public class UsersTests
         ("aheeleyj@google.es", "Ashley Heeley")
     };
 
-    private Users CreateEmpty() {
+    public static Users CreateEmpty() {
         Database database = new Database();
 
         database.Open();
@@ -57,7 +57,7 @@ public class UsersTests
         return new Users(database);
     }
 
-    private Users CreatePopulated() {
+    public static Users CreatePopulated() {
         Users users = CreateEmpty();
 
         foreach (var user in TestUsers1) {

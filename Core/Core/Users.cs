@@ -2,7 +2,7 @@ using Microsoft.Data.Sqlite;
 
 public class Users
 {
-    Database DB;
+    public Database DB;
 
     public Users(Database db)
     {

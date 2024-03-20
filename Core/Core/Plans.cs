@@ -1,5 +1,8 @@
 ﻿using Core;
 using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Drawing;
 
 public class Plans
 {
@@ -10,23 +13,24 @@ public class Plans
         DB = db;
     }
 
-    public bool PlanExists(int id)
+    public bool AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
+            string title, string author, int pageCount, int size)
     {
-        var reader = DB.ExecuteSingle(@"SELECT COUNT(1) FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
-
-        if (reader == null)
-            return false;
-
-        return reader.GetInt32(0) == 1;
-    }
-    public bool AddPlan(int userid, int hoursPerDay, DateTime deadline, int weekdays, int pagesPerDay)
-    {
-        if (pagesPerDay == 0 || userid == 0)
-            return false;
+        Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> { 
+            { "$userid", user.Id }, 
+            { "$deadline", deadLine }, 
+            { "$weekdays", weekdays },
+            { "$timeOfDay", timeOfDay },
+            { "$pagesPerDay", pagesPerDay },
+            { "$title", title },
+            { "$author", author },
+            { "$pageCount", pageCount },
+            { "$size", size }
+        };
 
         try
         {
-            DB.ExecuteNonQuery(@"INSERT INTO PLANS (userid, deadline, weekdays, pagesPerDay) VALUES ($userid, $deadline, $weekdays, $pagesPerDay)", new Dictionary<string, dynamic> { { "$userid", userid }, { "$deadline", deadline }, { "$weekdays", weekdays }, { "$pagesPerDay", pagesPerDay }});
+            DB.ExecuteNonQuery(@"INSERT INTO PLANS (userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, size) VALUES ($userid, $deadline, $weekdays, $timeOfDay, $pagesPerDay, $title, $author, $pageCount, $size)", dictionary);
         }
         catch (SqliteException e)
         {
@@ -39,32 +43,100 @@ public class Plans
 
     public BookPlan? FindPlan(int id)
     {
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, pagesPerDay FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, size FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
 
         if (reader == null)
             return null;
 
         int userid = reader.GetInt32(0);
-        DateTime deadline = reader.GetDateTime(1);
+        string deadline = reader.GetString(1);
         int weekdays = reader.GetInt32(2);
-        int pagesPerDay = reader.GetInt32(3);
+        string timeOfDay = reader.GetString(3);
+        int pagesPerDay = reader.GetInt32(4);
+        string title = reader.GetString(5);
+        string author = reader.GetString(6);
+        int pageCount = reader.GetInt32(7);
+        int size = reader.GetInt32(8);
 
-        return new BookPlan(id, userid, deadline, weekdays, pagesPerDay);
+        return new BookPlan(id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, size);
     }
 
-    public BookPlan? FindPlanByUser(int userid)
+    public List<int> FindPlanByUser(int userid)
     {
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT id, deadline, weekdays, pagesPerDay FROM plans WHERE userid = $userid", new Dictionary<string, dynamic> { { "$userid", userid } });
+        List<int> ids = new List<int>();
+        var readers = DB.Execute(@"SELECT id FROM plans WHERE userid = $userid", new Dictionary<string, dynamic> { { "$userid", userid } });
 
-        if (reader == null)
-            return null;
-
-        int id = reader.GetInt32(0);
-        DateTime deadline = reader.GetDateTime(1);
-        int weekdays = reader.GetInt32(2);
-        int pagesPerDay = reader.GetInt32(3);
-        return new BookPlan(id, userid, deadline, weekdays, pagesPerDay);
+        foreach(var reader in readers)
+        {
+            ids.Add(reader.GetInt32(0));
+        }
+        return ids;
 
     }
+    public bool UpdatePlanDates(int id, string deadLine, int weekdays, string timeOfDay, int pagesPerDay)
+    {
+        Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> {
+           
+            { "$deadline", deadLine },
+            { "$weekdays", weekdays },
+            { "$timeOfDay", timeOfDay },
+            { "$pagesPerDay", pagesPerDay }, 
+            { "$id", id }
+        };
+
+        try
+        {
+            DB.ExecuteNonQuery(@"UPDATE plans 
+                                 SET deadline = $deadline, weekdays = $weekdays, timeOfDay = $timeOfDay, pagesPerDay = $pagesPerDay 
+                                 WHERE id=$id", dictionary);
+        }
+        catch (SqliteException e)
+        {
+            Console.WriteLine(e.Message);
+            return false;
+        }
+        return true;
+    }
+    public bool UpdatePlanBook(int id, int pagesPerDay,
+            string title, string author, int pageCount, int size)
+    {
+        Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> {
+           
+            { "$pagesPerDay", pagesPerDay },
+            { "$title", title },
+            { "$author", author },
+            { "$pageCount", pageCount },
+            { "$size", size },
+            { "$id", id }
+        };
+
+        try
+        {
+            DB.ExecuteNonQuery(@"UPDATE plans 
+                                SET pagesPerDay = $pagesPerDay, title = $title, author = $author, pageCount = $pageCount, size = $size
+                                WHERE id = $id", dictionary);
+        }
+        catch (SqliteException e)
+        {
+            Console.WriteLine(e.Message);
+            return false;
+        }
+        return true;
+    }
+
+    public bool DeletePlan(int id)
+    {
+        try
+        {
+            DB.ExecuteNonQuery(@"DELETE FROM plans WHERE id=$id ", new Dictionary<string, dynamic>{ { "$id", id } });
+        }
+        catch (SqliteException e)
+        {
+            Console.WriteLine(e.Message);
+            return false;
+        }
+        return true;
+    }
+
 
 }

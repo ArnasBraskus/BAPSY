@@ -19,13 +19,10 @@ public class Books
     }
     public bool AddBook(int planid, string title, string author, int pageCount, int size)
     {
-        
-        if (planid == 0 || title == null )
-            return false;
 
         try
         {
-            DB.ExecuteNonQuery(@"INSERT INTO BOOKS (planid, title, author, pageCount, size) VALUES ($planid, $title, $author, $pageCount, $size)", new Dictionary<string, dynamic> { { "$planid", planid }, { "$title", title },
+            DB.ExecuteNonQuery(@"INSERT INTO books (planid, title, author, pageCount, size) VALUES ($planid, $title, $author, $pageCount, $size)", new Dictionary<string, dynamic> { { "$planid", planid }, { "$title", title },
                 
                 { "$author", author }, { "$pageCount", pageCount}, { "$size", size } });
         }
