@@ -2,18 +2,13 @@
 import router from '../router';
 import { logout } from '../utils/auth.js';
 import { ref } from 'vue';
+import { requestToken } from '../utils/auth.js'
 
-const isLoggedIn = ref(false);
+async function loginCallback(res) {
+  if (!await requestToken(res.credential))
+    return;
 
-function doLogout(e) {
-    logout();
-    isLoggedIn.value = false;
-    router.push({ path: '/' });
-}
-
-function doLogin(e) {
-    isLoggedIn.value = true;
-    router.push({ path: '/login' });
+  router.push({ path: 'app' });
 }
 </script>
 
@@ -23,12 +18,7 @@ function doLogin(e) {
         <nav>
             <RouterLink to="/">Home</RouterLink>
             <RouterLink to="/about">About</RouterLink>
-
-            <!-- dar neveikia normaliai
-            <button v-if="isLoggedIn" @click="doLogout">Log Out</button>
-            <button v-else @click="doLogin">Log In</button>
-            -->
-
+            <GoogleLogin :callback="loginCallback" />             
         </nav>
     </header>
 </template>

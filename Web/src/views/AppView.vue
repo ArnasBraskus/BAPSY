@@ -34,10 +34,7 @@ const email = ref('');
         <RouterLink to="/plan">Plan</RouterLink>
         <RouterLink to="/books">Books</RouterLink>
         <RouterLink to="/settings">Settings</RouterLink>
-        <!-- dar neveikia normaliai
-        <button v-if="isLoggedIn" @click="doLogout">Log Out</button>
-        <button v-else @click="doLogin">Log In</button>
-        -->
+        <button @click="doLogout">Logout</button>
       </nav>
     </header>
 
@@ -50,7 +47,6 @@ const email = ref('');
           <b>El. paštas: {{email}}</b> <br />
         </div>
       </div>
-      <button class="cta-button" @click="doLogout">Logout</button>
     </main>
     <Footer />
   </div>
