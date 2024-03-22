@@ -5,6 +5,7 @@ import { RouterView } from 'vue-router'
 import Header from '../Components/Header.vue'
 import Footer from '../Components/Footer.vue'
 
+
 const { open, close } = useModal({
     component: ModalConfirmPlainCss,
     attrs: {
@@ -26,10 +27,6 @@ const { open, close } = useModal({
                 <RouterLink to="/plan">Plan</RouterLink>
                 <RouterLink to="/books">Books</RouterLink>
                 <RouterLink to="/settings">Settings</RouterLink>
-                <!-- dar neveikia normaliai
-    <button v-if="isLoggedIn" @click="doLogout">Log Out</button>
-    <button v-else @click="doLogin">Log In</button>
-    -->
             </nav>
         </header>
             <div id="app" class="image-container">
