@@ -1,5 +1,4 @@
-﻿using Core;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -13,7 +12,7 @@ public class Plans
         DB = db;
     }
 
-    public bool AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
+    public bool AddPlan(User user, string deadLine, int weekdays, string timeOfDay,
             string title, string author, int pageCount, int size)
     {
         Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> { 
@@ -21,7 +20,7 @@ public class Plans
             { "$deadline", deadLine }, 
             { "$weekdays", weekdays },
             { "$timeOfDay", timeOfDay },
-            { "$pagesPerDay", pagesPerDay },
+            { "$pagesPerDay", 0 },
             { "$title", title },
             { "$author", author },
             { "$pageCount", pageCount },
