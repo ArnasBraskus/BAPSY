@@ -39,7 +39,7 @@ public class BookPlanApi : ApiBase {
         if (req is null)
             return BadJson;
 
-        if (!Plans.AddPlan(user, req.Deadline, req.Weekdays, req.TimeOfDay, req.Title, req.Author, req.Pages, req.Size))
+        if (!Plans.AddPlan(user, req.Deadline, req.Weekdays, req.TimeOfDay, 0, req.Title, req.Author, req.Pages, req.Size))
             return Results.BadRequest(new { Error = "Failed to add plan." });
 
         return Results.Ok(new {});
@@ -63,7 +63,8 @@ public class BookPlanApi : ApiBase {
             Size = plan.Size,
             Deadline = plan.DeadLine,
             Weekdays = plan.DayOfWeek,
-            TimeOfDay = plan.timeOfDay
+            TimeOfDay = plan.timeOfDay,
+            PagesPerDay = plan.PagesPerDay
         });
     }
 

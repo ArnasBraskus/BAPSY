@@ -12,7 +12,7 @@ public class Plans
         DB = db;
     }
 
-    public bool AddPlan(User user, string deadLine, int weekdays, string timeOfDay,
+    public bool AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
             string title, string author, int pageCount, int size)
     {
         Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> { 
@@ -20,7 +20,7 @@ public class Plans
             { "$deadline", deadLine }, 
             { "$weekdays", weekdays },
             { "$timeOfDay", timeOfDay },
-            { "$pagesPerDay", 0 },
+            { "$pagesPerDay", pagesPerDay },
             { "$title", title },
             { "$author", author },
             { "$pageCount", pageCount },
