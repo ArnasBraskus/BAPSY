@@ -1,25 +1,22 @@
-using System.Text.Json;
-
-public class AuthApi {
+public class AuthApi : ApiBase {
     private Auth Auth;
     private Users Users;
 
-    public AuthApi(Auth auth, Users users) {
+    public AuthApi(Auth auth, Users users) : base(users) {
         Auth = auth;
         Users = users;
     }
 
     private class GoogleAuthRequest
     {
-        public string JwtToken { get; set; } = null!;
+        public required string JwtToken { get; set; } = null!;
     };
 
     private async Task<IResult> PostAuthGoogle(HttpRequest request) {
-        var stream = await new StreamReader(request.Body).ReadToEndAsync();
-        var req = JsonSerializer.Deserialize<GoogleAuthRequest>(stream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var req = await ReadJson<GoogleAuthRequest>(request);
 
-        if (req == null || req.JwtToken == null)
-            return Results.BadRequest(new { Error = "jwttoken is not specified." });
+        if (req is null)
+            return BadJson;
 
         string email = string.Empty;
         string name = string.Empty;
@@ -39,7 +36,7 @@ public class AuthApi {
         return Results.Ok(new { Token = jwt, Validity = validity.TotalSeconds });
     }
 
-    public void Map(WebApplication app)
+    public override void Map(WebApplication app)
     {
         app.MapPost("/auth/google", PostAuthGoogle);
     }
