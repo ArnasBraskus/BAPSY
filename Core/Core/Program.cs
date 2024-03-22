@@ -1,9 +1,15 @@
 Config conf = Config.Read("config.json");
 
+bool dbExists = File.Exists(conf.DatabasePath);
+
 Database db = new Database(conf.DatabasePath);
 
 if (!db.Open())
     throw new InvalidDataException($"failed to open database {conf.DatabasePath}");
+
+if (!dbExists) {
+    db.Create(DatabaseSchema.Schema);
+}
 
 Users users = new Users(db);
 
