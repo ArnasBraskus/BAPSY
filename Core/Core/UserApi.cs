@@ -1,25 +1,20 @@
-public class UserApi {
+public class UserApi : ApiBase {
     private Users Users;
 
-    public UserApi(Users users) {
+    public UserApi(Users users) : base(users) {
         Users = users;
     }
 
     public IResult GetUserProfile(HttpContext context) {
-        var email = Auth.GetNameIdentifier(context);
+        User? user = CheckAuth(context);
 
-        if (email == null)
-            return Results.BadRequest(new { Error = "Authentication error." });
-
-        User? user = Users.FindUser(email);
-
-        if (user == null)
-            return Results.BadRequest(new { Error = "User profile not found." });
+        if (user is null)
+            return BadAuth;
 
         return Results.Ok(new { Email = user.Email, Name = user.Name });
     }
 
-    public void Map(WebApplication app) {
+    public override void Map(WebApplication app) {
         app.MapGet("/user/profile", GetUserProfile).RequireAuthorization("Users");
     }
 }

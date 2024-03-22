@@ -1,5 +1,4 @@
-﻿using Core;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -73,6 +72,34 @@ public class Plans
         return ids;
 
     }
+
+    public bool UpdatePlan(int id, string deadLine, int weekdays, string timeOfDay, string title, string author, int pageCount, int size)
+    {
+        var parameters = new Dictionary<string, dynamic> {
+            { "$id", id },
+            { "$deadline", deadLine },
+            { "$weekdays", weekdays },
+            { "$timeOfDay", timeOfDay },
+            { "$title", title },
+            { "$author", author },
+            { "$pageCount", pageCount },
+            { "$size", size }
+        };
+
+        try
+        {
+            DB.ExecuteNonQuery(@"UPDATE PLANS SET deadline = $deadline, weekdays = $weekdays, timeOfDay = $timeOfDay, title = $title, author = $author, pageCount = $pageCount, size = $size WHERE id = $id", parameters);
+        }
+        catch (SqliteException e)
+        {
+            Console.WriteLine(e.Message);
+            return false;
+        }
+
+        return true;
+    }
+
+
     public bool UpdatePlanDates(int id, string deadLine, int weekdays, string timeOfDay, int pagesPerDay)
     {
         Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> {

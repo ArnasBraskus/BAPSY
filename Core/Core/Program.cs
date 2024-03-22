@@ -1,11 +1,18 @@
 Config conf = Config.Read("config.json");
 
+bool dbExists = File.Exists(conf.DatabasePath);
+
 Database db = new Database(conf.DatabasePath);
 
 if (!db.Open())
     throw new InvalidDataException($"failed to open database {conf.DatabasePath}");
 
+if (!dbExists) {
+    db.Create(DatabaseSchema.Schema);
+}
+
 Users users = new Users(db);
+Plans plans = new Plans(db);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,10 +30,14 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
-AuthApi authApi = new AuthApi(auth, users);
-UserApi userApi = new UserApi(users);
+ApiBase[] apis = new ApiBase[] {
+    new AuthApi(auth, users),
+    new UserApi(users),
+    new BookPlanApi(users, plans)
+};
 
-userApi.Map(app);
-authApi.Map(app);
+foreach (var api in apis) {
+    api.Map(app);
+}
 
 app.Run();
