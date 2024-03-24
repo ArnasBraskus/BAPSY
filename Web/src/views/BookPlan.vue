@@ -1,20 +1,53 @@
-<script setup lang="ts">
-import { ModalsContainer, useModal } from 'vue-final-modal'
-import ModalConfirmPlainCss from '../Components/ModalConfirmPlainCss.vue'
-import { RouterView } from 'vue-router'
-import Header from '../Components/Header.vue'
-import Footer from '../Components/Footer.vue'
+<script>
+import { ModalsContainer, useModal } from 'vue-final-modal';
+import ModalConfirmPlainCss from '../Components/ModalConfirmPlainCss.vue';
+import { RouterView } from 'vue-router';
+import Header from '../Components/Header.vue';
+import Footer from '../Components/Footer.vue';
+import { getPlans, addPlan, removePlan, editPlan, getPlan } from '../utils/plans.js';
 
-
-const { open, close } = useModal({
-    component: ModalConfirmPlainCss,
-    attrs: {
-        title: 'Plan',
-        onConfirm() {
-            close()
-        },
+const componentOptions = {
+  components: {
+    ModalsContainer,
+    RouterView,
+    Header,
+    Footer
+  },
+  data() {
+    return {
+      plans: null
+    };
+  },
+  mounted() {
+    this.fetchPlans();
+  },
+  methods: {
+    removePlan(planId) {
+        this.plans = removePlan(planId);
     },
-})
+    async fetchPlans() {
+      try {
+        this.plans = await getPlans();
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+      }
+    },
+    async showModal() {
+    const modal = useModal({
+    component: ModalConfirmPlainCss,
+        attrs: {
+            title: 'Plan',
+            onConfirm: () => {
+            modal.close();
+        }
+    }
+    });
+        modal.open();
+    }
+  }
+};
+
+export default componentOptions;
 </script>
 
 <template>
@@ -37,9 +70,15 @@ const { open, close } = useModal({
                                 <h1>Plan management</h1>
                             </div>
                             <div>
-                                <VButton class="cta-button" @click="open">
+                                <button class="cta-button" @click="showModal">
                                     Create a Plan
-                                </VButton>
+                                </button>
+                                <div v-if="plans">
+                                    <div v-for="plan in plans" :key="plan.id">
+                                        <h2>{{ plan.title }} {{ plan.author }} <button class="remove-button" @click="removePlan(plan.id)">Remove</button> </h2>
+                                    </div>
+                                </div>
+                                
                                 <ModalsContainer />
                             </div>
                         </div>
