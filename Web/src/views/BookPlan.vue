@@ -5,7 +5,7 @@ import { RouterView } from 'vue-router';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 import { getPlans, addPlan, removePlan, editPlan, getPlan } from '../utils/plans.js';
-mport { logout } from '../utils/auth.js';
+import { logout } from '../utils/auth.js';
 import { ref } from 'vue';
 import { apiDoGet } from '../utils/api.js'
 
