@@ -57,6 +57,7 @@ public class BookPlanApi : ApiBase {
             return Results.BadRequest(new { Error = "Plan not found."});
 
         return Results.Ok(new {
+            Id = id,
             Author = plan.Author,
             Title = plan.Title,
             PageCount = plan.PageCount,
