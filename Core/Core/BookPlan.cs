@@ -1,13 +1,11 @@
-﻿namespace Core
-{
-    public class BookPlan
+﻿    public class BookPlan
     {
         public int Id { get;}
         public int UserId { get;}
         public string DeadLine { get;}
         public int DayOfWeek { get;}    //ne viena ?
         public string timeOfDay {  get;}    
-        public int PagesPerDay { get;}
+        public int PagesPerDay { get; set;}
         public string Title { get; }
         public string Author { get; }
         public int PageCount { get; }
@@ -27,5 +25,35 @@
             PageCount = pageCount;
             Size = size;
         }
+
+        public void PagesToReadBeforeDeadline()
+    {
+        DateTime deadline = DateTime.Parse(DeadLine);
+        TimeSpan timeLeft = deadline - DateTime.Now;
+
+        if (timeLeft.Days < 0)
+        {
+            PagesPerDay = 0;
+            return;
+        }
+        int daysLeft = 0;
+        for (int i = 0; i < timeLeft.Days; i++)
+        {
+            int dayOfWeek = (int)deadline.AddDays(i).DayOfWeek;
+            bool[] weekdays = Weekdays.FromBitField(DayOfWeek);
+            if (weekdays[dayOfWeek])
+            {
+                daysLeft++;
+            }
+        }
+        if (daysLeft > 0)
+        {
+            PagesPerDay = PageCount / daysLeft;
+        }
+        else
+        {
+            PagesPerDay = 0;
+        }
     }
-}
+        
+    }

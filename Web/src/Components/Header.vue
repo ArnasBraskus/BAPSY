@@ -8,7 +8,7 @@ async function loginCallback(res) {
   if (!await requestToken(res.credential))
     return;
 
-  router.push({ path: 'app' });
+  router.push({ path: 'plan' });
 }
 </script>
 
