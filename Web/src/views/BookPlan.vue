@@ -5,6 +5,9 @@ import { RouterView } from 'vue-router';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 import { getPlans, addPlan, removePlan, editPlan, getPlan } from '../utils/plans.js';
+mport { logout } from '../utils/auth.js';
+import { ref } from 'vue';
+import { apiDoGet } from '../utils/api.js'
 
 const componentOptions = {
   components: {
@@ -46,6 +49,19 @@ const componentOptions = {
     }
   }
 };
+function doLogout(e) {
+  logout();
+  router.push({path: '/'});
+}
+
+const email = ref('');
+
+(async () => {
+  const response = await apiDoGet('/api/user/profile');
+  const data = await response.json();
+  
+  email.value = data.email;
+})();
 
 export default componentOptions;
 </script>
