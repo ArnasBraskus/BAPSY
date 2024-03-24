@@ -23,7 +23,7 @@ public class BookPlanApi : ApiBase {
         public required string Author { get; set; } = null!;
         public required int Pages { get; set; }
         public required string Deadline { get; set; } = null!;
-        public required int Weekdays { get; set; }
+        public required bool[] Weekdays { get; set; }
         public required string TimeOfDay { get; set; } = null!;
         public required int Size { get; set; }
     };
@@ -39,7 +39,7 @@ public class BookPlanApi : ApiBase {
         if (req is null)
             return BadJson;
 
-        if (!Plans.AddPlan(user, req.Deadline, req.Weekdays, req.TimeOfDay, 0, req.Title, req.Author, req.Pages, req.Size))
+        if (!Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Pages, req.Size))
             return Results.BadRequest(new { Error = "Failed to add plan." });
 
         return Results.Ok(new {});
@@ -63,7 +63,7 @@ public class BookPlanApi : ApiBase {
             PageCount = plan.PageCount,
             Size = plan.Size,
             Deadline = plan.DeadLine,
-            Weekdays = plan.DayOfWeek,
+            Weekdays = Weekdays.FromBitField(plan.DayOfWeek),
             TimeOfDay = plan.timeOfDay,
             PagesPerDay = plan.PagesPerDay
         });
@@ -102,7 +102,7 @@ public class BookPlanApi : ApiBase {
         public required string Author { get; set; } = null!;
         public required int Pages { get; set; }
         public required string Deadline { get; set; } = null!;
-        public required int Weekdays { get; set; }
+        public required bool[] Weekdays { get; set; }
         public required string TimeOfDay { get; set; } = null!;
         public required int Size { get; set; }
     };
@@ -123,7 +123,7 @@ public class BookPlanApi : ApiBase {
         if (plan == null || plan.UserId != user.Id)
             return Results.BadRequest(new { Error = "Plan not found."});
 
-        if (!Plans.UpdatePlan(plan.Id, data.Deadline, data.Weekdays, data.TimeOfDay, data.Title, data.Author, data.Pages, data.Size))
+        if (!Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.Pages, data.Size))
             return Results.BadRequest(new { Error = "Failed to update plan."});
 
         return Results.Ok(new {});
