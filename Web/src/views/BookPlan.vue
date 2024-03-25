@@ -38,7 +38,7 @@ const componentOptions = {
       try {
         const response = await apiDoGet('/api/user/profile');
         const data = await response.json();
-        this.email = data.email; // Set the email value
+        this.email = data.email;
       } catch (error) {
         console.error('Error fetching user profile:', error);
       }
@@ -51,10 +51,6 @@ const componentOptions = {
         .catch(error => {
           console.error('Error removing plan:', error);
         });
-    },
-    editPlan(plan) {
-      this.selectedPlan = plan;
-      this.showEditModal();
     },
     async fetchPlans() {
       try {
@@ -75,15 +71,15 @@ const componentOptions = {
     });
         modal.open();
     },
-    async showEditModal() {
+    showEditModal(plan) {
       const modal = useModal({
         component: ModalConfirmPlainCss,
-        attrs: {
-          title: 'Edit Plan',
-          plan: this.selectedPlan,
-          onConfirm: () => {
-            modal.close();
-          }
+      attrs: {
+        title: 'Edit Plan',
+        plan: plan,
+        onConfirm: () => {
+          modal.close();
+         }
         }
       });
       modal.open();
@@ -119,7 +115,7 @@ export default componentOptions;
                                 </button>
                                 <div v-if="plans">
                                     <div v-for="plan in plans" :key="plan.id">
-                                        <h2>{{ plan.title }} {{ plan.author }} <button class="edit-button" @click="editPlan(plan)">Edit</button><button class="remove-button" @click="removePlan(plan.id)">Remove</button> </h2>
+                                        <h2> {{ plan.title }} {{ plan.author }} <button class="edit-button" @click="showEditModal(plan)">Edit</button><button class="remove-button" @click="removePlan(plan.id)">Remove</button> </h2>
                                     </div>
                                 </div>
                                 

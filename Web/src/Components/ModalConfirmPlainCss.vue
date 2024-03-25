@@ -9,49 +9,64 @@ export default {
   data() {
     return {
       errors: [],
-      bookTitle: null,
-      author: null,
-      pages: null,
-      deadline: null,
-      day1: null,
-      day2: null,
-      day3: null,
-      day4: null,
-      day5: null,
-      day6: null,
-      day7: null,
-      timeOfDay: null
+      formData: {
+        bookTitle: '',
+        author: '',
+        day1: null,
+        day2: null,
+        day3: null,
+        day4: null,
+        day5: null,
+        day6: null,
+        day7: null,
+        pages: null,
+        deadline: null,
+        timeOfDay: null
+      }
     };
   },
   methods: {
     checkForm() {
-      if (this.bookTitle && this.author && this.pages && this.pages > 0 && this.deadline 
-        && (this.day1 || this.day2 || this.day3 || this.day4 || this.day5  || this.day6
-        || this.day7) && this.timeOfDay) {
+      this.errors = [];
 
-        let weekdays = [];
-        weekdays.push(this.day1, this.day2, this.day3, this.day4, this.day5, this.day6, this.day7);
-        const convertedWeekdays = weekdays.map(day => !!day);
-        addPlan(this.bookTitle, this.author, this.pages, this.deadline, convertedWeekdays, this.timeOfDay)
-        .then(() => {
-          this.$emit('confirm');
-          window.location.reload();
-        })
-        .catch(error => {
-          console.error('Error adding plan:', error);
-        });
-      } else {
-        this.errors = [];
-        if (!this.bookTitle) this.errors.push("Book title required." + day1.value + day2.value + day3.value + day4.value);
-        if (!this.author) this.errors.push("Author required.");
-        if (!this.pages) this.errors.push("Page count required.");
-        if (this.pages <= 0) this.errors.push("Page count can not be negative.")
-        if (!this.deadline) this.errors.push("Deadline date required.");
-        //if (currentDate > this.date) this.errors.push("Deadline date is incorrect.")
-        //neveikia patikrinimas ar data nera per sena.
-        if (!this.day1 && !this.day2 && !this.day3 && !this.day4 && !this.day5  && !this.day6
-        && !this.day7) this.errors.push("Days required.")
-        if (!this.timeOfDay) this.errors.push("Hour required.")
+      if (!this.formData.bookTitle) this.errors.push("Book title required.");
+      if (!this.formData.author) this.errors.push("Author required.");
+      if (!this.formData.pages) this.errors.push("Page count required.");
+      if (this.formData.pages <= 0) this.errors.push("Page count can not be negative.");
+      if (!this.formData.deadline) this.errors.push("Deadline date required.");
+      if (!this.formData.day1 && !this.formData.day2 && !this.formData.day3 && !this.formData.day4 && !this.formData.day5 && !this.formData.day6 && !this.formData.day7) {
+        this.errors.push("At least one day required.");
+      }
+      if (!this.formData.timeOfDay) this.errors.push("Hour required.");
+
+      if (this.errors.length === 0) {
+        if (this.plan){
+          console.log(this.plan.id);
+          console.log(this.formData.bookTitle);
+          let weekdays = [];
+          weekdays.push(this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6, this.formData.day7);
+          const convertedWeekdays = weekdays.map(day => !!day);
+          editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, Number(this.formData.pages), this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+          .then(() => {
+            this.$emit('confirm');
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error('Error editing plan:', error);
+          });
+        } else {
+          let weekdays = [];
+          weekdays.push(this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6, this.formData.day7);
+          const convertedWeekdays = weekdays.map(day => !!day);
+          addPlan(this.formData.bookTitle, this.formData.author, Number(this.formData.pages), this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+          .then(() => {
+            this.$emit('confirm');
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error('Error adding plan:', error);
+          });
+        }
       }
     },
     clearErrors() {
@@ -59,9 +74,51 @@ export default {
     }
   },
   props: {
+    plan: {
+      type: Object,
+      default: null
+    },
     title: {
       type: String,
       default: 'Default Title'
+    }
+  },
+  watch: {
+    plan: {
+      handler(newPlan) {
+        if (newPlan) {
+          this.formData = {
+            bookTitle: newPlan.title,
+            author: newPlan.author,
+            pages: newPlan.pages,
+            deadline: newPlan.deadline,
+            day1: newPlan.weekdays[0],
+            day2: newPlan.weekdays[1],
+            day3: newPlan.weekdays[2],
+            day4: newPlan.weekdays[3],
+            day5: newPlan.weekdays[4],
+            day6: newPlan.weekdays[5],
+            day7: newPlan.weekdays[6],
+            timeOfDay: newPlan.timeOfDay
+          };
+        } else {
+          this.formData = {
+            bookTitle: '',
+            author: '',
+            pages: null,
+            deadline: null,
+            day1: null,
+            day2: null,
+            day3: null,
+            day4: null,
+            day5: null,
+            day6: null,
+            day7: null,
+            timeOfDay: null
+          };
+        }
+      },
+      immediate: true
     }
   }
 };
@@ -86,51 +143,51 @@ export default {
       <slot />
       <p> 
         <label for="title"> Book title </label> 
-        <input type="text" name="bookTitle" id="bookTitle" v-model="bookTitle"> 
+        <input type="text" name="bookTitle"  v-model="formData.bookTitle"> 
       </p>
       <p> 
         <label for="title"> Book author </label> 
-        <input type="text" name="author" id="author" v-model="author"> 
+        <input type="text" name="author" v-model="formData.author"> 
       </p>
       <p>
         <label for="page"> How many pages? </label>
-        <input type="number" name="pages" id="pages" v-model="pages">
+        <input type="number" name="pages"  v-model="formData.pages">
       </p> 
       <p>
         <label for="date"> Deadline date </label>
-         <input type="date" name="deadline" id="deadline" v-model="deadline"/>
+         <input type="date" name="deadline" v-model="formData.deadline"/>
       </p>
       <p> 
         <label for="days"> Select which days to read </label>
       <fieldset>
       <div class="day">
       <label>
-        <input type="checkbox" name="days" id="day1" v-model="day1"> Monday
+        <input type="checkbox" name="days" id="day1" v-model="formData.day1"> Monday
       </label>
       <label>
-        <input type="checkbox" name="days" id="day2" v-model="day2"> Tuesday
+        <input type="checkbox" name="days" id="day2" v-model="formData.day2"> Tuesday
       </label>
       <label>
-        <input type="checkbox" name="days" id="day3" v-model="day3"> Wednesday
+        <input type="checkbox" name="days" id="day3" v-model="formData.day3"> Wednesday
       </label>
       <label>
-        <input type="checkbox" name="days" id="day4" v-model="day4"> Thursday
+        <input type="checkbox" name="days" id="day4" v-model="formData.day4"> Thursday
       </label>
       <label>
-        <input type="checkbox" name="days" id="day5" v-model="day5"> Friday
+        <input type="checkbox" name="days" id="day5" v-model="formData.day5"> Friday
       </label>
       <label>
-        <input type="checkbox" name="days" id="day6" v-model="day6"> Saturday
+        <input type="checkbox" name="days" id="day6" v-model="formData.day6"> Saturday
       </label>
       <label>
-        <input type="checkbox" name="days" id="day7" v-model="day7"> Sunday
+        <input type="checkbox" name="days" id="day7" v-model="formData.day7"> Sunday
       </label>
     </div>
     </fieldset>
     </p>
     <p>
       <label for="hour"> Input what hour you prefer to read </label>
-      <input type="time" name="timeOfDay" id="timeOfDay" v-model="timeOfDay">
+      <input type="time" name="timeOfDay" id="timeOfDay" v-model="formData.timeOfDay">
     </p>
     <button @click="checkForm">
       Confirm
