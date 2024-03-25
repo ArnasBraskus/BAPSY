@@ -3,8 +3,8 @@ using System.Text.Json;
 public abstract class ApiBase {
     private Users Users;
 
-    protected static IResult BadAuth = Results.BadRequest(new { Error = "Authentication error." });
-    protected static IResult BadJson = Results.BadRequest(new { Error = "Malformed JSON." });
+    protected static readonly IResult BadAuth = Results.BadRequest(new { Error = "Authentication error." });
+    protected static readonly IResult BadJson = Results.BadRequest(new { Error = "Malformed JSON." });
 
     public ApiBase(Users users) {
         Users = users;

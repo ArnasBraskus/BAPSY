@@ -8,7 +8,7 @@ public static class Weekdays
     public static readonly int Saturday  = (1 << 5);
     public static readonly int Sunday    = (1 << 6);
 
-    private static int NUM_WEEKDAYS = 7;
+    private static readonly int NUM_WEEKDAYS = 7;
 
     public static int ToBitField(bool[] weekdays) {
         int bitfield = 0;
