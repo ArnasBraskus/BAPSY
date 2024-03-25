@@ -15,9 +15,10 @@ public class Plans
     public bool AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
             string title, string author, int pageCount, int size)
     {
-        Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> { 
-            { "$userid", user.Id }, 
-            { "$deadline", deadLine }, 
+        if (pagesPerDay < 0 || pageCount < 0 || size < 0) { return false; }
+        Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> {
+            { "$userid", user.Id },
+            { "$deadline", deadLine },
             { "$weekdays", weekdays },
             { "$timeOfDay", timeOfDay },
             { "$pagesPerDay", pagesPerDay },
@@ -65,16 +66,21 @@ public class Plans
         List<int> ids = new List<int>();
         var readers = DB.Execute(@"SELECT id FROM plans WHERE userid = $userid", new Dictionary<string, dynamic> { { "$userid", userid } });
 
-        foreach(var reader in readers)
+        foreach (var reader in readers)
         {
             ids.Add(reader.GetInt32(0));
         }
+        if (ids.Count == 0) { return null; }
         return ids;
 
     }
 
     public bool UpdatePlan(int id, string deadLine, int weekdays, string timeOfDay, string title, string author, int pageCount, int size)
     {
+        if (id < 0 || pageCount < 0 || size < 0)
+        {
+            return false;
+        }
         var parameters = new Dictionary<string, dynamic> {
             { "$id", id },
             { "$deadline", deadLine },
@@ -153,6 +159,8 @@ public class Plans
 
     public bool DeletePlan(int id)
     {
+        if (id < 0 || FindPlan(id) == null)
+            return false;
         try
         {
             DB.ExecuteNonQuery(@"DELETE FROM plans WHERE id=$id ", new Dictionary<string, dynamic>{ { "$id", id } });
