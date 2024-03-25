@@ -8,6 +8,8 @@ import { getPlans, addPlan, removePlan, editPlan, getPlan } from '../utils/plans
 import { logout } from '../utils/auth.js';
 import { ref } from 'vue';
 import { apiDoGet } from '../utils/api.js'
+import router from '../router';
+
 
 const componentOptions = {
   components: {
@@ -18,15 +20,41 @@ const componentOptions = {
   },
   data() {
     return {
-      plans: null
+      plans: null,
+      selectedPlan: null,
+      email : ''
     };
   },
   mounted() {
     this.fetchPlans();
+    this.fetchUserProfile();
   },
   methods: {
+    doLogout(){
+      logout();
+      router.push({path: '/'});
+    },
+    async fetchUserProfile() {
+      try {
+        const response = await apiDoGet('/api/user/profile');
+        const data = await response.json();
+        this.email = data.email; // Set the email value
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    },
     removePlan(planId) {
-        this.plans = removePlan(planId);
+        removePlan(planId)
+        .then(() => {
+          this.plans = this.plans.filter(plan => plan.id !== planId);
+        })
+        .catch(error => {
+          console.error('Error removing plan:', error);
+        });
+    },
+    editPlan(plan) {
+      this.selectedPlan = plan;
+      this.showEditModal();
     },
     async fetchPlans() {
       try {
@@ -46,22 +74,22 @@ const componentOptions = {
     }
     });
         modal.open();
+    },
+    async showEditModal() {
+      const modal = useModal({
+        component: ModalConfirmPlainCss,
+        attrs: {
+          title: 'Edit Plan',
+          plan: this.selectedPlan,
+          onConfirm: () => {
+            modal.close();
+          }
+        }
+      });
+      modal.open();
     }
   }
 };
-function doLogout(e) {
-  logout();
-  router.push({path: '/'});
-}
-
-const email = ref('');
-
-(async () => {
-  const response = await apiDoGet('/api/user/profile');
-  const data = await response.json();
-  
-  email.value = data.email;
-})();
 
 export default componentOptions;
 </script>
@@ -71,11 +99,11 @@ export default componentOptions;
         <header class="header">
             <div class="logo"></div>
             <nav>
-                <RouterLink to="/">Home</RouterLink>
-                <RouterLink to="/about">About</RouterLink>
                 <RouterLink to="/plan">Plan</RouterLink>
                 <RouterLink to="/books">Books</RouterLink>
                 <RouterLink to="/settings">Settings</RouterLink>
+                {{ email }}
+                <button @click="doLogout()">Logout</button>
             </nav>
         </header>
             <div id="app" class="image-container">
@@ -91,7 +119,7 @@ export default componentOptions;
                                 </button>
                                 <div v-if="plans">
                                     <div v-for="plan in plans" :key="plan.id">
-                                        <h2>{{ plan.title }} {{ plan.author }} <button class="remove-button" @click="removePlan(plan.id)">Remove</button> </h2>
+                                        <h2>{{ plan.title }} {{ plan.author }} <button class="edit-button" @click="editPlan(plan)">Edit</button><button class="remove-button" @click="removePlan(plan.id)">Remove</button> </h2>
                                     </div>
                                 </div>
                                 
