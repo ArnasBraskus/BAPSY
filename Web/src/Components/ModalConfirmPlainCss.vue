@@ -2,7 +2,6 @@
 import { getPlans, addPlan, removePlan, editPlan } from '../utils/plans.js';
 import { VueFinalModal } from 'vue-final-modal'
 
-
 export default {
   components: {
     VueFinalModal
@@ -26,19 +25,27 @@ export default {
   },
   methods: {
     checkForm() {
-      if (this.bookTitle && this.author && this.pages && this.deadline && (this.day1 || this.day2 || this.day3 || this.day4 || this.day5  || this.day6
+      if (this.bookTitle && this.author && this.pages && this.pages > 0 && this.deadline 
+        && (this.day1 || this.day2 || this.day3 || this.day4 || this.day5  || this.day6
         || this.day7) && this.timeOfDay) {
 
         let weekdays = [];
         weekdays.push(this.day1, this.day2, this.day3, this.day4, this.day5, this.day6, this.day7);
-        const convertedWeekdays = weekdays.map(day => !!day); // Convert checkbox values to boolean
-        addPlan(this.bookTitle, this.author, this.pages, this.deadline, convertedWeekdays, this.timeOfDay);
-        this.$emit('confirm');
+        const convertedWeekdays = weekdays.map(day => !!day);
+        addPlan(this.bookTitle, this.author, this.pages, this.deadline, convertedWeekdays, this.timeOfDay)
+        .then(() => {
+          this.$emit('confirm');
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('Error adding plan:', error);
+        });
       } else {
         this.errors = [];
         if (!this.bookTitle) this.errors.push("Book title required." + day1.value + day2.value + day3.value + day4.value);
         if (!this.author) this.errors.push("Author required.");
         if (!this.pages) this.errors.push("Page count required.");
+        if (this.pages <= 0) this.errors.push("Page count can not be negative.")
         if (!this.deadline) this.errors.push("Deadline date required.");
         //if (currentDate > this.date) this.errors.push("Deadline date is incorrect.")
         //neveikia patikrinimas ar data nera per sena.
@@ -71,7 +78,7 @@ export default {
   >
       <h1>{{ title }}</h1>
       <p v-if="errors.length">
-        <b>Please correct the following error(s):</b>
+        <b> Please correct the following error(s): </b>
         <ul>
           <li v-for="error in errors">{{ error }}</li>
         </ul>
