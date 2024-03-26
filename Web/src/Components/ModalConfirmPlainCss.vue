@@ -1,5 +1,5 @@
 <script>
-import { getPlans, addPlan, removePlan, editPlan } from '../utils/plans.js';
+import { addPlan, editPlan } from '../utils/plans.js';
 import { VueFinalModal } from 'vue-final-modal'
 
 export default {
@@ -32,8 +32,9 @@ export default {
       if (!this.formData.bookTitle) this.errors.push("Book title required.");
       if (!this.formData.author) this.errors.push("Author required.");
       if (!this.formData.pages) this.errors.push("Page count required.");
-      if (this.formData.pages <= 0) this.errors.push("Page count can not be negative.");
+      if (this.formData.pages <= 0 && (this.formData.pages)) this.errors.push("Page count can not be negative.");
       if (!this.formData.deadline) this.errors.push("Deadline date required.");
+      if (new Date() > new Date(this.formData.deadline)) this.errors.push("Deadline date cannot be older than today.");
       if (!this.formData.day1 && !this.formData.day2 && !this.formData.day3 && !this.formData.day4 && !this.formData.day5 && !this.formData.day6 && !this.formData.day7) {
         this.errors.push("At least one day required.");
       }
@@ -41,12 +42,10 @@ export default {
 
       if (this.errors.length === 0) {
         if (this.plan){
-          console.log(this.plan.id);
-          console.log(this.formData.bookTitle);
           let weekdays = [];
           weekdays.push(this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6, this.formData.day7);
           const convertedWeekdays = weekdays.map(day => !!day);
-          editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, Number(this.formData.pages), this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+          editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
           .then(() => {
             this.$emit('confirm');
             window.location.reload();
@@ -58,7 +57,7 @@ export default {
           let weekdays = [];
           weekdays.push(this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6, this.formData.day7);
           const convertedWeekdays = weekdays.map(day => !!day);
-          addPlan(this.formData.bookTitle, this.formData.author, Number(this.formData.pages), this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+          addPlan(this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
           .then(() => {
             this.$emit('confirm');
             window.location.reload();
@@ -71,7 +70,10 @@ export default {
     },
     clearErrors() {
       this.errors = [];
-    }
+    },
+    cancelForm() {
+      this.$emit('confirm');
+    },
   },
   props: {
     plan: {
@@ -85,21 +87,21 @@ export default {
   },
   watch: {
     plan: {
-      handler(newPlan) {
-        if (newPlan) {
+      handler(editPlan) {
+        if (editPlan) {
           this.formData = {
-            bookTitle: newPlan.title,
-            author: newPlan.author,
-            pages: newPlan.pages,
-            deadline: newPlan.deadline,
-            day1: newPlan.weekdays[0],
-            day2: newPlan.weekdays[1],
-            day3: newPlan.weekdays[2],
-            day4: newPlan.weekdays[3],
-            day5: newPlan.weekdays[4],
-            day6: newPlan.weekdays[5],
-            day7: newPlan.weekdays[6],
-            timeOfDay: newPlan.timeOfDay
+            bookTitle: editPlan.title,
+            author: editPlan.author,
+            pages: editPlan.pageCount,
+            deadline: editPlan.deadline,
+            day1: editPlan.weekdays[0],
+            day2: editPlan.weekdays[1],
+            day3: editPlan.weekdays[2],
+            day4: editPlan.weekdays[3],
+            day5: editPlan.weekdays[4],
+            day6: editPlan.weekdays[5],
+            day7: editPlan.weekdays[6],
+            timeOfDay: editPlan.timeOfDay
           };
         } else {
           this.formData = {
@@ -155,7 +157,7 @@ export default {
       </p> 
       <p>
         <label for="date"> Deadline date </label>
-         <input type="date" name="deadline" v-model="formData.deadline"/>
+        <input type="date" name="deadline" v-model="formData.deadline"/>
       </p>
       <p> 
         <label for="days"> Select which days to read </label>
@@ -189,9 +191,7 @@ export default {
       <label for="hour"> Input what hour you prefer to read </label>
       <input type="time" name="timeOfDay" id="timeOfDay" v-model="formData.timeOfDay">
     </p>
-    <button @click="checkForm">
-      Confirm
-    </button>
+    <p><button @click="checkForm">Confirm</button>  <button @click="cancelForm">Cancel</button></p>
   </VueFinalModal>
 </template>
 
