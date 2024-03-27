@@ -50,15 +50,21 @@ namespace CoreTests
 
         private Plans CreateEmpty()
         {
-            Users users = UsersTests.CreateEmpty();
+            Database database = TestUtils.CreateDatabase();
 
-            return new Plans(users.DB);
+            Users users = UserTestsUtils.CreateEmpty(database);
+
+            return new Plans(database);
         }
 
         private Plans CreatePopulated()
         {
-            Users users = UsersTests.CreatePopulated();
-            Plans Plans = new Plans(users.DB);
+            Database database = TestUtils.CreateDatabase();
+
+            Users users = UserTestsUtils.CreatePopulated(database);
+
+            Plans Plans = new Plans(database);
+
             foreach (var plan in TestPlans)
             {
                 User? usr = users.FindUser(plan.Item1);
@@ -70,8 +76,11 @@ namespace CoreTests
         [Fact]
         public void TestAddPlan_ValidInput_ReturnsTrue()
         {
-            Users users = UsersTests.CreatePopulated();
-            Plans Plans = new Plans(users.DB);
+            Database database = TestUtils.CreateDatabase();
+
+            Users users = UserTestsUtils.CreatePopulated(database);
+
+            Plans Plans = new Plans(database);
 
             foreach (var plan in TestPlans)
             {
