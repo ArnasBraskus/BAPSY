@@ -94,8 +94,11 @@ namespace CoreTests
         [Fact]
         public void TestAddPlan_InvalidInput_ReturnsFalse()
         {
-            Users users = UsersTests.CreatePopulated();
-            Plans Plans = new Plans(users.DB);
+            Database database = TestUtils.CreateDatabase();
+
+            Users users = UserTestsUtils.CreatePopulated(database);
+
+            Plans Plans = new Plans(database);
 
             foreach (var plan in InvalidPlans)
             {
@@ -108,8 +111,11 @@ namespace CoreTests
         [Fact]
         public void TestFindPlan_ExistingPlanID_ReturnsCorrectBookPlan()
         {
-            Users users = UsersTests.CreatePopulated();
-            Plans Plans = new Plans(users.DB);
+            Database database = TestUtils.CreateDatabase();
+
+            Users users = UserTestsUtils.CreatePopulated(database);
+
+            Plans Plans = new Plans(database);
             int i = 1;
             foreach (var plan in TestPlans)
             {
@@ -173,8 +179,10 @@ namespace CoreTests
         [Fact]
         public void TestFindPlanByUser_UserWithoutPlans_ReturnsNull()
         {
-            Users users = UsersTests.CreatePopulated();
-            Plans Plans = new Plans(users.DB);
+            Database database = TestUtils.CreateDatabase();
+
+            Users users = UserTestsUtils.CreatePopulated(database);
+            Plans Plans = new Plans(database);
 
             List<int> planIDs = new List<int> ();
             for (int i =10; i<15; i++)
