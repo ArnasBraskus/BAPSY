@@ -2,205 +2,163 @@ namespace CoreTests;
 
 public class UsersTests
 {
-    static readonly (string, string)[] TestUsers1 = new (string, string)[] {
-        ("bducker0@ehow.com", "Boyd Ducker"),
-        ("mwrinch1@umn.edu", "Mariquilla Wrinch"),
-        ("smcmeanma2@time.com",	"Shandra McMeanma"),
-        ("btoffano3@mapy.cz", "Bartie Toffano"),
-        ("grawlins4@phpbb.com", "Gaelan Rawlins"),
-        ("jdominicacci5@icio.us", "Jarrad Dominicacci"),
-        ("tbruce6@vk.com", "Truman Bruce"),
-        ("kkneel7@usda.gov", "Karita Kneel"),
-        ("pwoonton8@t.co", "Patton Woonton"),
-        ("skineton9@about.com", "Sofie Kineton"),
-        ("lcaddya@shop-pro.jp", "Lazaro Caddy"),
-        ("emeanyb@123-reg.co.uk", "Ev Meany"),
-        ("dwixc@netscape.com", "Denis Wix"),
-        ("efrained@reuters.com", "Eimile Fraine"),
-        ("rtrebbette@uol.com.br", "Redd Trebbett"),
-        ("dgrossierf@npr.org", "Douglas Grossier"),
-        ("ucollisong@google.cn", "Ulrike Collison"),
-        ("aodbyh@google.nl", "Alaster Odby"),
-        ("jcomberbeachi@hatena.ne.jp", "Justen Comberbeach"),
-        ("rtrevaskisj@si.edu", "Rianon Trevaskis")
-    };
+    [Theory]
+    [InlineData(" ")]
+    [InlineData("*")]
+    [InlineData("?")]
+    [InlineData("")]
+    [MemberData(nameof(UserTestsUtils.GetTestUsers1Emails), MemberType = typeof(UserTestsUtils))]
+    public void Test_EmptyDb_CheckUserExistsByEmail_UserDoesntExist(string email) {
+        Users users = UserTestsUtils.CreateEmpty();
 
-    static readonly (string, string)[] TestUsers2 = new (string, string)[] {
-        ("bbosnell0@wired.com", "Bernadine Bosnell"),
-        ("sshapiro1@time.com", "Shandra Shapiro"),
-        ("sheinert2@apache.org", "Shell Heinert"),
-        ("gmackeeg3@spotify.com", "Giffy MacKeeg"),
-        ("shaddleston4@pbs.org", "Stefano Haddleston"),
-        ("wsarvar5@taobao.com", "Willa Sarvar"),
-        ("mhadaway6@e-recht24.de", "Mic Hadaway"),
-        ("tbrownfield7@flickr.com", "Tobiah Brownfield"),
-        ("cblacker8@cpanel.net", "Clevey Blacker"),
-        ("citzchaky9@alibaba.com", "Cesya Itzchaky"),
-        ("tchasmora@google.cn", "Travus Chasmor"),
-        ("bsarginsonb@cafepress.com", "Bernadina Sarginson"),
-        ("ksanbrookc@indiegogo.com", "Kipp Sanbrook"),
-        ("dbullivantd@ft.com", "Davon Bullivant"),
-        ("fcolemane@google.nl", "Forrester Coleman"),
-        ("alaverenzf@scientificamerican.com", "Artemas Laverenz"),
-        ("fgappg@state.gov", "Florie Gapp"),
-        ("dstocktonh@addtoany.com", "Damaris Stockton"),
-        ("mchaplaini@noaa.gov", "Merrill Chaplain"),
-        ("aheeleyj@google.es", "Ashley Heeley")
-    };
+        var actual = users.UserExists(email);
 
-    public static Users CreateEmpty() {
-        Database database = new Database();
-
-        database.Open();
-        database.Create(DatabaseSchema.Schema);
-
-        return new Users(database);
-    }
-
-    public static Users CreatePopulated() {
-        Users users = CreateEmpty();
-
-        foreach (var user in TestUsers1) {
-            users.AddUser(user.Item1, user.Item2);
-        }
-
-        return users;
+        Assert.False(actual);
     }
 
     [Fact]
-    public void TestEmptyDbUserExists() {
-        Users users = CreateEmpty();
+    public void Test_EmptyDb_AddUserWithEmptyData_AddingFails() {
+        Users users = UserTestsUtils.CreateEmpty();
 
-        foreach (var user in TestUsers1) {
-            Assert.False(users.UserExists(user.Item1));
-        }
+        var actual = users.AddUser("", "");
 
-        Assert.False(users.UserExists(" "));
-        Assert.False(users.UserExists("*"));
-        Assert.False(users.UserExists("?"));
-        Assert.False(users.UserExists(""));
+        Assert.False(actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(UserTestsUtils.GetTestUsersFromPopulatedDb), MemberType = typeof(UserTestsUtils))]
+    public void Test_EmptyDb_AddUserWithValidData_AddsUser(string email, string name) {
+        Users users = UserTestsUtils.CreateEmpty();
+
+        var actual = users.AddUser(email, name);
+
+        Assert.True(actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(UserTestsUtils.GetTestUsersFromPopulatedDb), MemberType = typeof(UserTestsUtils))]
+    public void Test_EmptyDb_AddAndFindUser_UserHasCorrectInfo(string email, string name) {
+        Users users = UserTestsUtils.CreateEmpty();
+
+        var status = users.AddUser(email, name);
+        User? user = users.FindUser(email);
+
+        Assert.True(status);
+        Assert.True(user is not null);
+        Assert.Equal(email, user.Email);
+        Assert.Equal(name, user.Name);
+    }
+
+    [Theory]
+    [InlineData("Boyd Ducker")]
+    [InlineData("           ")]
+    [InlineData("@")]
+    public void Test_EmptyDb_AddUserWithInvalidEmail_AddingFails(string email) {
+        var NAME = "Boyd Ducker";
+
+        Users users = UserTestsUtils.CreateEmpty();
+
+        var actual = users.AddUser(email, NAME);
+
+        Assert.False(actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(UserTestsUtils.GetTestUsersFromPopulatedDb), MemberType = typeof(UserTestsUtils))]
+    public void Test_PopulatedDb_AddAlreadyExistingUser_AddingFails(string email, string name) {
+        Users users = UserTestsUtils.CreatePopulated();
+
+        var actual = users.AddUser(email, name);
+
+        Assert.False(actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(UserTestsUtils.GetTestUsers1Emails), MemberType = typeof(UserTestsUtils))]
+    public void Test_PopulatedDb_ExistingUserExists_UserExists(string email) {
+        Users users = UserTestsUtils.CreatePopulated();
+
+        var actual = users.UserExists(email);
+
+        Assert.True(actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(UserTestsUtils.GetTestUsers2Emails), MemberType = typeof(UserTestsUtils))]
+    public void Test_PopulatedDb_NonExistingUserExists_UserDoesntExist(string email) {
+        Users users = UserTestsUtils.CreatePopulated();
+
+        var actual = users.UserExists(email);
+
+        Assert.False(actual);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("?")]
+    [InlineData("*")]
+    [InlineData(" ")]
+    [MemberData(nameof(UserTestsUtils.GetTestUsers2Emails), MemberType = typeof(UserTestsUtils))]
+    public void Test_PopulatedDb_FindNonExistingUser_UserDoesntExist(string email) {
+        Users users = UserTestsUtils.CreatePopulated();
+
+        User? user = users.FindUser(email);
+
+        Assert.True(user is null);
+    }
+
+    [Theory]
+    [MemberData(nameof(UserTestsUtils.GetTestUsersFromPopulatedDb), MemberType = typeof(UserTestsUtils))]
+    public void Test_PopulatedDb_FindExistingUser_UserHasCorrectInfo(string email, string name) {
+        Users users = UserTestsUtils.CreatePopulated();
+
+        User? user = users.FindUser(email);
+
+        Assert.True(user is not null);
+        Assert.Equal(email, user.Email);
+        Assert.Equal(name, user.Name);
+    }
+
+    [Theory]
+    [InlineData(int.MinValue)]
+    [InlineData(int.MaxValue)]
+    [InlineData(-1)]
+    [InlineData(0)]
+    [InlineData(1)]
+    public void Test_EmptyDb_FindUserById_UserDoesntExist(int id) {
+        Users users = UserTestsUtils.CreateEmpty();
+
+        User? user = users.FindUser(id);
+
+        Assert.True(user == null);
+    }
+
+    [Theory]
+    [MemberData(nameof(UserTestsUtils.GetTestUsersWithIdsFromPopulatedDb), MemberType = typeof(UserTestsUtils))]
+    public void Test_PopulatedDb_FindExistingUserById_FindsUserWithCorrectInfo(string email, string name, int id) {
+        Users users = UserTestsUtils.CreatePopulated();
+
+        User? user = users.FindUser(id);
+
+        Assert.True(user is not null);
+        Assert.Equal(id, user.Id);
+        Assert.Equal(email, user.Email);
+        Assert.Equal(name, user.Name);
     }
 
     [Fact]
-    public void TestEmptyDbAddUserEmptyData() {
-        Users users = CreateEmpty();
-
-        Assert.False(users.AddUser("", ""));
-        Assert.False(users.UserExists(""));
-    }
-
-    [Fact]
-    public void TestEmptyDbAddUser() {
-        Users users = CreateEmpty();
-
-        foreach (var user in TestUsers1) {
-            Assert.True(users.AddUser(user.Item1, user.Item2));
-        }
-    }
-
-    [Fact]
-    public void TestEmptyDbAddSameUser() {
-        Users users = CreateEmpty();
-
-        var testUser = TestUsers1.First();
-
-        Assert.True(users.AddUser(testUser.Item1, testUser.Item2));
-        Assert.False(users.AddUser(testUser.Item1, testUser.Item2));
-
-        Assert.True(users.UserExists(testUser.Item1));
-    }
-
-    [Fact]
-    public void TestPopulatedDbUserExists() {
-        Users users = CreatePopulated();
-
-        foreach (var user in TestUsers1) {
-            Assert.True(users.UserExists(user.Item1));
-        }
-
-        foreach (var user in TestUsers2) {
-            Assert.False(users.UserExists(user.Item1));
-        }
-    }
-
-    [Fact]
-    public void TestPopulatedDbFindNonExistingUsers() {
-        Users users = CreatePopulated();
-
-        foreach (var testUser in TestUsers2) {
-            User? user = users.FindUser(testUser.Item1);
-
-            Assert.True(user == null);
-        }
-
-        Assert.False(users.UserExists("*"));
-        Assert.False(users.UserExists("?"));
-        Assert.False(users.UserExists(""));
-    }
-
-    [Fact]
-    public void TestPopulatedDbFindExistingUsers() {
-        Users users = CreatePopulated();
-
-        foreach (var testUser in TestUsers1) {
-            User? user = users.FindUser(testUser.Item1);
-
-            Assert.True(user != null);
-            Assert.Equal(testUser.Item1, user.Email);
-            Assert.Equal(testUser.Item2, user.Name);
-        }
-    }
-
-    [Fact]
-    public void TestPopulatedDbIdIsUnique() {
-        Users users = CreatePopulated();
+    public void Test_PopulatedDb_UserIdIsUnique_IdIsUnique() {
+        Users users = UserTestsUtils.CreatePopulated();
 
         List<int> ids = new List<int>();
 
-        foreach (var testUser in TestUsers1) {
+        foreach (var testUser in UserTestsUtils.TestUsers1) {
             User? user = users.FindUser(testUser.Item1);
 
             Assert.True(user != null);
             Assert.DoesNotContain(user.Id, ids);
 
             ids.Add(user.Id);
-        }
-    }
-
-    [Fact]
-    public void TestEmptyDbFindNonExistingUsersById() {
-        Users users = CreateEmpty();
-
-        for (int i = -10; i < 10; i++) {
-            User? user = users.FindUser(i);
-
-            Assert.True(user == null);
-        }
-    }
-
-    [Fact]
-    public void TestPopulatedDbFindUserById() {
-        Users users = CreatePopulated();
-
-        List<int> ids = new List<int>();
-
-        foreach (var testUser in TestUsers1) {
-            User? user = users.FindUser(testUser.Item1);
-
-            Assert.True(user != null);
-
-            ids.Add(user.Id);
-        }
-
-        Assert.Equal(TestUsers1.Length, ids.Count());
-
-        for (int i = 0; i < ids.Count(); i++) {
-            User? user = users.FindUser(ids[i]);
-
-            Assert.True(user != null);
-
-            Assert.Equal(TestUsers1[i].Item1, user.Email);
-            Assert.Equal(TestUsers1[i].Item2, user.Name);
         }
     }
 }
