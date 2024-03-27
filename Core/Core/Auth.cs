@@ -71,6 +71,9 @@ public class Auth
 
     public string GenerateJWT(string subject, TimeSpan expires)
     {
+        if (subject.Length == 0)
+            throw new ArgumentException("Subject can't be empty");
+
         var claims = new Dictionary<string, object>{
             {JwtRegisteredClaimNames.Sub, subject}
         };
