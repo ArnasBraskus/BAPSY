@@ -49,14 +49,14 @@ public class Database
         return command;
     }
 
-    public void ExecuteNonQuery(string statement, Dictionary<string, dynamic>? parameters)
+    public int ExecuteNonQuery(string statement, Dictionary<string, dynamic>? parameters)
     {
-        CreateCommand(statement, parameters).ExecuteNonQuery();
+        return CreateCommand(statement, parameters).ExecuteNonQuery();
     }
 
-    public void ExecuteNonQuery(string statement)
+    public int ExecuteNonQuery(string statement)
     {
-        ExecuteNonQuery(statement, null);
+        return ExecuteNonQuery(statement, null);
     }
 
     public IEnumerable<SqliteDataReader> Execute(string statement, Dictionary<string, dynamic>? parameters)
