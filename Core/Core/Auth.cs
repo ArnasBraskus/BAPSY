@@ -7,17 +7,15 @@ using System.Text;
 
 public class Auth
 {
-    private Users Users;
     private JsonWebTokenHandler Handler;
     private SigningCredentials Credentials;
     private SymmetricSecurityKey Key;
     private string Issuer;
     private GoogleJsonWebSignature.ValidationSettings GoogleValidationSettings;
 
-    public Auth(Users users, string key, string issuer, string googleClientId)
+    public Auth(string key, string issuer, string googleClientId)
     {
         Handler = new JsonWebTokenHandler();
-        Users = users;
         Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         Credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
         Issuer = issuer;

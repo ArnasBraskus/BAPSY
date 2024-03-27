@@ -16,7 +16,7 @@ Plans plans = new Plans(db);
 
 var builder = WebApplication.CreateBuilder(args);
 
-Auth auth = new Auth(users, conf.JwtSecretKey, conf.JwtIssuer, conf.GoogleApiClientId);
+Auth auth = new Auth(conf.JwtSecretKey, conf.JwtIssuer, conf.GoogleApiClientId);
 
 auth.Add(builder.Services);
 
