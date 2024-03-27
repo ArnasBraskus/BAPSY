@@ -1,8 +1,9 @@
 using Microsoft.Data.Sqlite;
+using System.Net.Mail;
 
 public class Users
 {
-    public Database DB;
+    private Database DB;
 
     public Users(Database db)
     {
@@ -45,9 +46,23 @@ public class Users
 
     }
 
+    private bool IsEmailValid(string address) {
+        try {
+            MailAddress addr = new MailAddress(address);
+
+            return addr.Address == address;
+        }
+        catch (FormatException) {
+            return false;
+        }
+    }
+
     public bool AddUser(string email, string name)
     {
         if (email.Length == 0 || name.Length == 0)
+            return false;
+
+        if (!IsEmailValid(email))
             return false;
 
         try {
