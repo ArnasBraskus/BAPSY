@@ -78,12 +78,13 @@ public class Database
 
     public SqliteDataReader? ExecuteSingle(string statement, Dictionary<string, dynamic>? parameters)
     {
-        IEnumerable<SqliteDataReader> reader = Execute(statement, parameters);
+        var command = CreateCommand(statement, parameters);
+        var reader = command.ExecuteReader();
 
-        if (reader.Count() == 0)
+        if (!reader.Read())
             return null;
 
-        return reader.First();
+        return reader;
     }
 
     public SqliteDataReader? ExecuteSingle(string statement)
