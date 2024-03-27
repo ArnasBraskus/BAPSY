@@ -75,4 +75,19 @@ public class Users
 
         return true;
     }
+
+    public bool UpdateName(int id, string name) {
+        if (name.Length == 0)
+            return false;
+
+        var parameters = new Dictionary<string, dynamic> {
+            { "$id", id },
+            { "$name", name}
+        };
+
+        if (DB.ExecuteNonQuery(@"UPDATE users SET name = $name WHERE id = $id", parameters) != 1)
+            return false;
+
+        return true;
+    }
 }
