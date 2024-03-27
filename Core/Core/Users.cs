@@ -12,7 +12,11 @@ public class Users
 
     public bool UserExists(string email)
     {
-        var reader = DB.ExecuteSingle(@"SELECT COUNT(1) FROM users WHERE email = $email", new Dictionary<string, dynamic> { { "$email", email } });
+        var parameters = new Dictionary<string, dynamic> {
+            { "$email", email }
+        };
+
+        var reader = DB.ExecuteSingle(@"SELECT COUNT(1) FROM users WHERE email = $email", parameters);
 
         if (reader == null)
             return false;
@@ -22,7 +26,11 @@ public class Users
 
     public User? FindUser(string email)
     {
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT id, name FROM users WHERE email = $email", new Dictionary<string, dynamic> { { "$email", email } });
+        var parameters = new Dictionary<string, dynamic> {
+            { "$email", email }
+        };
+
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT id, name FROM users WHERE email = $email", parameters);
 
         if (reader == null)
             return null;
@@ -34,7 +42,11 @@ public class Users
     }
 
     public User? FindUser(int id) {
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT email, name FROM users WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
+        var parameters = new Dictionary<string, dynamic> {
+            { "$id", id }
+        };
+
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT email, name FROM users WHERE id = $id", parameters);
 
         if (reader == null)
             return null;
@@ -65,8 +77,14 @@ public class Users
         if (!IsEmailValid(email))
             return false;
 
+        var parameters = new Dictionary<string, dynamic> {
+            { "$email", email },
+            { "$name", name }
+        };
+
         try {
-            DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", new Dictionary<string, dynamic> { { "$email", email }, { "$name", name } });
+            if (DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", parameters) != 1)
+                return false;
         }
         catch (SqliteException e) {
             Console.WriteLine(e.Message);
