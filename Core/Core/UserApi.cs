@@ -5,13 +5,18 @@ public class UserApi : ApiBase {
         Users = users;
     }
 
+    public class UserProfileResponse {
+        public string? Email = null!;
+        public string? Name = null!;
+    }
+
     public IResult GetUserProfile(HttpContext context) {
         User? user = CheckAuth(context);
 
         if (user is null)
             return BadAuth;
 
-        return Results.Ok(new { Email = user.Email, Name = user.Name });
+        return Results.Ok(new UserProfileResponse { Email = user.Email, Name = user.Name });
     }
 
     public override void Map(WebApplication app) {

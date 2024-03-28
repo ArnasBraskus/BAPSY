@@ -12,7 +12,12 @@ public class AuthApi : ApiBase {
         public required string JwtToken { get; set; } = null!;
     };
 
-    private async Task<IResult> PostAuthGoogle(HttpRequest request) {
+    public class GoogleAuthResponse {
+        public string Token;
+        public double Validity;
+    };
+
+    public async Task<IResult> PostAuthGoogle(HttpRequest request) {
         var req = await ReadJson<GoogleAuthRequest>(request);
 
         if (req is null)
@@ -22,17 +27,17 @@ public class AuthApi : ApiBase {
         string name = string.Empty;
 
         if (!Auth.ValidateGoogleJWT(req.JwtToken, ref email, ref name))
-            return Results.BadRequest(new { Error = "jwttoken is invalid." });
+            return Results.BadRequest(new ErrorResponse { Error = "jwttoken is invalid." });
 
         if (Users.UserExists(email))
         {
             User? user = Users.FindUser(email);
 
             if (user is null)
-                return Results.BadRequest(new { Error = "internal database error." });
+                return Results.BadRequest(new ErrorResponse { Error = "internal database error." });
 
             if (user.Name != name) {
-                Users.UpdateName(user.Id, user.Name);
+                Users.UpdateName(user.Id, name);
             }
         }
         else
@@ -44,7 +49,7 @@ public class AuthApi : ApiBase {
 
         string jwt = Auth.GenerateJWT(email, validity);
 
-        return Results.Ok(new { Token = jwt, Validity = validity.TotalSeconds });
+        return Results.Ok(new GoogleAuthResponse { Token = jwt, Validity = validity.TotalSeconds });
     }
 
     public override void Map(WebApplication app)
