@@ -44,7 +44,7 @@ public class UsersTests
         User? user = users.FindUser(email);
 
         Assert.True(status);
-        Assert.True(user is not null);
+        Assert.NotNull(user);
         Assert.Equal(email, user.Email);
         Assert.Equal(name, user.Name);
     }
@@ -99,12 +99,12 @@ public class UsersTests
     [InlineData("*")]
     [InlineData(" ")]
     [MemberData(nameof(UserTestsUtils.GetTestUsers2Emails), MemberType = typeof(UserTestsUtils))]
-    public void Test_PopulatedDb_FindNonExistingUser_UserDoesntExist(string email) {
+    public void Test_PopulatedDb_FindNonExistingUser_UserIsNull(string email) {
         Users users = UserTestsUtils.CreatePopulated();
 
         User? user = users.FindUser(email);
 
-        Assert.True(user is null);
+        Assert.Null(user);
     }
 
     [Theory]
@@ -114,7 +114,7 @@ public class UsersTests
 
         User? user = users.FindUser(email);
 
-        Assert.True(user is not null);
+        Assert.NotNull(user);
         Assert.Equal(email, user.Email);
         Assert.Equal(name, user.Name);
     }
@@ -125,12 +125,12 @@ public class UsersTests
     [InlineData(-1)]
     [InlineData(0)]
     [InlineData(1)]
-    public void Test_EmptyDb_FindUserById_UserDoesntExist(int id) {
+    public void Test_EmptyDb_FindUserById_UserIsNull(int id) {
         Users users = UserTestsUtils.CreateEmpty();
 
         User? user = users.FindUser(id);
 
-        Assert.True(user == null);
+        Assert.Null(user);
     }
 
     [Theory]
@@ -140,10 +140,48 @@ public class UsersTests
 
         User? user = users.FindUser(id);
 
-        Assert.True(user is not null);
+        Assert.NotNull(user);
         Assert.Equal(id, user.Id);
         Assert.Equal(email, user.Email);
         Assert.Equal(name, user.Name);
+    }
+
+    [Fact]
+    public void Test_EmptyDb_UpdateName_ShouldFail() {
+        var ID = UserTestsUtils.FirstUserId;
+        var NAME = "New Name";
+
+        Users users = UserTestsUtils.CreateEmpty();
+
+        var actual = users.UpdateName(ID, NAME);
+
+        Assert.False(actual);
+    }
+
+    [Fact]
+    public void Test_PopulatedDb_UpdateNameWhenNewNameIsEmpty_ShouldFail() {
+        var ID = UserTestsUtils.FirstUserId;
+        var NAME = String.Empty;
+
+        Users users = UserTestsUtils.CreatePopulated();
+
+        var actual = users.UpdateName(ID, NAME);
+
+        Assert.False(actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(UserTestsUtils.GetTestUsers2WithIds), MemberType = typeof(UserTestsUtils))]
+    public void Test_PopulatedDb_UpdateName_NameShouldChange(int id, string newName) {
+        Users users = UserTestsUtils.CreatePopulated();
+
+        var result = users.UpdateName(id, newName);
+
+        User? user = users.FindUser(id);
+
+        Assert.True(result);
+        Assert.NotNull(user);
+        Assert.Equal(newName, user.Name);
     }
 
     [Fact]
@@ -155,7 +193,7 @@ public class UsersTests
         foreach (var testUser in UserTestsUtils.TestUsers1) {
             User? user = users.FindUser(testUser.Item1);
 
-            Assert.True(user != null);
+            Assert.NotNull(user);
             Assert.DoesNotContain(user.Id, ids);
 
             ids.Add(user.Id);

@@ -26,6 +26,16 @@ public class UserTestsUtils
         ("citzchaky9@alibaba.com", "Cesya Itzchaky")
     };
 
+    public static readonly int FirstUserId = 1;
+
+    public static string GetFirstUserEmail() {
+        return TestUsers1.First().Item1;
+    }
+
+    public static string GetFirstUserName() {
+        return TestUsers1.First().Item2;
+    }
+
     public static Users CreateEmpty() {
         return new Users(TestUtils.CreateDatabase());
     }
@@ -64,10 +74,18 @@ public class UserTestsUtils
     }
 
     public static IEnumerable<object[]> GetTestUsersWithIdsFromPopulatedDb() {
-        int id = 1;
+        int id = FirstUserId;
 
         foreach (var user in TestUsers1) {
             yield return new object[] { user.Item1, user.Item2, id++ };
+        }
+    }
+
+    public static IEnumerable<object[]> GetTestUsers2WithIds() {
+        int id = FirstUserId;
+
+        foreach (var user in TestUsers2) {
+            yield return new object[] { id++, user.Item2 };
         }
     }
 
