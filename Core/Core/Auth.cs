@@ -11,15 +11,15 @@ public class Auth
     private SigningCredentials Credentials;
     private SymmetricSecurityKey Key;
     private string Issuer;
-    private GoogleJsonWebSignature.ValidationSettings GoogleValidationSettings;
+    private GoogleTokenValidator GoogleTokenValidator;
 
-    public Auth(string key, string issuer, string googleClientId)
+    public Auth(string key, string issuer, GoogleTokenValidator validator)
     {
         Handler = new JsonWebTokenHandler();
         Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         Credentials = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
         Issuer = issuer;
-        GoogleValidationSettings = new GoogleJsonWebSignature.ValidationSettings() { Audience = new string[] { googleClientId } };
+        GoogleTokenValidator = validator;
     }
 
     public static string? GetNameIdentifier(HttpContext context) {
@@ -96,7 +96,7 @@ public class Auth
     {
         try
         {
-            var payload = GoogleJsonWebSignature.ValidateAsync(token, GoogleValidationSettings).Result;
+            var payload = GoogleTokenValidator.ValidateToken(token);
 
             if (!payload.EmailVerified)
                 return false;
