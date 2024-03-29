@@ -32,7 +32,7 @@ export default {
       if (!this.formData.bookTitle) this.errors.push("Book title required.");
       if (!this.formData.author) this.errors.push("Author required.");
       if (!this.formData.pages) this.errors.push("Page count required.");
-      if (this.formData.pages <= 0 && (this.formData.pages)) this.errors.push("Page count can not be negative.");
+      if (this.formData.pages <= 0 && (this.formData.pages)) this.errors.push("Page count cannot be negative.");
       if (!this.formData.deadline) this.errors.push("Deadline date required.");
       if (new Date() > new Date(this.formData.deadline)) this.errors.push("Deadline date cannot be older than today.");
       if (!this.formData.day1 && !this.formData.day2 && !this.formData.day3 && !this.formData.day4 && !this.formData.day5 && !this.formData.day6 && !this.formData.day7) {
