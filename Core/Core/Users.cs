@@ -69,29 +69,23 @@ public class Users
         }
     }
 
-    public bool AddUser(string email, string name)
+    public void AddUser(string email, string name)
     {
-        if (email.Length == 0 || name.Length == 0)
-            return false;
+        if (email.Length == 0)
+            throw new ArgumentException("Email is empty");
+
+        if (name.Length == 0)
+            throw new ArgumentException("Name is empty");
 
         if (!IsEmailValid(email))
-            return false;
+            throw new FormatException("Email is not valid");
 
         var parameters = new Dictionary<string, dynamic> {
             { "$email", email },
             { "$name", name }
         };
 
-        try {
-            if (DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", parameters) != 1)
-                return false;
-        }
-        catch (SqliteException e) {
-            Console.WriteLine(e.Message);
-            return false;
-        }
-
-        return true;
+        DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", parameters);
     }
 
     public bool UpdateName(int id, string name) {
