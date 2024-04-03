@@ -16,12 +16,12 @@ public class Users
             { "$email", email }
         };
 
-        var reader = DB.ExecuteSingle(@"SELECT COUNT(1) FROM users WHERE email = $email", parameters);
+        var reader = DB.ExecuteSingle(@"SELECT 1 FROM users WHERE email = $email", parameters);
 
         if (reader == null)
             return false;
 
-        return reader.GetInt32(0) == 1;
+        return true;
     }
 
     public User? FindUser(string email)
