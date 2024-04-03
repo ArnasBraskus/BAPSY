@@ -275,6 +275,34 @@ namespace CoreTests
             }
         }
 
+        [Fact]
+        public void Test_UpdatePagesRead_NumberIsNegative_ThrowsException() {
+            var ID = 1;
+            var PAGES_READ = -1;
+
+            Plans plans = CreatePopulated();
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                plans.UpdatePagesRead(ID, PAGES_READ);
+            });
+        }
+
+        [Theory]
+        [InlineData(1, 50)]
+        [InlineData(2, 78)]
+        [InlineData(2, 0)]
+        public void TestUpdatePagesRead(int id, int pagesRead) {
+            Plans plans = CreatePopulated();
+
+            plans.UpdatePagesRead(id, pagesRead);
+
+            BookPlan? plan = plans.FindPlan(id);
+
+            Assert.NotNull(plan);
+            Assert.Equal(pagesRead, plan.PagesRead);
+        }
+
         /*[Fact]
         public void TestPageCountPerDayUsingPlanBook()
         {
