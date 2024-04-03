@@ -16,23 +16,23 @@ public class UsersTests
         Assert.False(actual);
     }
 
-    [Fact]
-    public void Test_EmptyDb_AddUserWithEmptyData_AddingFails() {
-        Users users = UserTestsUtils.CreateEmpty();
-
-        var actual = users.AddUser("", "");
-
-        Assert.False(actual);
+    public static IEnumerable<object[]> GetEmptyDetails() {
+        return new List<object[]>
+        {
+            new object[] {UserTestsUtils.GetFirstUserEmail(), ""},
+            new object[] {"", UserTestsUtils.GetFirstUserName()},
+            new object[] {"", ""}
+        };
     }
 
     [Theory]
-    [MemberData(nameof(UserTestsUtils.GetTestUsersFromPopulatedDb), MemberType = typeof(UserTestsUtils))]
-    public void Test_EmptyDb_AddUserWithValidData_AddsUser(string email, string name) {
+    [MemberData(nameof(GetEmptyDetails))]
+    public void Test_EmptyDb_AddUserWithEmptyDetails_ThrowsArgumentException(string email, string name) {
         Users users = UserTestsUtils.CreateEmpty();
 
-        var actual = users.AddUser(email, name);
+        Action action = () => users.AddUser(email, name);
 
-        Assert.True(actual);
+        Assert.Throws<ArgumentException>(action);
     }
 
     [Theory]
@@ -40,37 +40,37 @@ public class UsersTests
     public void Test_EmptyDb_AddAndFindUser_UserHasCorrectInfo(string email, string name) {
         Users users = UserTestsUtils.CreateEmpty();
 
-        var status = users.AddUser(email, name);
-        User? user = users.FindUser(email);
+        users.AddUser(email, name);
 
-        Assert.True(status);
-        Assert.NotNull(user);
-        Assert.Equal(email, user.Email);
-        Assert.Equal(name, user.Name);
+        User? actual = users.FindUser(email);
+
+        Assert.NotNull(actual);
+        Assert.Equal(email, actual.Email);
+        Assert.Equal(name, actual.Name);
     }
 
     [Theory]
     [InlineData("Boyd Ducker")]
     [InlineData("           ")]
     [InlineData("@")]
-    public void Test_EmptyDb_AddUserWithInvalidEmail_AddingFails(string email) {
+    public void Test_EmptyDb_AddUserWithInvalidEmail_ThrowsFormatException(string email) {
         var NAME = "Boyd Ducker";
 
         Users users = UserTestsUtils.CreateEmpty();
 
-        var actual = users.AddUser(email, NAME);
+        Action action = () => users.AddUser(email, NAME);
 
-        Assert.False(actual);
+        Assert.Throws<FormatException>(action);
     }
 
     [Theory]
     [MemberData(nameof(UserTestsUtils.GetTestUsersFromPopulatedDb), MemberType = typeof(UserTestsUtils))]
-    public void Test_PopulatedDb_AddAlreadyExistingUser_AddingFails(string email, string name) {
+    public void Test_PopulatedDb_AddAlreadyExistingUser_ThrowsException(string email, string name) {
         Users users = UserTestsUtils.CreatePopulated();
 
-        var actual = users.AddUser(email, name);
+        var exception = Record.Exception(() => users.AddUser(email, name));
 
-        Assert.False(actual);
+        Assert.NotNull(exception);
     }
 
     [Theory]
