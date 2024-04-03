@@ -105,6 +105,19 @@ public class Plans
         return true;
     }
 
+    public void UpdatePagesRead(int id, int pagesRead)
+    {
+        if (pagesRead < 0)
+            throw new ArgumentException("pagesRead cannot be negative");
+
+        var parameters = new Dictionary<string, dynamic>
+        {
+            { "$id", id },
+            { "$pagesRead", pagesRead }
+        };
+
+        DB.ExecuteNonQuery(@"UPDATE plans SET pagesRead = $pagesRead WHERE id = $id", parameters);
+    }
 
     public bool UpdatePlanDates(int id, string deadLine, int weekdays, string timeOfDay, int pagesPerDay)
     {
