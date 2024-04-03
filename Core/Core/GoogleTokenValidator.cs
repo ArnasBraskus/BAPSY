@@ -8,7 +8,7 @@ public class GoogleTokenValidator {
     }
 
     public GoogleTokenValidator() {
-
+        GoogleValidationSettings = new GoogleJsonWebSignature.ValidationSettings();
     }
 
     public virtual GoogleJsonWebSignature.Payload ValidateToken(string token) {
