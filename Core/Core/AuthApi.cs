@@ -13,8 +13,8 @@ public class AuthApi : ApiBase {
     };
 
     public class GoogleAuthResponse {
-        public string Token;
-        public double Validity;
+        public string Token { get; set; } = null!;
+        public double Validity { get; set; }
     };
 
     public async Task<IResult> PostAuthGoogle(HttpRequest request) {

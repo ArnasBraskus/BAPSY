@@ -7,7 +7,7 @@ public abstract class ApiBase {
     protected static readonly IResult BadJson = Results.BadRequest(new ErrorResponse { Error = "Malformed JSON." });
 
     public class ErrorResponse {
-        public string Error;
+        public string Error { get; set; } = null!;
     }
 
     public ApiBase(Users users) {
