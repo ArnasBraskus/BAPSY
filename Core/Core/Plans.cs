@@ -43,7 +43,7 @@ public class Plans
 
     public BookPlan? FindPlan(int id)
     {
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, size FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, size FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
 
         if (reader == null)
             return null;
@@ -56,9 +56,10 @@ public class Plans
         string title = reader.GetString(5);
         string author = reader.GetString(6);
         int pageCount = reader.GetInt32(7);
-        int size = reader.GetInt32(8);
+        int pagesRead = reader.GetInt32(8);
+        int size = reader.GetInt32(9);
 
-        return new BookPlan(id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, size);
+        return new BookPlan(id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, size);
     }
 
     public List<int> FindPlanByUser(int userid)
