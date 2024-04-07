@@ -47,10 +47,8 @@ public class PlansTestsUtils
         return new Plans(database);
     }
 
-    public static Plans CreatePopulated()
+    public static Plans CreatePopulated(Database database)
     {
-        Database database = TestUtils.CreateDatabase();
-
         Users users = UserTestsUtils.CreatePopulated(database);
 
         Plans Plans = new Plans(database);
@@ -62,6 +60,12 @@ public class PlansTestsUtils
         }
         return Plans;
     }
+
+    public static Plans CreatePopulated()
+    {
+        return CreatePopulated(TestUtils.CreateDatabase());
+    }
+
     public static IEnumerable<object[]> GetTestPlansFromPopulatedDb()
     {
         foreach (var plan in TestPlans1)
