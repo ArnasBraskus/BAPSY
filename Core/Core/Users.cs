@@ -88,9 +88,9 @@ public class Users
         DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", parameters);
     }
 
-    public bool UpdateName(int id, string name) {
+    public void UpdateName(int id, string name) {
         if (name.Length == 0)
-            return false;
+            throw new ArgumentException("Name is empty");
 
         var parameters = new Dictionary<string, dynamic> {
             { "$id", id },
@@ -98,8 +98,6 @@ public class Users
         };
 
         if (DB.ExecuteNonQuery(@"UPDATE users SET name = $name WHERE id = $id", parameters) != 1)
-            return false;
-
-        return true;
+            throw new InvalidOperationException("User not found");
     }
 }
