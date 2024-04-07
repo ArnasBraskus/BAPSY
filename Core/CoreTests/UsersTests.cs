@@ -153,9 +153,9 @@ public class UsersTests
 
         Users users = UserTestsUtils.CreateEmpty();
 
-        var actual = users.UpdateName(ID, NAME);
+        Action action = () => users.UpdateName(ID, NAME);
 
-        Assert.False(actual);
+        Assert.Throws<InvalidOperationException>(action);
     }
 
     [Fact]
@@ -165,9 +165,9 @@ public class UsersTests
 
         Users users = UserTestsUtils.CreatePopulated();
 
-        var actual = users.UpdateName(ID, NAME);
+        Action action = () => users.UpdateName(ID, NAME);
 
-        Assert.False(actual);
+        Assert.Throws<ArgumentException>(action);
     }
 
     [Theory]
@@ -175,11 +175,26 @@ public class UsersTests
     public void Test_PopulatedDb_UpdateName_NameShouldChange(int id, string newName) {
         Users users = UserTestsUtils.CreatePopulated();
 
-        var result = users.UpdateName(id, newName);
+        users.UpdateName(id, newName);
 
         User? user = users.FindUser(id);
 
-        Assert.True(result);
+        Assert.NotNull(user);
+        Assert.Equal(newName, user.Name);
+    }
+
+    [Theory]
+    [MemberData(nameof(UserTestsUtils.GetTestUsers2WithIds), MemberType = typeof(UserTestsUtils))]
+    public void Test_PopulatedDb_UpdateNameWithSetterMethod_NameShouldChange(int id, string newName) {
+        Users users = UserTestsUtils.CreatePopulated();
+
+        User? user = users.FindUser(id);
+
+        Assert.NotNull(user);
+
+        user.Name = newName;
+        user = users.FindUser(id);
+
         Assert.NotNull(user);
         Assert.Equal(newName, user.Name);
     }
