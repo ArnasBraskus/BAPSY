@@ -20,5 +20,13 @@ public static class DatabaseSchema
         pagesRead INTEGER DEFAULT 0,
 	    size INTEGER NOT NULL,
         FOREIGN KEY (userid) REFERENCES users(id));
+
+    CREATE TABLE readingsessions(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        planId INTEGER NOT NULL,
+        date TEXT NOT NULL,
+        goal INTEGER NOT NULL,
+        actual INTEGER DEFAULT 0,
+        FOREIGN KEY (planId) REFERENCES plans(id));
     ";
 }
