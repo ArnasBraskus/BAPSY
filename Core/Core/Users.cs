@@ -38,7 +38,7 @@ public class Users
         int id = reader.GetInt32(0);
         string name = reader.GetString(1);
 
-        return new User(id, email, name);
+        return new User(this, id, email, name);
     }
 
     public User? FindUser(int id) {
@@ -54,7 +54,7 @@ public class Users
         string email = reader.GetString(0);
         string name = reader.GetString(1);
 
-        return new User(id, email, name);
+        return new User(this, id, email, name);
 
     }
 
