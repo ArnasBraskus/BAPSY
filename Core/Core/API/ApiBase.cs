@@ -20,12 +20,7 @@ public abstract class ApiBase {
         if (email == null)
             return null;
 
-        User? user = Users.FindUser(email);
-
-        if (user == null)
-            return null;
-
-        return user;
+        return Users.FindUser(email);
     }
 
     private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions {
