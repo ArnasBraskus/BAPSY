@@ -41,3 +41,5 @@ foreach (var api in apis) {
 }
 
 app.Run();
+
+public partial class Program { }
