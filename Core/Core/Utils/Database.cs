@@ -4,32 +4,33 @@ public class Database
 {
     private SqliteConnection Connection;
 
-    public Database(string path)
+    public Database(string connectionString)
     {
-        Connection = new SqliteConnection($"Data Source={path}");
+        Connection = new SqliteConnection(connectionString);
     }
 
-    public Database()
-    {
-        Connection = new SqliteConnection("Data Source=:memory:");
+    public bool Empty() {
+        return GetUserVersion() == 0;
     }
 
     public void Create(string schema) {
         ExecuteNonQuery(schema);
+        ExecuteNonQuery("PRAGMA user_version = 1");
     }
 
-    public bool Open()
-    {
-        try
-        {
-            Connection.Open();
+    public void CreateIfEmpty(string schema) {
+        if (Empty()) {
+            Create(schema);
         }
-        catch (SqliteException)
-        {
-            return false;
-        }
+    }
 
-        return true;
+    public void Open()
+    {
+        Connection.Open();
+    }
+
+    private int GetUserVersion() {
+        return ExecuteSingle("PRAGMA user_version").GetInt32(0);
     }
 
     private SqliteCommand CreateCommand(string statement, Dictionary<string, dynamic>? parameters)
@@ -91,6 +92,6 @@ public class Database
 
     public SqliteDataReader? ExecuteSingle(string statement)
     {
-        return ExecuteSingle(statement);
+        return ExecuteSingle(statement, null);
     }
 };
