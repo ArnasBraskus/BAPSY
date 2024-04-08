@@ -1,22 +1,20 @@
-Config conf = Config.Read("config.json");
+//Config conf = Config.Read("config.json");
 
-bool dbExists = File.Exists(conf.DatabasePath);
+var builder = WebApplication.CreateBuilder(args);
 
-Database db = new Database(conf.DatabasePath);
+//bool dbExists = File.Exists(builder.Configuration);
 
-if (!db.Open())
-    throw new InvalidDataException($"failed to open database {conf.DatabasePath}");
+IConfiguration conf = builder.Configuration;
 
-if (!dbExists) {
-    db.Create(DatabaseSchema.Schema);
-}
+Database db = new Database(conf["DatabaseConnectionString"]);
+
+db.Open();
+db.CreateIfEmpty(DatabaseSchema.Schema);
 
 Users users = new Users(db);
 Plans plans = new Plans(db);
 
-var builder = WebApplication.CreateBuilder(args);
-
-Auth auth = new Auth(conf.JwtSecretKey, conf.JwtIssuer, new GoogleTokenValidator(conf.GoogleApiClientId));
+Auth auth = new Auth(conf["JwtSecretKey"], conf["JwtIssuer"], new GoogleTokenValidator(conf["GoogleApiClientId"]));
 
 auth.Add(builder.Services);
 
