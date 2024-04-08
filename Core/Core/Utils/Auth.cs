@@ -31,21 +31,6 @@ public class Auth
         return email.Value;
     }
 
-    public String GetIssuer()
-    {
-        return Issuer;
-    }
-
-    public String GetAudience()
-    {
-        return Issuer;
-    }
-
-    public SymmetricSecurityKey GetSigningKey()
-    {
-        return Key;
-    }
-
     public void Add(IServiceCollection services)
     {
         services.AddAuthentication(options =>
