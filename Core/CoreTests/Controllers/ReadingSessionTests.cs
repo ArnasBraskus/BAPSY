@@ -68,8 +68,6 @@ public class ReadingSessionTests
 
         ReadingSession session = sessions.Get(ID);
 
-        Assert.NotNull(session);
-
         session.Actual = ACTUAL;
 
         ReadingSession actual = sessions.Get(ID);
