@@ -29,20 +29,13 @@ public class AuthApi : ApiBase {
         if (!Auth.ValidateGoogleJWT(req.JwtToken, ref email, ref name))
             return Results.BadRequest(new ErrorResponse { Error = "jwttoken is invalid." });
 
-        if (Users.UserExists(email))
-        {
-            User? user = Users.FindUser(email);
+        User? user = Users.FindUser(email);
 
-            if (user is null)
-                return Results.BadRequest(new ErrorResponse { Error = "internal database error." });
-
-            if (user.Name != name) {
-                Users.UpdateName(user.Id, name);
-            }
-        }
-        else
-        {
+        if (user is null) {
             Users.AddUser(email, name);
+        }
+        else if (user.Name != name) {
+            Users.UpdateName(user.Id, name);
         }
 
         var validity = new TimeSpan(1, 0, 0, 0);
