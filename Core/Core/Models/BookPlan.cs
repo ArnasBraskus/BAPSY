@@ -3,7 +3,7 @@
         public int Id { get;}
         public int UserId { get;}
         public string DeadLine { get;}
-        public int DayOfWeek { get;}    //ne viena ?
+        public int DayOfWeek { get;}    
         public string timeOfDay {  get;}    
         public int PagesPerDay { get; set;}
         public string Title { get; }

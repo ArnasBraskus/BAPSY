@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-public class TestUserApi {
+public class UserApiTests {
     [Theory]
     [MemberData(nameof(UserTestsUtils.GetTestUsersFromPopulatedDb), MemberType = typeof(UserTestsUtils))]
     public void Test_GoodAuth_GetProfile_ReturnsUserInfo(string email, string name) {

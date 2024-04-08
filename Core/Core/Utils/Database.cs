@@ -61,13 +61,15 @@ public class Database
 
     public IEnumerable<SqliteDataReader> Execute(string statement, Dictionary<string, dynamic>? parameters)
     {
-        var command = CreateCommand(statement, parameters);
-
-        var reader = command.ExecuteReader();
-
-        while (reader.Read())
+        using (var command = CreateCommand(statement, parameters))
         {
-            yield return reader;
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    yield return reader;
+                }
+            }
         }
     }
 

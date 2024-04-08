@@ -63,26 +63,23 @@ public class Plans
 
     public List<int> FindPlanByUser(int userId)
     {
-        
-          var ids = new List<int>();
-          try
-          {
-              IEnumerable<SqliteDataReader> readers = DB.Execute(@"SELECT id FROM plans WHERE userId = $userId", new Dictionary<string, dynamic> { { "$userId", userId } });
 
-              foreach (var reader in readers)
-              {
-                var id = reader.GetInt32(0);
-                  ids.Add(id);
-              }
-              if (ids.Count == 0) {
-                  return null; 
-              }
-          }
-          catch (SqliteException e)
-          {
-              Console.WriteLine(e.Message);
-          }
-          return ids;
+        var ids = new List<int>();
+
+        IEnumerable<SqliteDataReader> readers = DB.Execute(@"SELECT id FROM plans WHERE userId = $userId", new Dictionary<string, dynamic> { { "$userId", userId } });
+
+        foreach (var reader in readers)
+        {
+            var id = reader.GetInt32(0);
+            ids.Add(id);
+        }
+        if (ids.Count == 0)
+        {
+            return null;
+        }
+        return ids;
+
+
     }
 
     public bool UpdatePlan(int id, string deadLine, int weekdays, string timeOfDay, string title, string author, int pageCount, int size)
@@ -93,8 +90,6 @@ public class Plans
             throw new ArgumentException("where title");
         if (author.Length == 0)
             throw new ArgumentException("where author");
-        if (id <= 0 || FindPlan(id)==null)
-            throw new ArgumentException("invalid id");
 
 
         var parameters = new Dictionary<string, dynamic> {

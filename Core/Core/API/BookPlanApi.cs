@@ -17,7 +17,7 @@ public class BookPlanApi : ApiBase {
 
         return Results.Ok(new { ids = ids });
     }
-
+    
     private class AddBookPlanRequest {
         public required string Title { get; set; } = null!;
         public required string Author { get; set; } = null!;
