@@ -9,14 +9,14 @@ public class AuthApiTests {
     public static readonly string TestEmail = UserTestsUtils.GetFirstUserEmail();
     public static readonly string TestName = UserTestsUtils.GetFirstUserName();
 
-    public static Auth CreateAuth(string? testEmail = null, string? testName = null) {
-        return new Auth(AuthTests.TestSecretKey, AuthTests.TestIssuer, CreateGoogleTokenValidatorMock(testEmail ?? TestEmail, testName ?? TestName));
+    public static Auth CreateAuth(string? testEmail = null, string? testName = null, bool emailVerified = true) {
+        return new Auth(AuthTests.TestSecretKey, AuthTests.TestIssuer, CreateGoogleTokenValidatorMock(testEmail ?? TestEmail, testName ?? TestName, emailVerified));
     }
 
-    private static GoogleTokenValidator CreateGoogleTokenValidatorMock(string email, string name) {
+    private static GoogleTokenValidator CreateGoogleTokenValidatorMock(string email, string name, bool emailVerified) {
         var mock = new Mock<GoogleTokenValidator>();
 
-        mock.Setup(l => l.ValidateToken(TestGoogleToken)).Returns(new GoogleJsonWebSignature.Payload { EmailVerified = true, Email = email, Name = name});
+        mock.Setup(l => l.ValidateToken(TestGoogleToken)).Returns(new GoogleJsonWebSignature.Payload { EmailVerified = emailVerified, Email = email, Name = name});
 
         return mock.Object;
     }
@@ -113,6 +113,20 @@ public class AuthApiTests {
         HttpContext context = ApiTestUtils.FakeContext(TestEmail, $"{{\"jwttoken\": \"{TestGoogleTokenBad}\"}}");
 
         Auth auth = CreateAuth();
+        Users users = UserTestsUtils.CreateEmpty();
+
+        AuthApi authApi = new AuthApi(auth, users);
+
+        var result = authApi.PostAuthGoogle(context.Request).Result;
+
+        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
+    }
+
+    [Fact]
+    public void Test_PostAuthGoogleWithUnconfirmedEmail_ServerReturnsBadRequest() {
+        HttpContext context = ApiTestUtils.FakeContext(TestEmail, $"{{\"jwttoken\": \"{TestGoogleToken}\"}}");
+
+        Auth auth = CreateAuth(null, null, false);
         Users users = UserTestsUtils.CreateEmpty();
 
         AuthApi authApi = new AuthApi(auth, users);
