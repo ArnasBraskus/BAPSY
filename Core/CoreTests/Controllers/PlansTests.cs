@@ -16,15 +16,15 @@ namespace CoreTests
             Users users = UserTestsUtils.CreatePopulated(database);
 
             Plans Plans = new Plans(database);
-                User? usr = users.FindUser(userid);
-                Assert.True(
-                Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagerPerDay, title, author, pgcount, size));
+            User? usr = users.FindUser(userid);
+            Assert.True(
+            Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagerPerDay, title, author, pgcount, size));
         }
 
 
         [Theory]
         [MemberData(nameof(PlansTestsUtils.GetInvalidTestPlansFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
-        public void TestAddPlan_InvalidInput_ThrowsException(int userid, string deadline,bool[] days, string time, int pagerPerDay, string title, string author, int pgcount, int size)
+        public void TestAddPlan_InvalidInput_ThrowsException(int userid, string deadline, bool[] days, string time, int pagerPerDay, string title, string author, int pgcount, int size)
         {
             Database database = TestUtils.CreateDatabase();
 
@@ -47,26 +47,26 @@ namespace CoreTests
 
             Plans Plans = new Plans(database);
             int i = 1;
-                User? usr = users.FindUser(userid);
-                Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagesPerDay, title, author, pgcount, size);
-                BookPlan ? foundPlan = Plans.FindPlan(i);
+            User? usr = users.FindUser(userid);
+            Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagesPerDay, title, author, pgcount, size);
+            BookPlan? foundPlan = Plans.FindPlan(i);
 
-                Assert.NotNull(foundPlan); 
-                Assert.Equal(i, foundPlan.Id); 
-                Assert.Equal(userid, foundPlan.UserId); 
-                Assert.Equal(deadline, foundPlan.DeadLine);
-                Assert.Equal(Weekdays.ToBitField(days), foundPlan.DayOfWeek);
-                Assert.Equal(time, foundPlan.timeOfDay);
-                Assert.Equal(pagesPerDay, foundPlan.PagesPerDay);
-                Assert.Equal(title, foundPlan.Title);
-                Assert.Equal(author, foundPlan.Author);
-                Assert.Equal(pgcount, foundPlan.PageCount);
-                Assert.Equal(size, foundPlan.Size);
-                i++;
+            Assert.NotNull(foundPlan);
+            Assert.Equal(i, foundPlan.Id);
+            Assert.Equal(userid, foundPlan.UserId);
+            Assert.Equal(deadline, foundPlan.DeadLine);
+            Assert.Equal(Weekdays.ToBitField(days), foundPlan.DayOfWeek);
+            Assert.Equal(time, foundPlan.timeOfDay);
+            Assert.Equal(pagesPerDay, foundPlan.PagesPerDay);
+            Assert.Equal(title, foundPlan.Title);
+            Assert.Equal(author, foundPlan.Author);
+            Assert.Equal(pgcount, foundPlan.PageCount);
+            Assert.Equal(size, foundPlan.Size);
+            i++;
         }
 
         [Theory]
-        [InlineData (-1)]
+        [InlineData(-1)]
         [InlineData(0)]
         [InlineData(100)]
 
@@ -82,13 +82,13 @@ namespace CoreTests
             Database database = TestUtils.CreateDatabase();
             Plans Plans = PlansTestsUtils.CreatePopulated(database);
             List<int> planIDs = new List<int>();
-           
+
 
             var expectedIDs = new List<int>() { 1 };
             planIDs = Plans.FindPlanByUser(3);
             Assert.Equal(expectedIDs, planIDs);
 
-            var expectedIDs2 = new List<int>() { 3, 5, 6, 10};
+            var expectedIDs2 = new List<int>() { 3, 5, 6, 10 };
             List<int> planIDs2 = Plans.FindPlanByUser(2);
             Assert.Equal(expectedIDs2, planIDs2);
 
@@ -99,23 +99,23 @@ namespace CoreTests
             var expectedIDs4 = new List<int>() { 4, 7, 8, 11 };
             List<int> planIDs4 = Plans.FindPlanByUser(6);
             Assert.Equal(expectedIDs4, planIDs4);
-            
+
         }
 
-           [Fact]
-     public void TestFindPlanByUser_UserWithoutPlans_ReturnsNull()
+        [Fact]
+        public void TestFindPlanByUser_UserWithoutPlans_ReturnsNull()
         {
             Database database = TestUtils.CreateDatabase();
 
             Users users = UserTestsUtils.CreatePopulated(database);
             Plans Plans = new Plans(database);
 
-            List<int> planIDs = new List<int> ();
-            for (int i =10; i<15; i++)
+            List<int> planIDs = new List<int>();
+            for (int i = 10; i < 15; i++)
             {
-            planIDs = Plans.FindPlanByUser(i);
-            Assert.Null(planIDs);
-            }      
+                planIDs = Plans.FindPlanByUser(i);
+                Assert.Null(planIDs);
+            }
         }
 
 
@@ -133,8 +133,8 @@ namespace CoreTests
         }
 
         [Theory]
-        [InlineData (-1)]
-        [InlineData (100)]
+        [InlineData(-1)]
+        [InlineData(100)]
 
         public void TestDeletePlan_NonExistentPlanID_ReturnsFalse(int id)
         {
@@ -147,7 +147,7 @@ namespace CoreTests
         [MemberData(nameof(PlansTestsUtils.GetTestPlans2FromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
         public void TestUpdatePlan_ValidInputs_ReturnsTrue(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount, int size)
         {
-            Plans Plans = PlansTestsUtils.CreatePopulated();        
+            Plans Plans = PlansTestsUtils.CreatePopulated();
             Assert.True(Plans.UpdatePlan(1, deadline, Weekdays.ToBitField(days), time, title, author, pgcount, size));
         }
 
@@ -156,13 +156,14 @@ namespace CoreTests
         public void TestUpdatePlan_InvalidInputs_ThrowsException(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount, int size)
         {
             Plans Plans = PlansTestsUtils.CreatePopulated();
-                var exception = Record.Exception(() => Plans.UpdatePlan(1, deadline, Weekdays.ToBitField(days), time, title, author, pgcount, size));
-                Assert.NotNull(exception);  
-                
+            var exception = Record.Exception(() => Plans.UpdatePlan(1, deadline, Weekdays.ToBitField(days), time, title, author, pgcount, size));
+            Assert.NotNull(exception);
+
         }
 
         [Fact]
-        public void Test_UpdatePagesRead_NumberIsNegative_ThrowsException() {
+        public void Test_UpdatePagesRead_NumberIsNegative_ThrowsException()
+        {
             var ID = 1;
             var PAGES_READ = -1;
 
@@ -178,7 +179,8 @@ namespace CoreTests
         [InlineData(1, 50)]
         [InlineData(2, 78)]
         [InlineData(2, 0)]
-        public void TestUpdatePagesRead(int id, int pagesRead) {
+        public void TestUpdatePagesRead(int id, int pagesRead)
+        {
             Plans plans = PlansTestsUtils.CreatePopulated();
 
             plans.UpdatePagesRead(id, pagesRead);
@@ -189,23 +191,17 @@ namespace CoreTests
             Assert.Equal(pagesRead, plan.PagesRead);
         }
 
-        /*[Fact]
+        [Fact]
         public void TestPageCountPerDayUsingPlanBook()
         {
-            Plans Plans = CreatePopulated();
-            int i = 1;
-            foreach (var plan in TestPlans)
+            Plans Plans = PlansTestsUtils.CreatePopulated();
+            for(int i = 1; i < 12; i++)
             {
-                Assert.True(Plans.UpdatePlanBook(i, plan.Item5, plan.Item6, plan.Item7, plan.Item8, plan.Item9));
-                BookPlan updated = Plans.FindPlan(i);
-                Assert.Equal(updated.PagesPerDay, plan.Item5);
-                Assert.Equal(updated.Title, plan.Item6);
-                Assert.Equal(updated.Author, plan.Item7);
-                updated.PagesToReadBeforeDeadline();
-                Assert.Equal(updated.PageCount, plan.Item8);
-                Assert.Equal(updated.Size, plan.Item9);
-                i++;
-            }
-        }*/
+                BookPlan? bookPlan = Plans.FindPlan(i);
+                int pagesPerDay = bookPlan.PagesPerDay;
+                bookPlan.PagesToReadBeforeDeadline();
+                Assert.Equal(pagesPerDay, bookPlan.PagesPerDay);
+            }        
+        }
     }
 }

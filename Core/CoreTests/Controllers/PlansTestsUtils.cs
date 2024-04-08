@@ -5,17 +5,17 @@ public class PlansTestsUtils
 
     private static readonly (int, string, bool[], string, int, string, string, int, int)[] TestPlans1 = new (int, string, bool[], string, int, string, string, int, int)[]
        {
-        (3, "6-11-2024", [true, true, false, false, false, false, false], "1:28 PM", 74, "Touchy Feely", "Arlen Anmore", 45, 4),
-        (5, "9/2/2023", [true, false, true, false, true, false, true], "3:31 PM", 59, "Mantrap", "Devin Santos", 6, 1),
-        (2, "6/8/2023", [true, false, true, false, true, false, true], "4:56 PM", 44, "Cherish", "Blisse Wipfler", 99, 2),
-        (6, "11/3/2023", [true, false, true, false, true, false, true], "2:52 PM", 73, "For Pete's Sake", "Faith Cregeen", 78, 4),
-        (2, "8/28/2023", [true, false, true, false, true, false, true], "9:38 PM", 66, "The Story of Asya Klyachina", "Celisse Grossier", 21, 2),
-        (2, "3/25/2024", [true, false, true, false, true, false, true], "7:55 AM", 18, "Caddyshack II", "Stearn Jillings", 56, 1),
-        (6, "3/5/2024", [true, false, true, false, true, false, true], "8:42 PM", 67, "Bulletproof", "Lucila Raithmill", 90, 4),
-        (6, "9/21/2023", [true, false, true, false, true, false, true], "11:17 AM", 39, "A Thousand Times Goodnight", "Adrian Bingall", 17, 4),
-        (5, "7/3/2023", [true, false, true, false, true, false, true], "10:24 AM", 70, "À nous la liberté (Freedom for Us)", "Matthus Dohmer", 27, 1),
-        (2, "9/11/2023", [true, false, true, false, true, false, true], "1:50 PM", 80, "Punk's Dead: SLC Punk! 2", "Garner Cursons", 23, 4),
-        (6, "1/7/2024", [true, false, true, false, true, false, true], "10:06 PM", 10, "Not Another Happy Ending", "De witt Dooher", 3, 1)
+        (3, "6-11-2024", [true, true, false, false, false, false, false], "1:28 PM", 3, "Touchy Feely", "Arlen Anmore", 45, 4),
+        (5, "9/2/2023", [true, false, true, false, true, false, true], "3:31 PM", -1, "Mantrap", "Devin Santos", 6, 1),
+        (2, "6/8/2023", [true, false, true, false, true, false, true], "4:56 PM", -1, "Cherish", "Blisse Wipfler", 99, 2),
+        (6, "11/3/2023", [true, false, true, false, true, false, true], "2:52 PM", -1, "For Pete's Sake", "Faith Cregeen", 78, 4),
+        (2, "8/28/2023", [true, false, true, false, true, false, true], "9:38 PM", -1, "The Story of Asya Klyachina", "Celisse Grossier", 21, 2),
+        (2, "5/26/2024", [false, false, false, false, false, false, true], "7:55 AM", 10, "Caddyshack II", "Stearn Jillings", 56, 1),
+        (6, "4/25/2024", [true, false, true, false, true, false, true], "8:42 PM", 9, "Bulletproof", "Lucila Raithmill", 90, 4),
+        (6, "9/21/2023", [true, false, true, false, true, false, true], "11:17 AM", -1, "A Thousand Times Goodnight", "Adrian Bingall", 17, 4),
+        (5, "7/3/2024", [false, false, false, false, false, false, false], "10:24 AM", -1, "À nous la liberté (Freedom for Us)", "Matthus Dohmer", 27, 1),
+        (2, "9/11/2024", [true, false, true, false, true, false, true], "1:50 PM", 1, "Punk's Dead: SLC Punk! 2", "Garner Cursons", 23, 4),
+        (6, "1/7/2024", [true, false, true, false, true, false, true], "10:06 PM", -1, "Not Another Happy Ending", "De witt Dooher", 3, 1)
        };
 
     private static readonly (int, string, bool[], string, int, string, string, int, int)[] InvalidPlans = new (int, string, bool[], string, int, string, string, int, int)[]
