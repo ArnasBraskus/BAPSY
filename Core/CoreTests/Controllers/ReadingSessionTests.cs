@@ -29,6 +29,32 @@ public class ReadingSessionTests
     }
 
     [Fact]
+    public void Test_EmptyDb_AddSessionWithEmptyDate_ThrowsArgumentException() {
+        int PLAN_ID = 1;
+        string DATE = "";
+        int GOAL = 100;
+
+        ReadingSessions sessions = CreateEmpty();
+
+        Action action = () => sessions.Add(PLAN_ID, new ReadingSession(DATE, GOAL));
+
+        Assert.Throws<ArgumentException>(action);
+    }
+
+    [Fact]
+    public void Test_EmptyDb_AddSessionWithNegativeGoal_ThrowsArgumentException() {
+        int PLAN_ID = 1;
+        string DATE = "1970-01-01";
+        int GOAL = -1;
+
+        ReadingSessions sessions = CreateEmpty();
+
+        Action action = () => sessions.Add(PLAN_ID, new ReadingSession(DATE, GOAL));
+
+        Assert.Throws<ArgumentException>(action);
+    }
+
+    [Fact]
     public void Test_EmptyDb_AddSessionWithValidInfoAndGetIt_InfoMatches() {
         int PLAN_ID = 1;
         string DATE = "1970-01-01";
@@ -60,6 +86,18 @@ public class ReadingSessionTests
     }
 
     [Fact]
+    public void Test_PopulatedDb_SetNegativeActual_ThrowsArgumentException() {
+        int ID = 1;
+        int ACTUAL = -1;
+
+        ReadingSessions sessions = CreatePopulated();
+
+        Action action = () => sessions.SetActual(ID, ACTUAL);
+
+        Assert.Throws<ArgumentException>(action);
+    }
+
+    [Fact]
     public void Test_PopulatedDb_SetActualSetter_ValueIsUpdated() {
         int ID = 1;
         int ACTUAL = 80;
@@ -73,5 +111,18 @@ public class ReadingSessionTests
         ReadingSession actual = sessions.Get(ID);
 
         Assert.Equal(ACTUAL, actual.Actual);
+    }
+
+    [Fact]
+    public void Test_PopulatedDb_SetActualSetterNoDbConnection_ThrowsException() {
+        var DATE = "1970-01-01";
+        var GOAL = 100;
+        var ACTUAL = 80;
+
+        ReadingSession session = new ReadingSession(DATE, GOAL);
+
+        Action action = () => session.Actual = ACTUAL;
+
+        Assert.Throws<InvalidOperationException>(action);
     }
 }
