@@ -18,6 +18,11 @@ public class AuthorizationTests : IClassFixture<CustomWebApplicationFactory<Prog
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
+    private void SetBadJwtToken(HttpClient client)
+    {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthTests.TestBadJwtToken);
+    }
+
     private static readonly string[] GetEndpointsAuth =
     {
         "/user/profile",
@@ -58,6 +63,18 @@ public class AuthorizationTests : IClassFixture<CustomWebApplicationFactory<Prog
 
     [Theory]
     [MemberData(nameof(GetTestGetEndpointsAuth))]
+    public async Task Test_EndpointRequiresAuth_GetRequestWithInvalidToken_ReturnsUnauthorized(string endpoint) {
+        var client = _factory.CreateClient();
+
+        SetBadJwtToken(client);
+
+        var response = await client.GetAsync(endpoint);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetTestGetEndpointsAuth))]
     public async Task Test_EndpointRequiresAuth_AuthorizedGetRequest_DoesNotReturnUnauthorized(string endpoint) {
         var client = _factory.CreateClient();
 
@@ -72,6 +89,18 @@ public class AuthorizationTests : IClassFixture<CustomWebApplicationFactory<Prog
     [MemberData(nameof(GetTestPostEndpointsAuth))]
     public async Task Test_EndpointRequiresAuth_UnauthorizedPostRequest_ReturnsUnauthorized(string endpoint) {
         var client = _factory.CreateClient();
+
+        var response = await client.PostAsync(endpoint, null);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetTestPostEndpointsAuth))]
+    public async Task Test_EndpointRequiresAuth_PostRequestWithInvalidToken_ReturnsUnauthorized(string endpoint) {
+        var client = _factory.CreateClient();
+
+        SetBadJwtToken(client);
 
         var response = await client.PostAsync(endpoint, null);
 

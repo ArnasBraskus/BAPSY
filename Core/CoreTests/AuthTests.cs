@@ -6,6 +6,7 @@ public class AuthTests {
     public static string TestSecretKey = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     public static string TestIssuer = "localhost";
     public static string TestGoogleClientId = String.Empty;
+    public static string TestBadJwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJsb2NhbGhvc3QiLCJpc3MiOiJsb2NhbGhvc3QiLCJleHAiOjE3MTE2MjYzNTgsImlhdCI6MTcxMTUzOTk1OCwibmJmIjoxNzExNTM5OTU4LCJzdWIiOiJ1c2VyMSJ9.3zvqYKs7fUiCowyBYyeA9AyLxJd3XvK7oJorO65oN3M";
 
     private Auth CreateAuth() {
         return new Auth(TestSecretKey, TestIssuer, new GoogleTokenValidator(TestGoogleClientId));
