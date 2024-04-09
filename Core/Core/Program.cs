@@ -1,12 +1,10 @@
-//Config conf = Config.Read("config.json");
-
 var builder = WebApplication.CreateBuilder(args);
 
-//bool dbExists = File.Exists(builder.Configuration);
+Config conf = new Config();
 
-IConfiguration conf = builder.Configuration;
+builder.Configuration.Bind(conf);
 
-Database db = new Database(conf["DatabaseConnectionString"]);
+Database db = new Database(conf.DatabaseConnectionString);
 
 db.Open();
 db.CreateIfEmpty(DatabaseSchema.Schema);
@@ -14,7 +12,7 @@ db.CreateIfEmpty(DatabaseSchema.Schema);
 Users users = new Users(db);
 Plans plans = new Plans(db);
 
-Auth auth = new Auth(conf["JwtSecretKey"], conf["JwtIssuer"], new GoogleTokenValidator(conf["GoogleApiClientId"]));
+Auth auth = new Auth(conf.JwtSecretKey, conf.JwtIssuer, new GoogleTokenValidator(conf.GoogleApiClientId));
 
 auth.Add(builder.Services);
 

@@ -5,17 +5,21 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 {
     private IConfiguration? Configuration;
 
+    private static readonly string GoogleApiClientId = "A";
+    private static readonly string JwtIssuer = "localhost";
+    private static readonly string JwtSecretKey = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
     private static readonly Dictionary<string, string?> TestConfiguration = new Dictionary<string, string?>
     {
-        {"GoogleApiClientId", ""},
-        {"JwtIssuer", "localhost"},
-        {"JwtSecretKey", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"},
+        {"GoogleApiClientId", GoogleApiClientId},
+        {"JwtSecretKey", JwtSecretKey},
+        {"JwtIssuer", JwtIssuer},
         {"DatabaseConnectionString", "Data Source=:memory:"}
     };
 
     public Auth GetAuth()
     {
-        return new Auth(TestConfiguration["JwtSecretKey"], TestConfiguration["JwtIssuer"], new GoogleTokenValidator(TestConfiguration["GoogleApiClientId"]));
+        return new Auth(JwtSecretKey, JwtIssuer, new GoogleTokenValidator(GoogleApiClientId));
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
