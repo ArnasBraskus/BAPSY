@@ -65,7 +65,8 @@ public class BookPlanApi : ApiBase {
             Deadline = plan.DeadLine,
             Weekdays = Weekdays.FromBitField(plan.DayOfWeek),
             TimeOfDay = plan.timeOfDay,
-            PagesPerDay = plan.PagesPerDay
+            PagesPerDay = plan.PagesPerDay,
+            PagesRead = plan.PagesRead
         });
     }
 
