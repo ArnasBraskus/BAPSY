@@ -39,7 +39,7 @@ public class BookPlanApi : ApiBase {
         if (req is null)
             return BadJson;
 
-        if (!Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Pages, req.Size))
+        if (!Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Pages))
             return Results.BadRequest(new { Error = "Failed to add plan." });
 
         return Results.Ok(new {});
@@ -61,7 +61,6 @@ public class BookPlanApi : ApiBase {
             Author = plan.Author,
             Title = plan.Title,
             PageCount = plan.PageCount,
-            Size = plan.Size,
             Deadline = plan.DeadLine,
             Weekdays = Weekdays.FromBitField(plan.DayOfWeek),
             TimeOfDay = plan.timeOfDay,
@@ -105,7 +104,6 @@ public class BookPlanApi : ApiBase {
         public required string Deadline { get; set; } = null!;
         public required bool[] Weekdays { get; set; }
         public required string TimeOfDay { get; set; } = null!;
-        public required int Size { get; set; }
     };
 
     public async Task<IResult> PostEditBookPlan(HttpRequest request, HttpContext context) {
@@ -124,7 +122,7 @@ public class BookPlanApi : ApiBase {
         if (plan == null || plan.UserId != user.Id)
             return Results.BadRequest(new { Error = "Plan not found."});
 
-        if (!Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.Pages, data.Size))
+        if (!Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.Pages))
             return Results.BadRequest(new { Error = "Failed to update plan."});
 
         return Results.Ok(new {});
