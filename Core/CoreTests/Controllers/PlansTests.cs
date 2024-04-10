@@ -1,12 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.Interfaces;
 using System.Numerics;
 
-
 namespace CoreTests
 {
     public class PlansTests
     {
-
         [Theory]
         [MemberData(nameof(PlansTestsUtils.GetTestPlansFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
         public void TestAddPlan_ValidInput_ReturnsTrue(int userid, string deadline, bool[] days, string time, int pagerPerDay, string title, string author, int pgcount, int size)
@@ -20,7 +18,6 @@ namespace CoreTests
             Assert.True(
             Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagerPerDay, title, author, pgcount, size));
         }
-
 
         [Theory]
         [MemberData(nameof(PlansTestsUtils.GetInvalidTestPlansFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
@@ -69,7 +66,6 @@ namespace CoreTests
         [InlineData(-1)]
         [InlineData(0)]
         [InlineData(100)]
-
         public void TestFindPlan_NonExistentPlanID_ReturnsNull(int id)
         {
             Plans plans = PlansTestsUtils.CreatePopulated();
@@ -82,7 +78,6 @@ namespace CoreTests
             Database database = TestUtils.CreateDatabase();
             Plans Plans = PlansTestsUtils.CreatePopulated(database);
             List<int> planIDs = new List<int>();
-
 
             var expectedIDs = new List<int>() { 1 };
             planIDs = Plans.FindPlanByUser(3);
@@ -99,7 +94,6 @@ namespace CoreTests
             var expectedIDs4 = new List<int>() { 4, 7, 8, 11 };
             List<int> planIDs4 = Plans.FindPlanByUser(6);
             Assert.Equal(expectedIDs4, planIDs4);
-
         }
 
         [Fact]
@@ -118,7 +112,6 @@ namespace CoreTests
             }
         }
 
-
         [Fact]
         public void TestDeletePlan_ExistingPlanID_ReturnsTrue()
         {
@@ -135,7 +128,6 @@ namespace CoreTests
         [Theory]
         [InlineData(-1)]
         [InlineData(100)]
-
         public void TestDeletePlan_NonExistentPlanID_ReturnsFalse(int id)
         {
             Plans Plans = PlansTestsUtils.CreatePopulated();
@@ -158,7 +150,6 @@ namespace CoreTests
             Plans Plans = PlansTestsUtils.CreatePopulated();
             var exception = Record.Exception(() => Plans.UpdatePlan(1, deadline, Weekdays.ToBitField(days), time, title, author, pgcount, size));
             Assert.NotNull(exception);
-
         }
 
         [Fact]
@@ -191,17 +182,16 @@ namespace CoreTests
             Assert.Equal(pagesRead, plan.PagesRead);
         }
 
-        [Fact]
-        public void TestPageCountPerDayUsingPlanBook()
+        [Theory]
+        [MemberData(nameof(PlansTestsUtils.GetTestPlansFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
+        public void TestPageCountPerDayUsingPlanBook(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount, int size)
         {
             Plans Plans = PlansTestsUtils.CreatePopulated();
-            for(int i = 1; i < 12; i++)
-            {
-                BookPlan? bookPlan = Plans.FindPlan(i);
-                int pagesPerDay = bookPlan.PagesPerDay;
-                bookPlan.PagesToReadBeforeDeadline(new DateTime(2024, 4, 8, 20, 51, 14));
-                Assert.Equal(pagesPerDay, bookPlan.PagesPerDay);
-            }        
+            BookPlan bookPlan = Plans.FindPlan(userid);
+            Assert.NotNull(bookPlan);
+            pagesPerDay = bookPlan.PagesPerDay;
+            bookPlan.PagesToReadBeforeDeadline(new DateTime(2024, 4, 8, 20, 51, 14));
+            Assert.Equal(pagesPerDay, bookPlan.PagesPerDay);
         }
     }
 }
