@@ -27,8 +27,7 @@ export async function addPlan(title, author, pages, deadline, weekdays, timeOfDa
     pages: pages,
     deadline: deadline,
     weekdays: weekdays,
-    timeOfDay: timeOfDay,
-    size: 0
+    timeOfDay: timeOfDay
   });
 
   return res.status == 200;
@@ -50,8 +49,7 @@ export async function editPlan(id, title, author, pages, deadline, weekdays, tim
     pages: pages,
     deadline: deadline,
     weekdays: weekdays,
-    timeOfDay: timeOfDay,
-    size: 0
+    timeOfDay: timeOfDay
   });
 
   return res.status == 200;

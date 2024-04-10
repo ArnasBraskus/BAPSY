@@ -27,8 +27,22 @@ public class UserApiTests
     }
 
     [Fact]
-    public void Test_InvalidAuth_GetProfile_ReturnsBadRequest()
-    {
+    public void Test_GoodAuthButUserDoesntExist_GetProfile_ReturnsBadRequest() {
+        var EMAIL = UserTestsUtils.GetFirstUserEmail();
+
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL);
+
+        Users users = UserTestsUtils.CreateEmpty();
+
+        UserApi userApi = new UserApi(users);
+
+        var result = userApi.GetUserProfile(context);
+
+        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
+    }
+
+    [Fact]
+    public void Test_InvalidAuth_GetProfile_ReturnsBadRequest() {
         HttpContext context = ApiTestUtils.FakeContext();
 
         Users users = UserTestsUtils.CreatePopulated();
