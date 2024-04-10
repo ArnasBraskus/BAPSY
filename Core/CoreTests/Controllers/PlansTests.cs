@@ -199,7 +199,7 @@ namespace CoreTests
             {
                 BookPlan? bookPlan = Plans.FindPlan(i);
                 int pagesPerDay = bookPlan.PagesPerDay;
-                bookPlan.PagesToReadBeforeDeadline();
+                bookPlan.PagesToReadBeforeDeadline(new DateTime(2024, 4, 8, 20, 51, 14));
                 Assert.Equal(pagesPerDay, bookPlan.PagesPerDay);
             }        
         }

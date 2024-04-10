@@ -28,10 +28,9 @@
         Size = size;
     }
 
-    public void PagesToReadBeforeDeadline()
+    public void PagesToReadBeforeDeadline(DateTime now)
     {
         DateTime deadline = DateTime.Parse(DeadLine);
-        DateTime now = DateTime.Now;
         TimeSpan timeLeft = deadline.Subtract(now);
         int daysLeft = 0;
 
