@@ -30,7 +30,12 @@ public class Database
     }
 
     private int GetUserVersion() {
-        return ExecuteSingle("PRAGMA user_version").GetInt32(0);
+        var reader = ExecuteSingle("PRAGMA user_version");
+
+        if (reader == null)
+            throw new InvalidOperationException("Failed to read user_version");
+
+        return reader.GetInt32(0);
     }
 
     private SqliteCommand CreateCommand(string statement, Dictionary<string, dynamic>? parameters)
