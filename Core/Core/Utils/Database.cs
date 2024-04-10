@@ -30,10 +30,10 @@ public class Database
     }
 
     private int GetUserVersion() {
-        var reader = ExecuteSingle("PRAGMA user_version");
+        var command = CreateCommand("PRAGMA user_version", null);
+        var reader = command.ExecuteReader();
 
-        if (reader == null)
-            throw new InvalidOperationException("Failed to read user_version");
+        reader.Read();
 
         return reader.GetInt32(0);
     }
@@ -79,11 +79,6 @@ public class Database
         }
     }
 
-    public IEnumerable<SqliteDataReader> Execute(string statement)
-    {
-        return Execute(statement, null);
-    }
-
     public SqliteDataReader? ExecuteSingle(string statement, Dictionary<string, dynamic>? parameters)
     {
         var command = CreateCommand(statement, parameters);
@@ -94,9 +89,4 @@ public class Database
 
         return reader;
     }
-
-    public SqliteDataReader? ExecuteSingle(string statement)
-    {
-        return ExecuteSingle(statement, null);
-    }
-};
+}
