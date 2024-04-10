@@ -11,7 +11,5 @@ public class GoogleTokenValidator {
         GoogleValidationSettings = new GoogleJsonWebSignature.ValidationSettings();
     }
 
-    public virtual GoogleJsonWebSignature.Payload ValidateToken(string token) {
-        return GoogleJsonWebSignature.ValidateAsync(token, GoogleValidationSettings).Result;
-    }
+    public virtual GoogleJsonWebSignature.Payload ValidateToken(string token) => GoogleJsonWebSignature.ValidateAsync(token, GoogleValidationSettings).Result;
 }
