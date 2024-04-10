@@ -25,14 +25,15 @@ public class BookPlanApi : ApiBase
 
         return Results.Ok(new ListBookPlansResponse { Ids = ids });
     }
-    
-    private class AddBookPlanRequest {
-        public required string Title { get; set; } = null!;
-        public required string Author { get; set; } = null!;
-        public required int Pages { get; set; }
-        public required string Deadline { get; set; } = null!;
-        public required bool[] Weekdays { get; set; }
-        public required string TimeOfDay { get; set; } = null!;
+
+    public class AddBookPlanRequest
+    {
+        public string Title { get; set; } = null!;
+        public string Author { get; set; } = null!;
+        public int PageCount { get; set; }
+        public string Deadline { get; set; } = null!;
+        public bool[] Weekdays { get; set; }
+        public string TimeOfDay { get; set; } = null!;
     };
 
     public async Task<IResult> PostAddBookPlan(HttpRequest request, HttpContext context)
@@ -47,7 +48,7 @@ public class BookPlanApi : ApiBase
         if (req is null)
             return BadJson;
 
-        if (!Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Pages))
+        if (!Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.PageCount))
             return Results.BadRequest(new ErrorResponse { Error = "Failed to add plan." });
 
         return Results.Ok(new { });
@@ -104,14 +105,15 @@ public class BookPlanApi : ApiBase
         return Results.Ok(new { });
     }
 
-    private class EditBookPlanRequest {
-        public required int Id { get; set; }
-        public required string Title { get; set; } = null!;
-        public required string Author { get; set; } = null!;
-        public required int Pages { get; set; }
-        public required string Deadline { get; set; } = null!;
-        public required bool[] Weekdays { get; set; }
-        public required string TimeOfDay { get; set; } = null!;
+    private class EditBookPlanRequest
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = null!;
+        public string Author { get; set; } = null!;
+        public int PageCount { get; set; }
+        public string Deadline { get; set; } = null!;
+        public bool[] Weekdays { get; set; }
+        public string TimeOfDay { get; set; } = null!;
     };
 
     public async Task<IResult> PostEditBookPlan(HttpRequest request, HttpContext context)
@@ -131,7 +133,7 @@ public class BookPlanApi : ApiBase
         if (plan == null || plan.UserId != user.Id)
             return Results.BadRequest(new { Error = "Plan not found." });
 
-        if (!Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.Pages))
+        if (!Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.PageCount))
             return Results.BadRequest(new { Error = "Failed to update plan." });
 
         return Results.Ok(new { });
