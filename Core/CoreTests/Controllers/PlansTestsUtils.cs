@@ -44,7 +44,7 @@
         ("btoffano3@mapy.cz",4, "7/11/2023", [true, false, true, false, true, false, true], "5:49 PM", 3, "Shadows of Silence", "Liliana Harland", 10)
     };
 
-    private Plans CreateEmpty()
+    public static Plans CreateEmpty()
     {
         Database database = TestUtils.CreateDatabase();
 
@@ -100,7 +100,7 @@
     {
         foreach (var u in TestIds)
         {
-            yield return new object[] { u.Item1, u.Item2, u.Item3, u.Item4, u.Item5, u.Item6, u.Item7, u.Item8 };
+            yield return new object[] { u.Item1, u.Item2, u.Item3, u.Item4, u.Item5, u.Item6, u.Item7, u.Item8, u.Item9 };
         }
     }
 }

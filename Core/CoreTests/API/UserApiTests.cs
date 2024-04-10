@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-public class UserApiTests {
+public class UserApiTests
+{
     [Theory]
     [MemberData(nameof(UserTestsUtils.GetTestUsersFromPopulatedDb), MemberType = typeof(UserTestsUtils))]
-    public void Test_GoodAuth_GetProfile_ReturnsUserInfo(string email, string name) {
+    public void Test_GoodAuth_GetProfile_ReturnsUserInfo(string email, string name)
+    {
         HttpContext context = ApiTestUtils.FakeContext(email);
 
         Users users = UserTestsUtils.CreatePopulated();
@@ -25,7 +27,8 @@ public class UserApiTests {
     }
 
     [Fact]
-    public void Test_InvalidAuth_GetProfile_ReturnsBadRequest() {
+    public void Test_InvalidAuth_GetProfile_ReturnsBadRequest()
+    {
         HttpContext context = ApiTestUtils.FakeContext();
 
         Users users = UserTestsUtils.CreatePopulated();
