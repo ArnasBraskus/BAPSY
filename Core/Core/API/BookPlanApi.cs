@@ -25,7 +25,6 @@ public class BookPlanApi : ApiBase {
         public required string Deadline { get; set; } = null!;
         public required bool[] Weekdays { get; set; }
         public required string TimeOfDay { get; set; } = null!;
-        public required int Size { get; set; }
     };
 
     public async Task<IResult> PostAddBookPlan(HttpRequest request, HttpContext context) {
