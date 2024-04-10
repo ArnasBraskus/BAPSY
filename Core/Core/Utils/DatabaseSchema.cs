@@ -18,7 +18,6 @@ public static class DatabaseSchema
 	    author TEXT NOT NULL,
 	    pageCount INTEGER NOT NULL,
         pagesRead INTEGER DEFAULT 0,
-	    size INTEGER NOT NULL,
         FOREIGN KEY (userid) REFERENCES users(id));
 
     CREATE TABLE readingsessions(

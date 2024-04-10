@@ -7,7 +7,7 @@ using System.IO;
 
 public class Plans
 {
-    Database DB;
+    private Database DB;
 
     public Plans(Database db)
     {
@@ -15,7 +15,7 @@ public class Plans
     }
 
     public bool AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
-            string title, string author, int pageCount, int size)
+            string title, string author, int pageCount)
     {
         if (pageCount < 0)
             throw new ArgumentException("Page count must be greater than zero");
@@ -32,17 +32,16 @@ public class Plans
             { "$pagesPerDay", pagesPerDay },
             { "$title", title },
             { "$author", author },
-            { "$pageCount", pageCount },
-            { "$size", size }
-        }; 
-        DB.ExecuteNonQuery(@"INSERT INTO PLANS (userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, size) VALUES ($userid, $deadline, $weekdays, $timeOfDay, $pagesPerDay, $title, $author, $pageCount, $size)", dictionary);
+            { "$pageCount", pageCount }
+        };
+        DB.ExecuteNonQuery(@"INSERT INTO PLANS (userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount) VALUES ($userid, $deadline, $weekdays, $timeOfDay, $pagesPerDay, $title, $author, $pageCount)", dictionary);
 
         return true;
     }
 
     public BookPlan? FindPlan(int id)
     {
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, size FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
 
         if (reader == null)
             return null;
@@ -56,14 +55,12 @@ public class Plans
         string author = reader.GetString(6);
         int pageCount = reader.GetInt32(7);
         int pagesRead = reader.GetInt32(8);
-        int size = reader.GetInt32(9);
 
-        return new BookPlan(id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, size);
+        return new BookPlan(id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead);
     }
 
     public List<int> FindPlanByUser(int userId)
     {
-
         var ids = new List<int>();
 
         IEnumerable<SqliteDataReader> readers = DB.Execute(@"SELECT id FROM plans WHERE userId = $userId", new Dictionary<string, dynamic> { { "$userId", userId } });
@@ -78,11 +75,9 @@ public class Plans
             return null;
         }
         return ids;
-
-
     }
 
-    public bool UpdatePlan(int id, string deadLine, int weekdays, string timeOfDay, string title, string author, int pageCount, int size)
+    public bool UpdatePlan(int id, string deadLine, int weekdays, string timeOfDay, string title, string author, int pageCount)
     {
         if (pageCount < 0)
             throw new ArgumentException("Page count must be greater than zero");
@@ -91,7 +86,6 @@ public class Plans
         if (author.Length == 0)
             throw new ArgumentException("where author");
 
-
         var parameters = new Dictionary<string, dynamic> {
             { "$id", id },
             { "$deadline", deadLine },
@@ -99,13 +93,11 @@ public class Plans
             { "$timeOfDay", timeOfDay },
             { "$title", title },
             { "$author", author },
-            { "$pageCount", pageCount },
-            { "$size", size }
+            { "$pageCount", pageCount }
         };
 
-      
-            DB.ExecuteNonQuery(@"UPDATE PLANS SET deadline = $deadline, weekdays = $weekdays, timeOfDay = $timeOfDay, title = $title, author = $author, pageCount = $pageCount, size = $size WHERE id = $id", parameters);
-        
+        DB.ExecuteNonQuery(@"UPDATE PLANS SET deadline = $deadline, weekdays = $weekdays, timeOfDay = $timeOfDay, title = $title, author = $author, pageCount = $pageCount WHERE id = $id", parameters);
+
         return true;
     }
 
@@ -122,6 +114,7 @@ public class Plans
 
         DB.ExecuteNonQuery(@"UPDATE plans SET pagesRead = $pagesRead WHERE id = $id", parameters);
     }
+
     public void UpdatePagesPerDay(int id, int pagesPerDay)
     {
         if (pagesPerDay < 0)
@@ -141,11 +134,9 @@ public class Plans
         if (id < 0 || FindPlan(id) == null)
             throw new ArgumentException("invalid plan id");
         {
-            DB.ExecuteNonQuery(@"DELETE FROM plans WHERE id=$id ", new Dictionary<string, dynamic>{ { "$id", id } });
+            DB.ExecuteNonQuery(@"DELETE FROM plans WHERE id=$id ", new Dictionary<string, dynamic> { { "$id", id } });
         }
-       
+
         return true;
     }
-
-
 }

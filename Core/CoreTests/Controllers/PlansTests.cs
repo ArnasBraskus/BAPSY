@@ -7,7 +7,7 @@ namespace CoreTests
     {
         [Theory]
         [MemberData(nameof(PlansTestsUtils.GetTestPlansFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
-        public void TestAddPlan_ValidInput_ReturnsTrue(int userid, string deadline, bool[] days, string time, int pagerPerDay, string title, string author, int pgcount, int size)
+        public void TestAddPlan_ValidInput_ReturnsTrue(int userid, string deadline, bool[] days, string time, int pagerPerDay, string title, string author, int pgcount)
         {
             Database database = TestUtils.CreateDatabase();
 
@@ -16,12 +16,12 @@ namespace CoreTests
             Plans Plans = new Plans(database);
             User? usr = users.FindUser(userid);
             Assert.True(
-            Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagerPerDay, title, author, pgcount, size));
+            Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagerPerDay, title, author, pgcount));
         }
 
         [Theory]
         [MemberData(nameof(PlansTestsUtils.GetInvalidTestPlansFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
-        public void TestAddPlan_InvalidInput_ThrowsException(int userid, string deadline, bool[] days, string time, int pagerPerDay, string title, string author, int pgcount, int size)
+        public void TestAddPlan_InvalidInput_ThrowsException(int userid, string deadline, bool[] days, string time, int pagerPerDay, string title, string author, int pgcount)
         {
             Database database = TestUtils.CreateDatabase();
 
@@ -30,13 +30,13 @@ namespace CoreTests
             Plans Plans = new Plans(database);
             User? usr = users.FindUser(userid);
 
-            var exception = Record.Exception(() => Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagerPerDay, title, author, pgcount, size));
+            var exception = Record.Exception(() => Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagerPerDay, title, author, pgcount));
             Assert.NotNull(exception);
         }
 
         [Theory]
         [MemberData(nameof(PlansTestsUtils.GetTestPlansFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
-        public void TestFindPlan_ExistingPlanID_ReturnsCorrectBookPlan(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount, int size)
+        public void TestFindPlan_ExistingPlanID_ReturnsCorrectBookPlan(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount)
         {
             Database database = TestUtils.CreateDatabase();
 
@@ -45,7 +45,7 @@ namespace CoreTests
             Plans Plans = new Plans(database);
             int i = 1;
             User? usr = users.FindUser(userid);
-            Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagesPerDay, title, author, pgcount, size);
+            Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagesPerDay, title, author, pgcount);
             BookPlan? foundPlan = Plans.FindPlan(i);
 
             Assert.NotNull(foundPlan);
@@ -58,7 +58,6 @@ namespace CoreTests
             Assert.Equal(title, foundPlan.Title);
             Assert.Equal(author, foundPlan.Author);
             Assert.Equal(pgcount, foundPlan.PageCount);
-            Assert.Equal(size, foundPlan.Size);
             i++;
         }
 
@@ -137,18 +136,18 @@ namespace CoreTests
 
         [Theory]
         [MemberData(nameof(PlansTestsUtils.GetTestPlans2FromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
-        public void TestUpdatePlan_ValidInputs_ReturnsTrue(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount, int size)
+        public void TestUpdatePlan_ValidInputs_ReturnsTrue(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount)
         {
             Plans Plans = PlansTestsUtils.CreatePopulated();
-            Assert.True(Plans.UpdatePlan(1, deadline, Weekdays.ToBitField(days), time, title, author, pgcount, size));
+            Assert.True(Plans.UpdatePlan(1, deadline, Weekdays.ToBitField(days), time, title, author, pgcount));
         }
 
         [Theory]
         [MemberData(nameof(PlansTestsUtils.GetInvalidTestPlansFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
-        public void TestUpdatePlan_InvalidInputs_ThrowsException(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount, int size)
+        public void TestUpdatePlan_InvalidInputs_ThrowsException(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount)
         {
             Plans Plans = PlansTestsUtils.CreatePopulated();
-            var exception = Record.Exception(() => Plans.UpdatePlan(1, deadline, Weekdays.ToBitField(days), time, title, author, pgcount, size));
+            var exception = Record.Exception(() => Plans.UpdatePlan(1, deadline, Weekdays.ToBitField(days), time, title, author, pgcount));
             Assert.NotNull(exception);
         }
 
@@ -184,7 +183,7 @@ namespace CoreTests
 
         [Theory]
         [MemberData(nameof(PlansTestsUtils.GetTestPlansFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
-        public void TestPageCountPerDayUsingPlanBook(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount, int size)
+        public void TestPageCountPerDayUsingPlanBook(int userid, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount)
         {
             Plans Plans = PlansTestsUtils.CreatePopulated();
             BookPlan bookPlan = Plans.FindPlan(userid);
