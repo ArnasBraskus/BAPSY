@@ -20,11 +20,11 @@ export async function getPlans() {
   return plans;
 }
 
-export async function addPlan(title, author, pages, deadline, weekdays, timeOfDay) {
+export async function addPlan(title, author, pageCount, deadline, weekdays, timeOfDay) {
   const res = await apiDoPost('/api/bookplan/add', {
     title: title,
     author: author,
-    pages: pages,
+    pageCount: pageCount,
     deadline: deadline,
     weekdays: weekdays,
     timeOfDay: timeOfDay
@@ -41,12 +41,12 @@ export async function removePlan(id) {
   return res.status == 200;
 }
 
-export async function editPlan(id, title, author, pages, deadline, weekdays, timeOfDay) {
+export async function editPlan(id, title, author, pageCount, deadline, weekdays, timeOfDay) {
   const res = await apiDoPost('/api/bookplan/edit', {
     id: id,
     title: title,
     author: author,
-    pages: pages,
+    pageCount: pageCount,
     deadline: deadline,
     weekdays: weekdays,
     timeOfDay: timeOfDay

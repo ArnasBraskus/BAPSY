@@ -19,7 +19,7 @@ export default {
         day5: null,
         day6: null,
         day7: null,
-        pages: null,
+        pageCount: null,
         deadline: null,
         timeOfDay: null
       }
@@ -31,8 +31,8 @@ export default {
 
       if (!this.formData.bookTitle) this.errors.push("Book title required.");
       if (!this.formData.author) this.errors.push("Author required.");
-      if (!this.formData.pages) this.errors.push("Page count required.");
-      if (this.formData.pages <= 0 && (this.formData.pages)) this.errors.push("Page count cannot be negative.");
+      if (!this.formData.pageCount) this.errors.push("Page count required.");
+      if (this.formData.pageCount <= 0 && (this.formData.pageCount)) this.errors.push("Page count cannot be negative.");
       if (!this.formData.deadline) this.errors.push("Deadline date required.");
       if (new Date() > new Date(this.formData.deadline)) this.errors.push("Deadline date cannot be older than today.");
       if (!this.formData.day1 && !this.formData.day2 && !this.formData.day3 && !this.formData.day4 && !this.formData.day5 && !this.formData.day6 && !this.formData.day7) {
@@ -45,7 +45,7 @@ export default {
           let weekdays = [];
           weekdays.push(this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6, this.formData.day7);
           const convertedWeekdays = weekdays.map(day => !!day);
-          editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+          editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, this.formData.pageCount, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
           .then(() => {
             this.$emit('confirm');
             window.location.reload();
@@ -57,7 +57,7 @@ export default {
           let weekdays = [];
           weekdays.push(this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6, this.formData.day7);
           const convertedWeekdays = weekdays.map(day => !!day);
-          addPlan(this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+          addPlan(this.formData.bookTitle, this.formData.author, this.formData.pageCount, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
           .then(() => {
             this.$emit('confirm');
             window.location.reload();
@@ -92,7 +92,7 @@ export default {
           this.formData = {
             bookTitle: editPlan.title,
             author: editPlan.author,
-            pages: editPlan.pageCount,
+            pageCount: editPlan.pageCount,
             deadline: editPlan.deadline,
             day1: editPlan.weekdays[0],
             day2: editPlan.weekdays[1],
@@ -107,7 +107,7 @@ export default {
           this.formData = {
             bookTitle: '',
             author: '',
-            pages: null,
+            pageCount: null,
             deadline: null,
             day1: null,
             day2: null,
@@ -153,7 +153,7 @@ export default {
       </p>
       <p>
         <label for="page"> How many pages? </label>
-        <input type="number" name="pages"  v-model="formData.pages">
+        <input type="number" name="pageCount"  v-model="formData.pageCount">
       </p> 
       <p>
         <label for="date"> Deadline date </label>

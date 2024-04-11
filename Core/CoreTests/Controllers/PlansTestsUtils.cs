@@ -53,10 +53,8 @@
         return new Plans(database);
     }
 
-    public static Plans CreatePopulated(Database database)
+    public static Plans CreatePopulated(Database database, Users users)
     {
-        Users users = UserTestsUtils.CreatePopulated(database);
-
         Plans Plans = new Plans(database);
 
         foreach (var plan in TestPlans1)
@@ -65,6 +63,11 @@
             Plans.AddPlan(usr, plan.Item2, Weekdays.ToBitField(plan.Item3), plan.Item4, plan.Item5, plan.Item6, plan.Item7, plan.Item8);
         }
         return Plans;
+    }
+
+    public static Plans CreatePopulated(Database database)
+    {
+        return CreatePopulated(database, UserTestsUtils.CreatePopulated(database));
     }
 
     public static Plans CreatePopulated()

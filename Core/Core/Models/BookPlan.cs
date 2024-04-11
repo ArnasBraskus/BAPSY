@@ -54,9 +54,5 @@
         {
             PagesPerDay = (int)Math.Ceiling((decimal)PageCount / daysLeft);
         }
-        else
-        {
-            PagesPerDay = -1;
-        }
     }
 }
