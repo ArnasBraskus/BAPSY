@@ -29,13 +29,4 @@ public class ApiTestUtils
 
         return context;
     }
-
-    public static HttpRequest CreateFakeRequest<T>(T body)
-    {
-        var context = new DefaultHttpContext();
-        var request = context.Request;
-        request.Body = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(body)));
-        request.ContentType = "application/json";
-        return request;
-    }
 }
