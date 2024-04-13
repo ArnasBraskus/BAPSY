@@ -9,7 +9,7 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
     private static readonly string JwtIssuer = "localhost";
     private static readonly string JwtSecretKey = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-    private static readonly Dictionary<string, string?> TestConfiguration = new Dictionary<string, string?>
+    private static readonly Dictionary<string, string> TestConfiguration = new Dictionary<string, string>
     {
         {"GoogleApiClientId", GoogleApiClientId},
         {"JwtSecretKey", JwtSecretKey},
@@ -26,14 +26,10 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
     {
         builder.UseEnvironment("Testing");
 
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(TestConfiguration)
-            .Build();
-
         builder.ConfigureAppConfiguration(builder =>
         {
             builder.Sources.Clear();
-            builder.AddConfiguration(configuration);
+            builder.AddInMemoryCollection(TestConfiguration);
         });
     }
 }
