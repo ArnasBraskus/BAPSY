@@ -32,6 +32,7 @@ app.Map("/error", ApiBase.ErrorPage);
 ApiBase[] apis = new ApiBase[] {
     new AuthApi(auth, users),
     new UserApi(users),
+    new CalendarApi(users, plans),
     new BookPlanApi(users, plans)
 };
 
