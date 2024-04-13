@@ -1,5 +1,7 @@
 ﻿public class BookPlan
 {
+    private ReadingSessions Sessions;
+
     public int Id { get; }
     public int UserId { get; }
     public string DeadLine { get; }
@@ -11,9 +13,10 @@
     public int PageCount { get; }
     public int PagesRead { get; }
 
-    public BookPlan(int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
+    public BookPlan(Database db, int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
         string title, string author, int pageCount, int pagesRead)
     {
+        Sessions = new ReadingSessions(db);
         Id = id;
         UserId = userId;
         DeadLine = deadLine;
@@ -25,6 +28,8 @@
         PageCount = pageCount;
         PagesRead = pagesRead;
     }
+
+    public List<ReadingSession> ReadingSessions { get => Sessions.GetAll(Id); }
 
     public void PagesToReadBeforeDeadline(DateTime now)
     {

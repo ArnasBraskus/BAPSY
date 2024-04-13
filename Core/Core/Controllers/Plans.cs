@@ -56,7 +56,7 @@ public class Plans
         int pageCount = reader.GetInt32(7);
         int pagesRead = reader.GetInt32(8);
 
-        return new BookPlan(id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead);
+        return new BookPlan(DB, id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead);
     }
 
     public List<int> FindPlanByUser(int userId)
