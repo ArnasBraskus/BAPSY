@@ -92,7 +92,7 @@ export default {
           this.formData = {
             bookTitle: editPlan.title,
             author: editPlan.author,
-            pages: editPlan.pageCount,
+            pages: editPlan.pages,
             deadline: editPlan.deadline,
             day1: editPlan.weekdays[0],
             day2: editPlan.weekdays[1],

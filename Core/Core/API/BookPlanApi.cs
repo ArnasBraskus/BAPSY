@@ -25,12 +25,12 @@ public class BookPlanApi : ApiBase
 
     public class AddBookPlanRequest
     {
-        public string Title { get; set; } = null!;
-        public string Author { get; set; } = null!;
-        public int PageCount { get; set; }
-        public string Deadline { get; set; } = null!;
-        public bool[] Weekdays { get; set; } = null!;
-        public string TimeOfDay { get; set; } = null!;
+        public required string Title { get; set; } = null!;
+        public required string Author { get; set; } = null!;
+        public required int Pages { get; set; }
+        public required string Deadline { get; set; } = null!;
+        public required bool[] Weekdays { get; set; } = null!;
+        public required string TimeOfDay { get; set; } = null!;
     }
 
     public class AddBookPlanResponse
@@ -45,7 +45,7 @@ public class BookPlanApi : ApiBase
 
         try
         {
-            Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.PageCount);
+            Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Pages);
         }
         catch (ArgumentException e)
         {
@@ -57,9 +57,10 @@ public class BookPlanApi : ApiBase
 
     public class GetBookPlanResponse
     {
+        public int Id { get; set; }
         public string Title { get; set; } = null!;
         public string Author { get; set; } = null!;
-        public int PageCount { get; set; }
+        public int Pages { get; set; }
         public string Deadline { get; set; } = null!;
         public bool[] Weekdays { get; set; } = null!;
         public string TimeOfDay { get; set; } = null!;
@@ -76,9 +77,10 @@ public class BookPlanApi : ApiBase
 
         return Results.Ok(new GetBookPlanResponse
         {
+            Id = id,
             Author = plan.Author,
             Title = plan.Title,
-            PageCount = plan.PageCount,
+            Pages = plan.PageCount,
             Deadline = plan.DeadLine,
             Weekdays = Weekdays.FromBitField(plan.DayOfWeek),
             TimeOfDay = plan.timeOfDay
@@ -87,7 +89,7 @@ public class BookPlanApi : ApiBase
 
     public class RemoveBookPlanRequest
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
     }
 
     public class RemoveBookPlanResponse
@@ -116,7 +118,7 @@ public class BookPlanApi : ApiBase
         public required int Id { get; set; }
         public required string Title { get; set; } = null!;
         public required string Author { get; set; } = null!;
-        public required int PageCount { get; set; }
+        public required int Pages { get; set; }
         public required string Deadline { get; set; } = null!;
         public required bool[] Weekdays { get; set; } = null!;
         public required string TimeOfDay { get; set; } = null!;
@@ -140,7 +142,7 @@ public class BookPlanApi : ApiBase
 
         try
         {
-            Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.PageCount);
+            Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.Pages);
         }
         catch (ArgumentException e)
         {
