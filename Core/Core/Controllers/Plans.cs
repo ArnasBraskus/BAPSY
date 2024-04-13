@@ -1,17 +1,14 @@
 ﻿using Microsoft.Data.Sqlite;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Drawing;
-using System.IO;
 
 public class Plans
 {
     private Database DB;
+    private ReadingSessions ReadingSessions;
 
     public Plans(Database db)
     {
         DB = db;
+        ReadingSessions = new ReadingSessions(db);
     }
 
     public bool AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
@@ -55,8 +52,9 @@ public class Plans
         string author = reader.GetString(6);
         int pageCount = reader.GetInt32(7);
         int pagesRead = reader.GetInt32(8);
+        List<ReadingSession> sessions = ReadingSessions.GetAll(id);
 
-        return new BookPlan(DB, id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead);
+        return new BookPlan(id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, sessions);
     }
 
     public List<int> FindPlanByUser(int userId)
