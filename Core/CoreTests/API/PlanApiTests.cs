@@ -91,7 +91,7 @@ public class PlanApiTests
         Assert.NotNull(actual);
         Assert.Equal(title, actual.Title);
         Assert.Equal(author, actual.Author);
-        Assert.Equal(pgcount, actual.PageCount);
+        Assert.Equal(pgcount, actual.Pages);
         Assert.Equal(days, actual.Weekdays);
         Assert.Equal(deadline, actual.Deadline);
         Assert.Equal(time, actual.TimeOfDay);
