@@ -1,5 +1,3 @@
-using Ical.Net;
-
 public class CalendarApi : ApiBase
 {
     private Plans Plans;
@@ -9,7 +7,22 @@ public class CalendarApi : ApiBase
         Plans = plans;
     }
 
-    public IResult GetExportCalendar(HttpContext context, int id) {
+    public IResult GetCalendarEvents(HttpContext context, int id)
+    {
+        User user = GetUser(context);
+
+        BookPlan? plan = Plans.FindPlan(id);
+
+        if (plan is null || plan.UserId != user.Id)
+            return Results.BadRequest(new ErrorResponse { Error = "Plan not found" });
+
+        ReadingCalendar calendar = ReadingCalendar.Create(plan);
+
+        return Results.Ok(calendar.Events);
+    }
+
+    public IResult GetExportCalendar(HttpContext context, int id)
+    {
         BookPlan? plan = Plans.FindPlan(id);
 
         if (plan is null)
@@ -24,6 +37,7 @@ public class CalendarApi : ApiBase
 
     public override void Map(WebApplication app)
     {
+        app.MapGet("/calendar/{id}/events", GetCalendarEvents).RequireAuthorization("Users");
         app.MapGet("/calendar/{id}/export", GetExportCalendar);
     }
 }
