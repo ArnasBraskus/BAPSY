@@ -25,6 +25,9 @@ var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseExceptionHandler("/error");
+
+app.Map("/error", ApiBase.ErrorPage);
 
 ApiBase[] apis = new ApiBase[] {
     new AuthApi(auth, users),

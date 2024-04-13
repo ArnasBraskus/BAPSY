@@ -42,7 +42,7 @@ public class UsersTests
 
         users.AddUser(email, name);
 
-        User? actual = users.FindUser(email);
+        User actual = users.FindUser(email);
 
         Assert.NotNull(actual);
         Assert.Equal(email, actual.Email);
@@ -102,9 +102,9 @@ public class UsersTests
     public void Test_PopulatedDb_FindNonExistingUser_UserIsNull(string email) {
         Users users = UserTestsUtils.CreatePopulated();
 
-        User? user = users.FindUser(email);
+        Action action = () => users.FindUser(email);
 
-        Assert.Null(user);
+        Assert.Throws<KeyNotFoundException>(action);
     }
 
     [Theory]
@@ -128,9 +128,9 @@ public class UsersTests
     public void Test_EmptyDb_FindUserById_UserIsNull(int id) {
         Users users = UserTestsUtils.CreateEmpty();
 
-        User? user = users.FindUser(id);
+        Action action = () => users.FindUser(id);
 
-        Assert.Null(user);
+        Assert.Throws<KeyNotFoundException>(action);
     }
 
     [Theory]

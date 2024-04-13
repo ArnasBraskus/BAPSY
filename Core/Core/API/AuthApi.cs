@@ -20,22 +20,21 @@ public class AuthApi : ApiBase {
     public async Task<IResult> PostAuthGoogle(HttpRequest request) {
         var req = await ReadJson<GoogleAuthRequest>(request);
 
-        if (req is null)
-            return BadJson;
-
         string email = string.Empty;
         string name = string.Empty;
 
         if (!Auth.ValidateGoogleJWT(req.JwtToken, ref email, ref name))
             return Results.BadRequest(new ErrorResponse { Error = "jwttoken is invalid." });
 
-        User? user = Users.FindUser(email);
-
-        if (user is null) {
+        if (!Users.UserExists(email)) {
             Users.AddUser(email, name);
         }
-        else if (user.Name != name) {
-            Users.UpdateName(user.Id, name);
+        else {
+            User user = Users.FindUser(email);
+
+            if (user.Name != name) {
+                user.Name = name;
+            }
         }
 
         var validity = new TimeSpan(1, 0, 0, 0);

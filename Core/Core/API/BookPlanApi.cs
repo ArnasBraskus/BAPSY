@@ -16,10 +16,7 @@ public class BookPlanApi : ApiBase
 
     public IResult ListBookPlans(HttpContext context)
     {
-        User? user = CheckAuth(context);
-
-        if (user is null)
-            return BadAuth;
+        User user = GetUser(context);
 
         List<int> ids = Plans.FindPlanByUser(user.Id);
 
@@ -42,15 +39,9 @@ public class BookPlanApi : ApiBase
 
     public async Task<IResult> PostAddBookPlan(HttpContext context)
     {
-        User? user = CheckAuth(context);
-
-        if (user is null)
-            return BadAuth;
+        User user = GetUser(context);
 
         var req = await ReadJson<AddBookPlanRequest>(context.Request);
-
-        if (req is null)
-            return BadJson;
 
         try
         {
@@ -76,10 +67,7 @@ public class BookPlanApi : ApiBase
 
     public IResult GetBookPlan(HttpContext context, int id)
     {
-        User? user = CheckAuth(context);
-
-        if (user is null)
-            return BadAuth;
+        User user = GetUser(context);
 
         BookPlan? plan = Plans.FindPlan(id);
 
@@ -109,15 +97,9 @@ public class BookPlanApi : ApiBase
 
     public async Task<IResult> PostRemoveBookPlan(HttpContext context)
     {
-        User? user = CheckAuth(context);
-
-        if (user is null)
-            return BadAuth;
+        User user = GetUser(context);
 
         var req = await ReadJson<RemoveBookPlanRequest>(context.Request);
-
-        if (req is null)
-            return BadJson;
 
         BookPlan? plan = Plans.FindPlan(req.Id);
 
@@ -147,15 +129,9 @@ public class BookPlanApi : ApiBase
 
     public async Task<IResult> PostEditBookPlan(HttpContext context)
     {
-        User? user = CheckAuth(context);
-
-        if (user is null)
-            return BadAuth;
+        User user = GetUser(context);
 
         var data = await ReadJson<EditBookPlanRequest>(context.Request);
-
-        if (data is null)
-            return BadJson;
 
         BookPlan? plan = Plans.FindPlan(data.Id);
 

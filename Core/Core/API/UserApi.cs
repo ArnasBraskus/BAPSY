@@ -11,10 +11,7 @@ public class UserApi : ApiBase {
     }
 
     public IResult GetUserProfile(HttpContext context) {
-        User? user = CheckAuth(context);
-
-        if (user is null)
-            return BadAuth;
+        User user = GetUser(context);
 
         return Results.Ok(new UserProfileResponse { Email = user.Email, Name = user.Name });
     }

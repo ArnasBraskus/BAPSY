@@ -24,7 +24,7 @@ public class Users
         return true;
     }
 
-    public User? FindUser(string email)
+    public User FindUser(string email)
     {
         var parameters = new Dictionary<string, dynamic> {
             { "$email", email }
@@ -33,7 +33,7 @@ public class Users
         SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT id, name FROM users WHERE email = $email", parameters);
 
         if (reader == null)
-            return null;
+            throw new KeyNotFoundException("User not found");
 
         int id = reader.GetInt32(0);
         string name = reader.GetString(1);
@@ -41,7 +41,7 @@ public class Users
         return new User(this, id, email, name);
     }
 
-    public User? FindUser(int id) {
+    public User FindUser(int id) {
         var parameters = new Dictionary<string, dynamic> {
             { "$id", id }
         };
@@ -49,7 +49,7 @@ public class Users
         SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT email, name FROM users WHERE id = $id", parameters);
 
         if (reader == null)
-            return null;
+            throw new KeyNotFoundException("User not found");
 
         string email = reader.GetString(0);
         string name = reader.GetString(1);

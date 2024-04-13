@@ -95,20 +95,6 @@ public class AuthApiTests {
     }
 
     [Fact]
-    public void Test_PostAuthGoogleWithInvalidJson_ServerReturnsBadRequest() {
-        HttpContext context = ApiTestUtils.FakeContext(TestEmail, $"{{\"jwttoken:");
-
-        Auth auth = CreateAuth();
-        Users users = UserTestsUtils.CreateEmpty();
-
-        AuthApi authApi = new AuthApi(auth, users);
-
-        var result = authApi.PostAuthGoogle(context.Request).Result;
-
-        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
-    }
-
-    [Fact]
     public void Test_PostAuthGoogleWithInvalidToken_ServerReturnsBadRequest() {
         HttpContext context = ApiTestUtils.FakeContext(TestEmail, $"{{\"jwttoken\": \"{TestGoogleTokenBad}\"}}");
 
