@@ -11,7 +11,7 @@ public class BookPlanApi : ApiBase
 
     public class ListBookPlansResponse
     {
-        public List<int> Ids;
+        public List<int> Ids { get; set; } = null!;
     }
 
     public IResult ListBookPlans(HttpContext context)
@@ -32,26 +32,46 @@ public class BookPlanApi : ApiBase
         public string Author { get; set; } = null!;
         public int PageCount { get; set; }
         public string Deadline { get; set; } = null!;
-        public bool[] Weekdays { get; set; }
+        public bool[] Weekdays { get; set; } = null!;
         public string TimeOfDay { get; set; } = null!;
+    }
+
+    public class AddBookPlanResponse
+    {
     };
 
-    public async Task<IResult> PostAddBookPlan(HttpRequest request, HttpContext context)
+    public async Task<IResult> PostAddBookPlan(HttpContext context)
     {
         User? user = CheckAuth(context);
 
         if (user is null)
             return BadAuth;
 
-        var req = await ReadJson<AddBookPlanRequest>(request);
+        var req = await ReadJson<AddBookPlanRequest>(context.Request);
 
         if (req is null)
             return BadJson;
 
-        if (!Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.PageCount))
-            return Results.BadRequest(new ErrorResponse { Error = "Failed to add plan." });
+        try
+        {
+            Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.PageCount);
+        }
+        catch (ArgumentException e)
+        {
+            return Results.BadRequest(new ErrorResponse { Error = e.Message });
+        }
 
-        return Results.Ok(new { });
+        return Results.Ok(new AddBookPlanResponse {});
+    }
+
+    public class GetBookPlanResponse
+    {
+        public string Title { get; set; } = null!;
+        public string Author { get; set; } = null!;
+        public int PageCount { get; set; }
+        public string Deadline { get; set; } = null!;
+        public bool[] Weekdays { get; set; } = null!;
+        public string TimeOfDay { get; set; } = null!;
     }
 
     public IResult GetBookPlan(HttpContext context, int id)
@@ -66,7 +86,7 @@ public class BookPlanApi : ApiBase
         if (plan == null || plan.UserId != user.Id)
             return Results.BadRequest(new ErrorResponse { Error = "Plan not found." });
 
-        return Results.Ok(new AddBookPlanRequest
+        return Results.Ok(new GetBookPlanResponse
         {
             Author = plan.Author,
             Title = plan.Title,
@@ -77,19 +97,24 @@ public class BookPlanApi : ApiBase
         });
     }
 
-    private class RemoveBookPlanRequest
+    public class RemoveBookPlanRequest
     {
         public int Id { get; set; }
-    };
+    }
 
-    public async Task<IResult> PostRemoveBookPlan(HttpRequest request, HttpContext context)
+    public class RemoveBookPlanResponse
+    {
+
+    }
+
+    public async Task<IResult> PostRemoveBookPlan(HttpContext context)
     {
         User? user = CheckAuth(context);
 
         if (user is null)
             return BadAuth;
 
-        var req = await ReadJson<RemoveBookPlanRequest>(request);
+        var req = await ReadJson<RemoveBookPlanRequest>(context.Request);
 
         if (req is null)
             return BadJson;
@@ -97,33 +122,37 @@ public class BookPlanApi : ApiBase
         BookPlan? plan = Plans.FindPlan(req.Id);
 
         if (plan == null || plan.UserId != user.Id)
-            return Results.BadRequest(new { Error = "Plan not found." });
+            return Results.BadRequest(new ErrorResponse { Error = "Plan not found." });
 
-        if (!Plans.DeletePlan(plan.Id))
-            return Results.BadRequest(new { Error = "Failed to remove plan." });
+        Plans.DeletePlan(plan.Id);
 
-        return Results.Ok(new { });
+        return Results.Ok(new RemoveBookPlanResponse { });
     }
 
     private class EditBookPlanRequest
     {
-        public int Id { get; set; }
-        public string Title { get; set; } = null!;
-        public string Author { get; set; } = null!;
-        public int PageCount { get; set; }
-        public string Deadline { get; set; } = null!;
-        public bool[] Weekdays { get; set; }
-        public string TimeOfDay { get; set; } = null!;
+        public required int Id { get; set; }
+        public required string Title { get; set; } = null!;
+        public required string Author { get; set; } = null!;
+        public required int PageCount { get; set; }
+        public required string Deadline { get; set; } = null!;
+        public required bool[] Weekdays { get; set; } = null!;
+        public required string TimeOfDay { get; set; } = null!;
     };
 
-    public async Task<IResult> PostEditBookPlan(HttpRequest request, HttpContext context)
+    public class EditBookPlanResponse
+    {
+
+    };
+
+    public async Task<IResult> PostEditBookPlan(HttpContext context)
     {
         User? user = CheckAuth(context);
 
         if (user is null)
             return BadAuth;
 
-        var data = await ReadJson<EditBookPlanRequest>(request);
+        var data = await ReadJson<EditBookPlanRequest>(context.Request);
 
         if (data is null)
             return BadJson;
@@ -131,12 +160,18 @@ public class BookPlanApi : ApiBase
         BookPlan? plan = Plans.FindPlan(data.Id);
 
         if (plan == null || plan.UserId != user.Id)
-            return Results.BadRequest(new { Error = "Plan not found." });
+            return Results.BadRequest(new ErrorResponse { Error = "Plan not found." });
 
-        if (!Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.PageCount))
-            return Results.BadRequest(new { Error = "Failed to update plan." });
+        try
+        {
+            Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.PageCount);
+        }
+        catch (ArgumentException e)
+        {
+            return Results.BadRequest(new ErrorResponse { Error = e.Message });
+        }
 
-        return Results.Ok(new { });
+        return Results.Ok(new EditBookPlanResponse { });
     }
 
     public override void Map(WebApplication app)

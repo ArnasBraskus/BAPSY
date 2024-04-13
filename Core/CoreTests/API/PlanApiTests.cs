@@ -85,9 +85,9 @@ public class PlanApiTests
 
         var result = bookPlanApi.GetBookPlan(context, 1);
 
-        Assert.IsType<Ok<BookPlanApi.AddBookPlanRequest>>(result);
-        var response = (Ok<BookPlanApi.AddBookPlanRequest>)result;
-        var actual = (BookPlanApi.AddBookPlanRequest?)response.Value;
+        Assert.IsType<Ok<BookPlanApi.GetBookPlanResponse>>(result);
+        var response = (Ok<BookPlanApi.GetBookPlanResponse>)result;
+        var actual = (BookPlanApi.GetBookPlanResponse?)response.Value;
         Assert.NotNull(actual);
         Assert.Equal(title, actual.Title);
         Assert.Equal(author, actual.Author);
@@ -143,7 +143,7 @@ public class PlanApiTests
 
         HttpContext context = ApiTestUtils.FakeContext();
 
-        var result = await bookPlanApi.PostAddBookPlan(context.Request, context);
+        var result = await bookPlanApi.PostAddBookPlan(context);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
     }
@@ -160,7 +160,7 @@ public class PlanApiTests
 
         HttpContext context = ApiTestUtils.FakeContext(email);
 
-        var result = await bookPlanApi.PostAddBookPlan(context.Request, context);
+        var result = await bookPlanApi.PostAddBookPlan(context);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
     }
@@ -177,7 +177,7 @@ public class PlanApiTests
 
         HttpContext context = ApiTestUtils.FakeContext(email);
 
-        var result = await bookPlanApi.PostRemoveBookPlan(context.Request, context);
+        var result = await bookPlanApi.PostRemoveBookPlan(context);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
     }
@@ -194,7 +194,7 @@ public class PlanApiTests
 
         HttpContext context = ApiTestUtils.FakeContext(email);
 
-        var result = await bookPlanApi.PostRemoveBookPlan(context.Request, context);
+        var result = await bookPlanApi.PostRemoveBookPlan(context);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
     }
@@ -212,7 +212,7 @@ public class PlanApiTests
 
         HttpContext context = ApiTestUtils.FakeContext(email);
 
-        var result = await bookPlanApi.PostEditBookPlan(context.Request, context);
+        var result = await bookPlanApi.PostEditBookPlan(context);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
     }
@@ -230,7 +230,7 @@ public class PlanApiTests
 
         HttpContext context = ApiTestUtils.FakeContext(email);
 
-        var result = await bookPlanApi.PostEditBookPlan(context.Request, context);
+        var result = await bookPlanApi.PostEditBookPlan(context);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
     }
