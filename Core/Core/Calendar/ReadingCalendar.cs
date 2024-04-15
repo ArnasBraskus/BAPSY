@@ -31,7 +31,7 @@ public class ReadingCalendar
         if (plan.PagesRead == plan.PageCount)
             return calendar;
 
-        int pages = plan.PagesRead + 1;
+        int pages = 1;
 
 
         foreach (var session in plan.ReadingSessions)
@@ -46,7 +46,12 @@ public class ReadingCalendar
 
             events.Add(new ReadingEvent(date, pages, session.Goal));
 
-            pages += session.Goal;
+            if (session.Actual != 0) {
+                pages += session.Actual;
+            }
+            else {
+                pages += session.Goal;
+            }
         }
 
         return calendar;
