@@ -11,7 +11,7 @@ public class ReadingCalendar
         Events = events;
     }
 
-    public static ReadingCalendar Create(BookPlan plan)
+    public static ReadingCalendar Create(BookPlan plan, DateTime now)
     {
         if (plan == null)
             throw new ArgumentNullException(nameof(plan));
@@ -38,7 +38,7 @@ public class ReadingCalendar
         {
             var date = DateTime.Parse($"{session.Date} {plan.timeOfDay}");
 
-            if (date < DateTime.Today)
+            if (date < now)
                 continue;
 
             if (session.Goal < 0)
