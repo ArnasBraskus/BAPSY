@@ -132,9 +132,8 @@ public class Plans
     {
         if (id < 0 || FindPlan(id) == null)
             throw new ArgumentException("invalid plan id");
-        {
-            DB.ExecuteNonQuery(@"DELETE FROM plans WHERE id=$id ", new Dictionary<string, dynamic> { { "$id", id } });
-        }
+        ReadingSessions.Delete(id);
+        DB.ExecuteNonQuery(@"DELETE FROM plans WHERE id=$id ", new Dictionary<string, dynamic> { { "$id", id } });
 
         return true;
     }
