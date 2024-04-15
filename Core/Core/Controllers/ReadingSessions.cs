@@ -22,6 +22,25 @@ public class ReadingSessions {
         DB.ExecuteNonQuery("INSERT INTO readingsessions (planId, date, goal) VALUES ($planId, $date, $goal)", parameters);
     }
 
+    public void Delete(int planId) {
+        var parameters = new Dictionary<string, dynamic>
+        {
+            {"$planId", planId}
+        };
+
+        DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId", parameters);
+    }
+
+    public void Invalidate(int planId, DateTime dateAfter) {
+        var parameters = new Dictionary<string, dynamic>
+        {
+            {"$planId", planId},
+            {"$dateAfter", dateAfter.ToString("yyyy-MM-dd")}
+        };
+
+        DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId AND date >= $dateAfter", parameters);
+    }
+
     public ReadingSession Get(int id) {
         var parameters = new Dictionary<string, dynamic>
         {
