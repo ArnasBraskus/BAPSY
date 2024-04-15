@@ -55,7 +55,7 @@ public class Plans
         int pagesRead = reader.GetInt32(8);
         List<ReadingSession> sessions = ReadingSessions.GetAll(id);
 
-        return new BookPlan(id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, sessions);
+        return new BookPlan(this, id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, sessions);
     }
 
     public List<int> FindPlanByUser(int userId)
@@ -98,6 +98,22 @@ public class Plans
         DB.ExecuteNonQuery(@"UPDATE PLANS SET deadline = $deadline, weekdays = $weekdays, timeOfDay = $timeOfDay, title = $title, author = $author, pageCount = $pageCount WHERE id = $id", parameters);
 
         return true;
+    }
+
+    public List<ReadingSession> UpdateReadingSessions(int id, DateTime now)
+    {
+        BookPlan plan = FindPlan(id)!;
+
+        List<ReadingSession> sessions = plan.GenerateReadingSessions(now);
+
+        ReadingSessions.Invalidate(plan.Id, now);
+
+        foreach (ReadingSession session in sessions)
+        {
+            ReadingSessions.Add(plan.Id, session);
+        }
+
+        return ReadingSessions.GetAll(plan.Id);
     }
 
     public void UpdatePagesRead(int id, int pagesRead)

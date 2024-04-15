@@ -2,17 +2,17 @@
 {
     private static readonly (int, string, bool[], string, int, string, string, int)[] TestPlans1 = new (int, string, bool[], string, int, string, string, int)[]
        {
-        (3, "6-11-2024", [true, true, false, false, false, false, false], "1:28 PM", 3, "Touchy Feely", "Arlen Anmore", 45),
-        (5, "9/2/2023", [true, false, true, false, true, false, true], "3:31 PM", -1, "Mantrap", "Devin Santos", 6),
-        (2, "6/8/2023", [true, false, true, false, true, false, true], "4:56 PM", -1, "Cherish", "Blisse Wipfler", 99),
-        (6, "11/3/2023", [true, false, true, false, true, false, true], "2:52 PM", -1, "For Pete's Sake", "Faith Cregeen", 78),
-        (2, "8/28/2023", [true, false, true, false, true, false, true], "9:38 PM", -1, "The Story of Asya Klyachina", "Celisse Grossier", 21),
-        (2, "5/26/2024", [false, false, false, false, false, false, true], "7:55 AM", 8, "Caddyshack II", "Stearn Jillings", 56),
-        (6, "4/25/2024", [true, false, true, false, true, false, true], "8:42 PM", 9, "Bulletproof", "Lucila Raithmill", 90),
-        (6, "9/21/2023", [true, false, true, false, true, false, true], "11:17 AM", -1, "A Thousand Times Goodnight", "Adrian Bingall", 17),
+        (3, "6-11-2024", [false, true, true, false, false, false, false], "1:28 PM", 3, "Touchy Feely", "Arlen Anmore", 45),
+        (5, "9/2/2023", [true, true, false, true, false, true, false], "3:31 PM", -1, "Mantrap", "Devin Santos", 6),
+        (2, "6/8/2023", [true, true, false, true, false, true, false], "4:56 PM", -1, "Cherish", "Blisse Wipfler", 99),
+        (6, "11/3/2023", [true, true, false, true, false, true, false], "2:52 PM", -1, "For Pete's Sake", "Faith Cregeen", 78),
+        (2, "8/28/2023", [true, true, false, true, false, true, false], "9:38 PM", -1, "The Story of Asya Klyachina", "Celisse Grossier", 21),
+        (2, "5/26/2024", [true, false, false, false, false, false, false], "7:55 AM", 8, "Caddyshack II", "Stearn Jillings", 56),
+        (6, "4/25/2024", [true, true, false, true, false, true, false], "8:42 PM", 9, "Bulletproof", "Lucila Raithmill", 90),
+        (6, "9/21/2023", [true, true, false, true, false, true, false], "11:17 AM", -1, "A Thousand Times Goodnight", "Adrian Bingall", 17),
         (5, "7/3/2024", [false, false, false, false, false, false, false], "10:24 AM", -1, "À nous la liberté (Freedom for Us)", "Matthus Dohmer", 27),
-        (2, "9/11/2024", [true, false, true, false, true, false, true], "1:50 PM", 1, "Punk's Dead: SLC Punk! 2", "Garner Cursons", 23),
-        (6, "1/7/2024", [true, false, true, false, true, false, true], "10:06 PM", -1, "Not Another Happy Ending", "De witt Dooher", 3)
+        (2, "9/11/2024", [true, true, false, true, false, true, false], "1:50 PM", 1, "Punk's Dead: SLC Punk! 2", "Garner Cursons", 23),
+        (6, "1/7/2024", [true, true, false, true, false, true, false], "10:06 PM", -1, "Not Another Happy Ending", "De witt Dooher", 3)
        };
 
     private static readonly (int, string, bool[], string, int, string, string, int)[] InvalidPlans = new (int, string, bool[], string, int, string, string, int)[]

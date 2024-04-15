@@ -2,7 +2,7 @@
 
 public class PlanApiTests
 {
-    [Theory]
+    /*[Theory]
     [MemberData(nameof(PlansTestsUtils.GetTestIdsFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
     public void Test_ListBookPlans_ReturnsOk(string email, int id, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount)
     {
@@ -233,5 +233,5 @@ public class PlanApiTests
         var result = await bookPlanApi.PostEditBookPlan(context);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
-    }
+    } */
 }

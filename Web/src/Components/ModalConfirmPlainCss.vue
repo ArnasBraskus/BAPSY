@@ -43,7 +43,7 @@ export default {
       if (this.errors.length === 0) {
         if (this.plan){
           let weekdays = [];
-          weekdays.push(this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6, this.formData.day7);
+          weekdays.push(this.formData.day7, this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6);
           const convertedWeekdays = weekdays.map(day => !!day);
           editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
           .then(() => {
@@ -55,7 +55,7 @@ export default {
           });
         } else {
           let weekdays = [];
-          weekdays.push(this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6, this.formData.day7);
+          weekdays.push(this.formData.day7, this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6);
           const convertedWeekdays = weekdays.map(day => !!day);
           addPlan(this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
           .then(() => {
@@ -94,13 +94,13 @@ export default {
             author: editPlan.author,
             pages: editPlan.pages,
             deadline: editPlan.deadline,
-            day1: editPlan.weekdays[0],
-            day2: editPlan.weekdays[1],
-            day3: editPlan.weekdays[2],
-            day4: editPlan.weekdays[3],
-            day5: editPlan.weekdays[4],
-            day6: editPlan.weekdays[5],
-            day7: editPlan.weekdays[6],
+            day1: editPlan.weekdays[1],
+            day2: editPlan.weekdays[2],
+            day3: editPlan.weekdays[3],
+            day4: editPlan.weekdays[4],
+            day5: editPlan.weekdays[5],
+            day6: editPlan.weekdays[6],
+            day7: editPlan.weekdays[0],
             timeOfDay: editPlan.timeOfDay
           };
         } else {

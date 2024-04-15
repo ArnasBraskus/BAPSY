@@ -1,5 +1,6 @@
 ﻿public class BookPlan
 {
+    private Plans Plans;
     public int Id { get; }
     public int UserId { get; }
     public string DeadLine { get; }
@@ -9,12 +10,13 @@
     public string Title { get; }
     public string Author { get; }
     public int PageCount { get; }
-    public int PagesRead { get; }
-    public List<ReadingSession> ReadingSessions { get; }
+    public int PagesRead { get; private set; }
+    public List<ReadingSession> ReadingSessions { get; private set; }
 
-    public BookPlan(int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
+    public BookPlan(Plans plans, int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
         string title, string author, int pageCount, int pagesRead, List<ReadingSession> sessions)
     {
+        Plans = plans;
         Id = id;
         UserId = userId;
         DeadLine = deadLine;
@@ -28,37 +30,34 @@
         ReadingSessions = sessions;
     }
 
-    public void PopulateReadingSessions(DateTime startDate, DateTime endDate, int pagesPerDay)
+    public List<ReadingSession> GenerateReadingSessions(DateTime startDate)
     {
+        DateTime endDate = DateTime.Parse(DeadLine);
+
         if (startDate > endDate)
             throw new ArgumentException("Start date cannot be later than end date.");
-
-        if (PageCount <= 0)
-            throw new ArgumentException("Page count must be greater than zero.", nameof(PageCount));
 
         var days = FindReadingDays(startDate, endDate);
 
         PagesToReadBeforeDeadline(startDate);
 
-        if (PagesPerDay <= 0)
-            throw new ArgumentException("Pages per day must be greater than zero.", nameof(pagesPerDay));
+        int pagesLeft = PageCount - PagesRead;
+
+        var sessions = new List<ReadingSession>();
 
         foreach (var day in days)
         {
-            int dayOfWeek = (int)day.DayOfWeek - 1;
+            int goal = Math.Min(pagesLeft, PagesPerDay);
 
-            bool[] weekdays = Weekdays.FromBitField(DayOfWeek);
+            sessions.Add(new ReadingSession(day.ToString("yyyy-MM-dd"), goal));
 
-            if (weekdays[dayOfWeek.Equals(-1) ? 6 : dayOfWeek] && day <= endDate && PageCount >= PagesRead)
-            {
-                if (day == days.Last())
-                {
-                    ReadingSessions.Add(new ReadingSession(day.ToString("yyyy/MM/dd"), PageCount - PagesRead));
-                    break;
-                }
-                ReadingSessions.Add(new ReadingSession(day.ToString("yyyy/MM/dd"), pagesPerDay));
-            }
+            if (pagesLeft < PagesPerDay)
+                break;
+
+            pagesLeft -= PagesPerDay;
         }
+
+        return sessions;
     }
 
     public List<DateTime> FindReadingDays(DateTime start, DateTime end)
@@ -67,11 +66,9 @@
 
         for (var day = start.Date; day.Date <= end.Date; day = day.AddDays(1))
         {
-            int dayOfWeek = (int)day.DayOfWeek - 1;
-
             bool[] weekdays = Weekdays.FromBitField(DayOfWeek);
 
-            if (weekdays[dayOfWeek.Equals(-1) ? 6 : dayOfWeek] && day <= end)
+            if (weekdays[(int)day.DayOfWeek] && day <= end)
             {
                 days.Add(day);
             }
@@ -96,11 +93,23 @@
 
         if (daysLeft > 0)
         {
-            PagesPerDay = (int)Math.Ceiling((decimal)PageCount / daysLeft);
+            PagesPerDay = (int)Math.Ceiling((decimal)(PageCount - PagesRead) / daysLeft);
         }
         else
         {
             PagesPerDay = -1;
         }
+    }
+
+    public void MarkReadingSession(ReadingSession session, int pagesRead)
+    {
+        var realPagesRead = pagesRead - session.Actual;
+        var date = DateTime.Parse(session.Date).AddDays(1);
+
+        session.Actual = pagesRead;
+        PagesRead += realPagesRead;
+
+        Plans.UpdatePagesRead(Id, PagesRead);
+        ReadingSessions = Plans.UpdateReadingSessions(Id, date);
     }
 }

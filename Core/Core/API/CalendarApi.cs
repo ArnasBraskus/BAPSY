@@ -16,7 +16,7 @@ public class CalendarApi : ApiBase
         if (plan is null || plan.UserId != user.Id)
             return Results.BadRequest(new ErrorResponse { Error = "Plan not found" });
 
-        ReadingCalendar calendar = ReadingCalendar.Create(plan);
+        ReadingCalendar calendar = ReadingCalendar.Create(plan, DateTime.Now);
 
         return Results.Ok(calendar.Events);
     }
@@ -28,7 +28,7 @@ public class CalendarApi : ApiBase
         if (plan is null)
             return Results.BadRequest(new ErrorResponse { Error = "Plan not found" });
 
-        ReadingCalendar calendar = ReadingCalendar.Create(plan);
+        ReadingCalendar calendar = ReadingCalendar.Create(plan, DateTime.Now);
 
         byte[] bytes = CalendarWriter.Serialize(calendar);
 

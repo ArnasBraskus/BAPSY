@@ -1,12 +1,12 @@
 public static class Weekdays
 {
-    public static readonly int Monday    = (1 << 0);
-    public static readonly int Tuesday   = (1 << 1);
-    public static readonly int Wednesday = (1 << 2);
-    public static readonly int Thursday  = (1 << 3);
-    public static readonly int Friday    = (1 << 4);
-    public static readonly int Saturday  = (1 << 5);
-    public static readonly int Sunday    = (1 << 6);
+    public static readonly int Sunday    = (1 << 0);
+    public static readonly int Monday    = (1 << 1);
+    public static readonly int Tuesday   = (1 << 2);
+    public static readonly int Wednesday = (1 << 3);
+    public static readonly int Thursday  = (1 << 4);
+    public static readonly int Friday    = (1 << 5);
+    public static readonly int Saturday  = (1 << 6);
 
     private static readonly int NUM_WEEKDAYS = 7;
 
