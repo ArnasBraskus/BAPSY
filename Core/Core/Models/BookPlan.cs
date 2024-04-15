@@ -28,11 +28,61 @@
         ReadingSessions = sessions;
     }
 
+    public void PopulateReadingSessions(DateTime startDate, DateTime endDate, int pagesPerDay)
+    {
+        if (startDate > endDate)
+            throw new ArgumentException("Start date cannot be later than end date.");
+
+        if (PageCount <= 0)
+            throw new ArgumentException("Page count must be greater than zero.", nameof(PageCount));
+
+        var days = FindReadingDays(startDate, endDate);
+
+        PagesToReadBeforeDeadline(startDate);
+
+        if (PagesPerDay <= 0)
+            throw new ArgumentException("Pages per day must be greater than zero.", nameof(pagesPerDay));
+
+        foreach (var day in days)
+        {
+            int dayOfWeek = (int)day.DayOfWeek - 1;
+
+            bool[] weekdays = Weekdays.FromBitField(DayOfWeek);
+
+            if (weekdays[dayOfWeek.Equals(-1) ? 6 : dayOfWeek] && day <= endDate && PageCount >= PagesRead)
+            {
+                if (day == days.Last())
+                {
+                    ReadingSessions.Add(new ReadingSession(day.ToString("yyyy/MM/dd"), PageCount - PagesRead));
+                    break;
+                }
+                ReadingSessions.Add(new ReadingSession(day.ToString("yyyy/MM/dd"), pagesPerDay));
+            }
+        }
+    }
+
+    public List<DateTime> FindReadingDays(DateTime start, DateTime end)
+    {
+        var days = new List<DateTime>();
+
+        for (var day = start.Date; day.Date <= end.Date; day = day.AddDays(1))
+        {
+            int dayOfWeek = (int)day.DayOfWeek - 1;
+
+            bool[] weekdays = Weekdays.FromBitField(DayOfWeek);
+
+            if (weekdays[dayOfWeek.Equals(-1) ? 6 : dayOfWeek] && day <= end)
+            {
+                days.Add(day);
+            }
+        }
+        return days;
+    }
+
     public void PagesToReadBeforeDeadline(DateTime now)
     {
         DateTime deadline = DateTime.Parse(DeadLine);
         TimeSpan timeLeft = deadline.Subtract(now);
-        int daysLeft = 0;
 
         if (timeLeft.Days < 0)
         {
@@ -40,18 +90,10 @@
             return;
         }
 
-        for (int i = 0; i < timeLeft.Days + 1; i++)
-        {
-            DateTime date = now.AddDays(i);
-            int dayOfWeek = (int)date.DayOfWeek - 1;
+        var daysList = FindReadingDays(now, deadline);
 
-            bool[] weekdays = Weekdays.FromBitField(DayOfWeek);
+        int daysLeft = daysList.Count;
 
-            if (weekdays[dayOfWeek.Equals(-1) ? 6 : dayOfWeek] && date <= deadline)
-            {
-                daysLeft++;
-            }
-        }
         if (daysLeft > 0)
         {
             PagesPerDay = (int)Math.Ceiling((decimal)PageCount / daysLeft);
