@@ -18,6 +18,10 @@ public class Database
         ExecuteNonQuery("PRAGMA user_version = 1");
     }
 
+    public int LastInsertedRowId() {
+        return ExecuteScalar("SELECT last_insert_rowid()");
+    }
+
     public void CreateIfEmpty(string schema) {
         if (Empty()) {
             Create(schema);
@@ -29,13 +33,18 @@ public class Database
         Connection.Open();
     }
 
+    public int ExecuteScalar(string statement) {
+        var command = CreateCommand(statement, null);
+        object? result = command.ExecuteScalar();
+
+        if (result is null)
+            throw new InvalidOperationException("Command didn't return a scalar");
+
+        return (int)((long)result);
+    }
+
     private int GetUserVersion() {
-        var command = CreateCommand("PRAGMA user_version", null);
-        var reader = command.ExecuteReader();
-
-        reader.Read();
-
-        return reader.GetInt32(0);
+        return ExecuteScalar("PRAGMA user_version");
     }
 
     private SqliteCommand CreateCommand(string statement, Dictionary<string, dynamic>? parameters)
