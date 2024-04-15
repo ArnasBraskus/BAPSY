@@ -12,4 +12,11 @@ public class ReadingEvent
         PageStart = pageStart;
         PageEnd = PageStart + PagesToRead - 1;
     }
+
+    public override bool Equals(object obj)
+    {
+        ReadingEvent other = obj as ReadingEvent;
+
+        return Date == other.Date && PageStart == other.PageStart && PagesToRead == other.PagesToRead;
+    }
 }
