@@ -15,8 +15,8 @@ namespace CoreTests
 
             Plans Plans = new Plans(database);
             User? usr = users.FindUser(userid);
-            Assert.True(
-            Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagerPerDay, title, author, pgcount));
+            var exception = Record.Exception(() => Plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagerPerDay, title, author, pgcount));
+            Assert.Null(exception);
         }
 
         [Theory]

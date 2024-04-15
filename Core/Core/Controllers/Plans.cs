@@ -11,7 +11,7 @@ public class Plans
         ReadingSessions = new ReadingSessions(db);
     }
 
-    public bool AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
+    public int AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
             string title, string author, int pageCount)
     {
         if (pageCount < 0)
@@ -31,9 +31,10 @@ public class Plans
             { "$author", author },
             { "$pageCount", pageCount }
         };
+
         DB.ExecuteNonQuery(@"INSERT INTO PLANS (userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount) VALUES ($userid, $deadline, $weekdays, $timeOfDay, $pagesPerDay, $title, $author, $pageCount)", dictionary);
 
-        return true;
+        return DB.LastInsertedRowId();
     }
 
     public BookPlan? FindPlan(int id)
