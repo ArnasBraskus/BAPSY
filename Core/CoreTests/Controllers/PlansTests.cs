@@ -192,5 +192,49 @@ namespace CoreTests
             bookPlan.PagesToReadBeforeDeadline(new DateTime(2024, 4, 8, 20, 51, 14));
             Assert.Equal(pagesPerDay, bookPlan.PagesPerDay);
         }
+
+        [Fact]
+        public void Test_GoodActual_MarkReadingSession_PagesReadIsUpdated()
+        {
+            var NOW = new DateTime(2024, 4, 8);
+            var PLAN_ID = 7;
+            var SESSION_ID = 1;
+            var PAGES_ACTUAL = 5;
+
+            Database database = TestUtils.CreateDatabase();
+            Users users = UserTestsUtils.CreatePopulated(database);
+            Plans plans = PlansTestsUtils.CreatePopulated(database, users);
+            ReadingSessions sessions = new ReadingSessions(database);
+
+            plans.UpdateReadingSessions(PLAN_ID, NOW);
+
+            BookPlan? plan = plans.FindPlan(PLAN_ID)!;
+
+            plan.MarkReadingSession(sessions.Get(SESSION_ID), PAGES_ACTUAL);
+
+            Assert.Equal(PAGES_ACTUAL, plan.PagesRead);
+        }
+
+        [Fact]
+        public void Test_ActualExceedsRemainingPages_MarkReadingSession_ThrowsException()
+        {
+            var NOW = new DateTime(2024, 4, 8);
+            var PLAN_ID = 7;
+            var SESSION_ID = 1;
+            var PAGES_ACTUAL = 50;
+
+            Database database = TestUtils.CreateDatabase();
+            Users users = UserTestsUtils.CreatePopulated(database);
+            Plans plans = PlansTestsUtils.CreatePopulated(database, users);
+            ReadingSessions sessions = new ReadingSessions(database);
+
+            plans.UpdateReadingSessions(PLAN_ID, NOW);
+
+            BookPlan? plan = plans.FindPlan(PLAN_ID)!;
+
+            Action action = () => plan.MarkReadingSession(sessions.Get(SESSION_ID), PAGES_ACTUAL);
+
+            Assert.Throws<InvalidOperationException>(action);
+        }
     }
 }

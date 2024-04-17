@@ -18,9 +18,6 @@ public abstract class ApiBase {
     protected User GetUser(HttpContext context) {
         var email = Auth.GetNameIdentifier(context);
 
-        if (email == null)
-            throw new KeyNotFoundException("User identifier not found");
-
         return Users.FindUser(email);
     }
 
@@ -31,12 +28,7 @@ public abstract class ApiBase {
     protected async Task<T> ReadJson<T>(HttpRequest request) where T : class {
         var stream = await new StreamReader(request.Body).ReadToEndAsync();
 
-        var data = JsonSerializer.Deserialize<T>(stream, JsonOptions);
-
-        if (data is null)
-            throw new JsonException();
-
-        return data;
+        return JsonSerializer.Deserialize<T>(stream, JsonOptions)!;
     }
 
     public abstract void Map(WebApplication app);

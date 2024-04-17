@@ -26,6 +26,7 @@ public class AuthorizationTests : IClassFixture<CustomWebApplicationFactory<Prog
     private static readonly string[] GetEndpointsAuth =
     {
         "/user/profile",
+        "/calendar/1/events",
         "/bookplan/list",
         "/bookplan/get/1"
     };

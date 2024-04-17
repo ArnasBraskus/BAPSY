@@ -35,10 +35,7 @@ public class Database
 
     public int ExecuteScalar(string statement) {
         var command = CreateCommand(statement, null);
-        object? result = command.ExecuteScalar();
-
-        if (result is null)
-            throw new InvalidOperationException("Command didn't return a scalar");
+        object? result = command.ExecuteScalar()!;
 
         return (int)((long)result);
     }

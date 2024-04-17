@@ -53,10 +53,8 @@
         return new Plans(database);
     }
 
-    public static Plans CreatePopulated(Database database)
+    public static Plans CreatePopulated(Database database, Users users)
     {
-        Users users = UserTestsUtils.CreatePopulated(database);
-
         Plans Plans = new Plans(database);
 
         foreach (var plan in TestPlans1)
@@ -67,9 +65,24 @@
         return Plans;
     }
 
+    public static Plans CreatePopulated(Database database)
+    {
+        return CreatePopulated(database, UserTestsUtils.CreatePopulated(database));
+    }
+
     public static Plans CreatePopulated()
     {
         return CreatePopulated(TestUtils.CreateDatabase());
+    }
+
+    public static IEnumerable<object[]> GetTestPlansWithIds()
+    {
+        int id = 1;
+
+        foreach (var plan in TestPlans1)
+        {
+            yield return new object[] { id++, plan.Item1, plan.Item2, plan.Item3, plan.Item4, plan.Item5, plan.Item6, plan.Item7, plan.Item8 };
+        }
     }
 
     public static IEnumerable<object[]> GetTestPlansFromPopulatedDb()

@@ -1,6 +1,7 @@
 using Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Text.Json;
 using Google.Apis.Auth;
 
 public class AuthApiTests {
@@ -92,6 +93,20 @@ public class AuthApiTests {
 
         Assert.NotNull(user);
         Assert.Equal(NEW_NAME, user.Name);
+    }
+
+    [Fact]
+    public async Task Test_PostAuthGoogleWithInvalidJson_ThrowsJsonException() {
+        HttpContext context = ApiTestUtils.FakeContext(TestEmail, $"{{\"jwttoken: \"{TestGoogleTokenBad}\"}}");
+
+        Auth auth = CreateAuth();
+        Users users = UserTestsUtils.CreateEmpty();
+
+        AuthApi authApi = new AuthApi(auth, users);
+
+        var exception = await Record.ExceptionAsync(() => authApi.PostAuthGoogle(context.Request));
+
+        Assert.IsType<JsonException>(exception);
     }
 
     [Fact]

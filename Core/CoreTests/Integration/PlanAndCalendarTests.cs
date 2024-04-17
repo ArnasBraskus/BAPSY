@@ -127,4 +127,81 @@ public class PlanAndCalendarTests
         Assert.Equal(expected, calendar.Events);
     }
 
+    [Fact]
+    public static void Test_CreatePlanAndCompleteEarly_CalendarIsEmpty()
+    {
+        var USER_ID = 1;
+        var WEEKDAYS = Weekdays.Monday | Weekdays.Tuesday | Weekdays.Friday;
+        var NOW = new DateTime(2024, 04, 10);
+        var DEADLINE = "2024-04-30";
+        var TIME = "10:15";
+        var TITLE = "Title";
+        var AUTHOR = "Author";
+        var PAGES = 300;
+
+        Database database = TestUtils.CreateDatabase();
+
+        Users users = UserTestsUtils.CreatePopulated(database);
+        Plans plans = new Plans(database);
+        ReadingSessions sessions = new ReadingSessions(database);
+
+        int id = plans.AddPlan(users.FindUser(USER_ID)!, DEADLINE, WEEKDAYS, TIME, 0, TITLE, AUTHOR, PAGES);
+
+        plans.UpdateReadingSessions(id, NOW);
+
+        var all = sessions.GetAll(id);
+
+        BookPlan? plan = plans.FindPlan(id)!;
+
+        plan.MarkReadingSession(all[0], 50);
+        plan.MarkReadingSession(all[1], 100);
+        plan.MarkReadingSession(all[2], 150);
+
+        ReadingCalendar calendar = ReadingCalendar.Create(plan, NOW);
+
+        Assert.Empty(calendar.Events);
+    }
+
+    [Fact]
+    public static void Test_CreatePlanAndAndEdit_CalendarIsUpdated()
+    {
+        var USER_ID = 1;
+        var WEEKDAYS = Weekdays.Monday | Weekdays.Tuesday | Weekdays.Friday;
+        var WEEKDAYS_EDIT = Weekdays.Monday | Weekdays.Friday;
+        var NOW = new DateTime(2024, 04, 10);
+        var DEADLINE = "2024-04-30";
+        var TIME = "10:15";
+        var TITLE = "Title";
+        var AUTHOR = "Author";
+        var PAGES = 300;
+
+        Database database = TestUtils.CreateDatabase();
+
+        Users users = UserTestsUtils.CreatePopulated(database);
+        Plans plans = new Plans(database);
+        ReadingSessions sessions = new ReadingSessions(database);
+
+        int id = plans.AddPlan(users.FindUser(USER_ID)!, DEADLINE, WEEKDAYS, TIME, 0, TITLE, AUTHOR, PAGES);
+
+        plans.UpdateReadingSessions(id, NOW);
+
+        plans.UpdatePlan(id, DEADLINE, WEEKDAYS_EDIT, TIME, TITLE, AUTHOR, PAGES);
+        plans.UpdateReadingSessions(id, NOW);
+
+        BookPlan? plan = plans.FindPlan(id)!;
+
+        ReadingCalendar calendar = ReadingCalendar.Create(plan, NOW);
+
+        var expected = new List<ReadingEvent> {
+            new ReadingEvent(new DateTime(2024, 4, 12, 10, 15, 0), 1, 50),
+            new ReadingEvent(new DateTime(2024, 4, 15, 10, 15, 0), 51, 50),
+            new ReadingEvent(new DateTime(2024, 4, 19, 10, 15, 0), 101, 50),
+            new ReadingEvent(new DateTime(2024, 4, 22, 10, 15, 0), 151, 50),
+            new ReadingEvent(new DateTime(2024, 4, 26, 10, 15, 0), 201, 50),
+            new ReadingEvent(new DateTime(2024, 4, 29, 10, 15, 0), 251, 50)
+        };
+
+        Assert.Equal(expected, calendar.Events);
+    }
+
 }

@@ -130,20 +130,6 @@ public class Plans
         DB.ExecuteNonQuery(@"UPDATE plans SET pagesRead = $pagesRead WHERE id = $id", parameters);
     }
 
-    public void UpdatePagesPerDay(int id, int pagesPerDay)
-    {
-        if (pagesPerDay < 0)
-            throw new ArgumentException("pagesRead cannot be negative");
-
-        var parameters = new Dictionary<string, dynamic>
-        {
-            { "$id", id },
-            { "$pagesPerDay", pagesPerDay }
-        };
-
-        DB.ExecuteNonQuery(@"UPDATE plans SET pagesPerDay = $pagesPerDay WHERE id = $id", parameters);
-    }
-
     public bool DeletePlan(int id)
     {
         if (id < 0 || FindPlan(id) == null)
