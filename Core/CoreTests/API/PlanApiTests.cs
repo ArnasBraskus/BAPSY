@@ -2,7 +2,21 @@
 
 public class PlanApiTests
 {
-    /*[Theory]
+    private static BookPlanApi CreateBookPlanApi(bool populatePlans = true)
+    {
+        Database database = TestUtils.CreateDatabase();
+
+        Users users = UserTestsUtils.CreatePopulated(database);
+        Plans plans = populatePlans ?
+            PlansTestsUtils.CreatePopulated(database, users) : new Plans(database);
+        ReadingSessions sessions = new ReadingSessions(database);
+
+        var dateTimeProvider = TestUtils.CreateDateTimeMock(new DateTime(2024, 4, 10));
+
+        return new BookPlanApi(users, plans, sessions, dateTimeProvider);
+    }
+
+    [Theory]
     [MemberData(nameof(PlansTestsUtils.GetTestIdsFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
     public void Test_ListBookPlans_ReturnsOk(string email, int id, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount)
     {
@@ -11,13 +25,14 @@ public class PlanApiTests
         Database database = TestUtils.CreateDatabase();
 
         Users users = UserTestsUtils.CreatePopulated(database);
+        ReadingSessions sessions = new ReadingSessions(database);
 
         Plans plans = new Plans(database);
         User? usr = users.FindUser(email);
 
         plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagesPerDay, title, author, pgcount);
 
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
+        BookPlanApi bookPlanApi = new BookPlanApi(users, plans, sessions);
 
         var result = bookPlanApi.ListBookPlans(context);
 
@@ -31,59 +46,16 @@ public class PlanApiTests
         Assert.Contains(1, actual.Ids);
     }
 
-    [Fact]
-    public void Test_ListBookPlansButEmty_ReturnsBadRequest()
-    {
-        var email = UserTestsUtils.GetFirstUserEmail();
-
-        HttpContext context = ApiTestUtils.FakeContext(email);
-        Database database = TestUtils.CreateDatabase();
-
-        Users users = new Users(database);
-
-        Plans plans = new Plans(database);
-
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
-
-        var result = bookPlanApi.ListBookPlans(context);
-
-        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
-    }
-
-    [Fact]
-    public void Test_ListBookPlans_WithValidUser_ReturnsBadResult()
-    {
-        Database db = TestUtils.CreateDatabase();
-
-        var users = UserTestsUtils.CreatePopulated(db);
-        var plans = new Plans(db);
-
-        var bookPlanApi = new BookPlanApi(users, plans);
-        var context = ApiTestUtils.FakeContext();
-
-        var result = bookPlanApi.ListBookPlans(context);
-
-        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
-    }
-
     [Theory]
-    [MemberData(nameof(PlansTestsUtils.GetTestIdsFromPopulatedDb), MemberType = typeof(PlansTestsUtils))]
-    public void Test_Good_GetPlan_ReturnsOk(string email, int id, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount)
+    [MemberData(nameof(PlansTestsUtils.GetTestPlansWithIds), MemberType = typeof(PlansTestsUtils))]
+    public void Test_Good_GetPlan_ReturnsOk(int id, int userId, string deadline, bool[] days, string time, int pagesPerDay, string title, string author, int pgcount)
     {
-        HttpContext context = ApiTestUtils.FakeContext(email);
+        var EMAIL = UserTestsUtils.GetUserEmail(userId);
 
-        Database database = TestUtils.CreateDatabase();
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL);
+        BookPlanApi bookPlanApi = CreateBookPlanApi();
 
-        Users users = UserTestsUtils.CreatePopulated(database);
-
-        Plans plans = new Plans(database);
-        User? usr = users.FindUser(email);
-
-        plans.AddPlan(usr, deadline, Weekdays.ToBitField(days), time, pagesPerDay, title, author, pgcount);
-
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
-
-        var result = bookPlanApi.GetBookPlan(context, 1);
+        var result = bookPlanApi.GetBookPlan(context, id);
 
         Assert.IsType<Ok<BookPlanApi.GetBookPlanResponse>>(result);
         var response = (Ok<BookPlanApi.GetBookPlanResponse>)result;
@@ -98,50 +70,43 @@ public class PlanApiTests
     }
 
     [Fact]
-    public void Test_NoUser_GetPlan_ReturnsBadAuth()
+    public void Test_UserDoesntHavePlan_GetPlan_ReturnsBadRequest()
     {
-        var email = UserTestsUtils.GetFirstUserEmail();
+        var EMAIL = UserTestsUtils.GetFirstUserEmail();
+        var PLAN_ID = 1;
 
-        HttpContext context = ApiTestUtils.FakeContext(email);
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL);
+        BookPlanApi bookPlanApi = CreateBookPlanApi(false);
 
-        Users users = UserTestsUtils.CreateEmpty();
-        Plans plans = PlansTestsUtils.CreateEmpty();
-
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
-
-        var result = bookPlanApi.GetBookPlan(context, 1);
+        var result = bookPlanApi.GetBookPlan(context, PLAN_ID);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
     }
 
     [Fact]
-    public void Test_NoPlan_GetPlan_ReturnsBadAuth()
+    public void Test_PlanDoesntExist_GetPlan_ReturnsBadAuth()
     {
-        var email = UserTestsUtils.GetFirstUserEmail();
+        var EMAIL = UserTestsUtils.GetFirstUserEmail();
+        var PLAN_ID = 99;
 
-        HttpContext context = ApiTestUtils.FakeContext(email);
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL);
 
-        Users users = UserTestsUtils.CreatePopulated();
-        Plans plans = PlansTestsUtils.CreateEmpty();
+        Database db = TestUtils.CreateDatabase();
+        BookPlanApi bookPlanApi = CreateBookPlanApi(false);
 
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
-
-        var result = bookPlanApi.GetBookPlan(context, 1);
+        var result = bookPlanApi.GetBookPlan(context, PLAN_ID);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
     }
 
     [Fact]
-    public async Task Test_NoUser_PostAddBookPlan_ReturnsBadReq()
+    public async Task Test_DeadlineIsPassed_PostAddBookPlan_ReturnsBadRequest()
     {
-        var email = UserTestsUtils.GetFirstUserEmail();
+        var EMAIL = UserTestsUtils.GetFirstUserEmail();
+        var DATA = "{\"title\": \"Title\", \"author\": \"Arlen Anmore\", \"pages\": 74, \"deadline\": \"2024-04-09\", \"weekdays\": [true, true, true, true, true, false, false], \"timeofday\": \"10:35\"}";
 
-        Users users = UserTestsUtils.CreateEmpty();
-        Plans plans = PlansTestsUtils.CreateEmpty();
-
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
-
-        HttpContext context = ApiTestUtils.FakeContext();
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL, DATA);
+        BookPlanApi bookPlanApi = CreateBookPlanApi(false);
 
         var result = await bookPlanApi.PostAddBookPlan(context);
 
@@ -149,68 +114,34 @@ public class PlanApiTests
     }
 
     [Fact]
-    public async Task Test_PostAddBookPlan_ReturnsBadReq()
+    public async Task Test_ValidRequest_PostAddBookPlan_ReturnsOk()
     {
-        var email = UserTestsUtils.GetFirstUserEmail();
+        var EMAIL = UserTestsUtils.GetFirstUserEmail();
+        var DATA = "{\"title\": \"Touchy Feely\", \"author\": \"Arlen Anmore\", \"pages\": 74, \"deadline\": \"2024-04-20\", \"weekdays\": [true, true, true, true, true, false, false], \"timeofday\": \"10:35\"}";
 
-        Users users = UserTestsUtils.CreatePopulated();
-        Plans plans = PlansTestsUtils.CreateEmpty();
-
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
-
-        HttpContext context = ApiTestUtils.FakeContext(email);
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL, DATA);
+        BookPlanApi bookPlanApi = CreateBookPlanApi(false);
 
         var result = await bookPlanApi.PostAddBookPlan(context);
 
-        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
+        Assert.IsType<Ok<BookPlanApi.AddBookPlanResponse>>(result);
     }
 
     [Fact]
-    private async Task Test_NoUsr_RemoveBookPlanRequest_ReturnsBadReq()
+    public async Task Test_DeadlineIsPassed_PostEditBookPlan_ReturnsBadRequest()
     {
-        var email = UserTestsUtils.GetFirstUserEmail();
+        var EMAIL = UserTestsUtils.TestUsers1[2].Item1;
+        var DATA = "{\"id\": 1, \"title\": \"Touchy Feely\", \"author\": \"Arlen Anmore\", \"pages\": 74, \"deadline\": \"2024-04-01\", \"weekdays\": [true, true, true, true, true, false, false], \"timeofday\": \"10:35\"}";
 
-        Users users = UserTestsUtils.CreateEmpty();
-        Plans plans = PlansTestsUtils.CreateEmpty();
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL, DATA);
 
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
+        Database database = TestUtils.CreateDatabase();
 
-        HttpContext context = ApiTestUtils.FakeContext(email);
+        Users users = UserTestsUtils.CreatePopulated(database);
+        Plans plans = PlansTestsUtils.CreatePopulated(database, users);
+        ReadingSessions sessions = new ReadingSessions(database);
 
-        var result = await bookPlanApi.PostRemoveBookPlan(context);
-
-        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
-    }
-
-    [Fact]
-    public async Task Test_RemoveBookPlanRequest_ReturnsBadReq()
-    {
-        var email = UserTestsUtils.GetFirstUserEmail();
-
-        Users users = UserTestsUtils.CreatePopulated();
-        Plans plans = PlansTestsUtils.CreateEmpty();
-
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
-
-        HttpContext context = ApiTestUtils.FakeContext(email);
-
-        var result = await bookPlanApi.PostRemoveBookPlan(context);
-
-        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
-    }
-
-    [Fact]
-    public async Task Test_NoUser_PostEditBookPlan_ReturnsBadReq()
-
-    {
-        var email = UserTestsUtils.GetFirstUserEmail();
-
-        Users users = UserTestsUtils.CreateEmpty();
-        Plans plans = PlansTestsUtils.CreateEmpty();
-
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
-
-        HttpContext context = ApiTestUtils.FakeContext(email);
+        BookPlanApi bookPlanApi = new BookPlanApi(users, plans, sessions);
 
         var result = await bookPlanApi.PostEditBookPlan(context);
 
@@ -218,20 +149,87 @@ public class PlanApiTests
     }
 
     [Fact]
-    public async Task Test_PostEditBookPlan_ReturnsBadReq()
-
+    public async Task Test_ValidRequest_PostEditBookPlan_ReturnsOk()
     {
-        var email = UserTestsUtils.GetFirstUserEmail();
+        var EMAIL = UserTestsUtils.TestUsers1[2].Item1;
+        var DATA = "{\"id\": 1, \"title\": \"Touchy Feely\", \"author\": \"Arlen Anmore\", \"pages\": 74, \"deadline\": \"2024-04-24\", \"weekdays\": [true, true, true, true, true, false, false], \"timeofday\": \"10:35\"}";
 
-        Users users = UserTestsUtils.CreatePopulated();
-        Plans plans = PlansTestsUtils.CreateEmpty();
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL, DATA);
+        BookPlanApi bookPlanApi = CreateBookPlanApi();
 
-        BookPlanApi bookPlanApi = new BookPlanApi(users, plans);
+        var result = await bookPlanApi.PostEditBookPlan(context);
 
-        HttpContext context = ApiTestUtils.FakeContext(email);
+        Assert.IsType<Ok<BookPlanApi.EditBookPlanResponse>>(result);
+    }
+
+    [Fact]
+    public async Task Test_InvalidPlan_PostEditBookPlan_ReturnsBadRequest()
+    {
+        var EMAIL = UserTestsUtils.TestUsers1[2].Item1;
+        var DATA = "{\"id\": 12, \"title\": \"Touchy Feely\", \"author\": \"Arlen Anmore\", \"pages\": 74, \"deadline\": \"2024-04-11\", \"weekdays\": [true, true, true, true, true, false, false], \"timeofday\": \"10:35\"}";
+
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL, DATA);
+        BookPlanApi bookPlanApi = CreateBookPlanApi();
 
         var result = await bookPlanApi.PostEditBookPlan(context);
 
         Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
-    } */
+    }
+
+    [Fact]
+    public async Task Test_InvalidPlanDetails_PostEditBookPlan_ReturnsBadRequest()
+    {
+        var EMAIL = UserTestsUtils.TestUsers1[2].Item1;
+        var DATA = "{\"id\": 1, \"title\": \"aaa\", \"author\": \"Arlen Anmore\", \"pages\": -1, \"deadline\": \"2024-04-11\", \"weekdays\": [true, true, true, true, true, false, false], \"timeofday\": \"10:35\"}";
+
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL, DATA);
+        BookPlanApi bookPlanApi = CreateBookPlanApi();
+
+        var result = await bookPlanApi.PostEditBookPlan(context);
+
+        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
+    }
+
+    [Fact]
+    public async Task Test_ValidIdButUserDoesntHavePlan_RemovePlan_ReturnsBadRequest()
+    {
+        var EMAIL = UserTestsUtils.GetFirstUserEmail();
+        var DATA = "{\"id\": 1}";
+
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL, DATA);
+        BookPlanApi bookPlanApi = CreateBookPlanApi();
+
+        var result = await bookPlanApi.PostRemoveBookPlan(context);
+
+        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
+    }
+
+    [Fact]
+    public async Task Test_InvalidId_RemovePlan_ReturnsBadRequest()
+    {
+        var EMAIL = UserTestsUtils.GetFirstUserEmail();
+        var DATA = "{\"id\": 12}";
+
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL, DATA);
+        BookPlanApi bookPlanApi = CreateBookPlanApi();
+
+        var result = await bookPlanApi.PostRemoveBookPlan(context);
+
+        Assert.IsType<BadRequest<ApiBase.ErrorResponse>>(result);
+    }
+
+    [Fact]
+    public async Task Test_ValidId_RemovePlan_ReturnsOk()
+    {
+        var EMAIL = UserTestsUtils.TestUsers1[2].Item1;
+        var DATA = "{\"id\": 1}";
+
+        HttpContext context = ApiTestUtils.FakeContext(EMAIL, DATA);
+        BookPlanApi bookPlanApi = CreateBookPlanApi();
+
+        var result = await bookPlanApi.PostRemoveBookPlan(context);
+
+        Assert.IsType<Ok<BookPlanApi.RemoveBookPlanResponse>>(result);
+    }
+
 }

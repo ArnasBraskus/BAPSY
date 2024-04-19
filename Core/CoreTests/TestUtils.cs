@@ -1,3 +1,5 @@
+using Moq;
+
 public class TestUtils
 {
     public static Database CreateDatabase() {
@@ -7,5 +9,14 @@ public class TestUtils
         database.Create(DatabaseSchema.Schema);
 
         return database;
+    }
+
+    public static DateTimeProvider CreateDateTimeMock(DateTime now)
+    {
+        var mock = new Mock<DateTimeProvider>();
+
+        mock.SetupGet(l => l.Now).Returns(now);
+
+        return mock.Object;
     }
 }

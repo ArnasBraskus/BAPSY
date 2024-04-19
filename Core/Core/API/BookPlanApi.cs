@@ -3,12 +3,18 @@ public class BookPlanApi : ApiBase
     private Users Users;
     private Plans Plans;
     private ReadingSessions ReadingSessions;
+    private DateTimeProvider DateTimeProvider;
 
-    public BookPlanApi(Users users, Plans plans, ReadingSessions sessions) : base(users)
+    public BookPlanApi(Users users, Plans plans, ReadingSessions sessions, DateTimeProvider dateTimeProvider) : base(users)
     {
         Users = users;
         Plans = plans;
         ReadingSessions = sessions;
+        DateTimeProvider = dateTimeProvider;
+    }
+
+    public BookPlanApi(Users users, Plans plans, ReadingSessions sessions) : this(users, plans, sessions, new DateTimeProvider())
+    {
     }
 
     public class ListBookPlansResponse
@@ -49,7 +55,7 @@ public class BookPlanApi : ApiBase
         {
             int id = Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Pages);
 
-            Plans.UpdateReadingSessions(id, DateTime.Now);
+            Plans.UpdateReadingSessions(id, DateTimeProvider.Now);
         }
         catch (ArgumentException e)
         {
@@ -147,7 +153,7 @@ public class BookPlanApi : ApiBase
         try
         {
             Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.Pages);
-            Plans.UpdateReadingSessions(plan.Id, DateTime.Now);
+            Plans.UpdateReadingSessions(plan.Id, DateTimeProvider.Now);
 
         }
         catch (ArgumentException e)
