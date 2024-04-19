@@ -27,7 +27,20 @@ public class UserApiTests
     }
 
     [Fact]
-    public void Test_UserDoesntExist_GetProfile_ReturnsBadRequest() {
+    public void Test_NotAuthorized_GetProfile_ThrowsException() {
+        HttpContext context = ApiTestUtils.FakeContext();
+
+        Users users = UserTestsUtils.CreateEmpty();
+
+        UserApi userApi = new UserApi(users);
+
+        Action action = () => userApi.GetUserProfile(context);
+
+        Assert.Throws<KeyNotFoundException>(action);
+    }
+
+    [Fact]
+    public void Test_UserDoesntExist_GetProfile_ThrowsException() {
         var EMAIL = UserTestsUtils.GetFirstUserEmail();
 
         HttpContext context = ApiTestUtils.FakeContext(EMAIL);

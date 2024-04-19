@@ -36,6 +36,11 @@ public class UserTestsUtils
         return TestUsers1.First().Item2;
     }
 
+    public static string GetUserEmail(int id)
+    {
+        return TestUsers1[id - 1].Item1;
+    }
+
     public static Users CreateEmpty() {
         return new Users(TestUtils.CreateDatabase());
     }
