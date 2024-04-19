@@ -49,6 +49,9 @@
         {
             int goal = Math.Min(pagesLeft, PagesPerDay);
 
+            if (goal <= 0)
+                break;
+
             sessions.Add(new ReadingSession(day.ToString("yyyy-MM-dd"), goal));
 
             if (pagesLeft < PagesPerDay)
@@ -105,6 +108,9 @@
     {
         var realPagesRead = pagesRead - session.Actual;
         var date = DateTime.Parse(session.Date).AddDays(1);
+
+        if (realPagesRead > PageCount - pagesRead)
+            throw new InvalidOperationException("pagesRead cannot exceed remaining page count");
 
         session.Actual = pagesRead;
         PagesRead += realPagesRead;
