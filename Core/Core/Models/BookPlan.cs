@@ -30,6 +30,22 @@
         ReadingSessions = sessions;
     }
 
+    public BookPlan(int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
+        string title, string author, int pageCount, int pagesRead, List<ReadingSession> sessions)
+    {
+        Id = id;
+        UserId = userId;
+        DeadLine = deadLine;
+        DayOfWeek = dayOfWeek;
+        this.timeOfDay = timeOfDay;
+        PagesPerDay = pagesPerDay;
+        Title = title;
+        Author = author;
+        PageCount = pageCount;
+        PagesRead = pagesRead;
+        ReadingSessions = sessions;
+    }
+
     public List<ReadingSession> GenerateReadingSessions(DateTime startDate)
     {
         DateTime endDate = DateTime.Parse(DeadLine);
@@ -97,10 +113,6 @@
         if (daysLeft > 0)
         {
             PagesPerDay = (int)Math.Ceiling((decimal)(PageCount - PagesRead) / daysLeft);
-        }
-        else
-        {
-            PagesPerDay = -1;
         }
     }
 
