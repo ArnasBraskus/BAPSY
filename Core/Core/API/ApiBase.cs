@@ -18,9 +18,6 @@ public abstract class ApiBase {
     protected User GetUser(HttpContext context) {
         var email = Auth.GetNameIdentifier(context);
 
-        if (email == null)
-            throw new KeyNotFoundException("User identifier not found");
-
         return Users.FindUser(email);
     }
 

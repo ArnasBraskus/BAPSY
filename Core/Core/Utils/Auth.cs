@@ -22,11 +22,11 @@ public class Auth
         GoogleTokenValidator = validator;
     }
 
-    public static string? GetNameIdentifier(HttpContext context) {
+    public static string GetNameIdentifier(HttpContext context) {
         var email = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
 
         if (email == null)
-            return null;
+            throw new KeyNotFoundException("NameIdentifier claim not found");
 
         return email.Value;
     }
