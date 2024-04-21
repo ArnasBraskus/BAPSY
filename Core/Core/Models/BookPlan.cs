@@ -48,10 +48,15 @@
 
     public List<ReadingSession> GenerateReadingSessions(DateTime startDate)
     {
-        DateTime endDate = DateTime.Parse(DeadLine);
+        DateTime endDate = DateTime.Parse($"{DeadLine} {timeOfDay}");
 
         if (startDate > endDate)
             throw new ArgumentException("Start date cannot be later than end date.");
+
+        if (TimeSpan.Parse(timeOfDay) < startDate.TimeOfDay)
+        {
+            startDate = startDate.AddDays(1);
+        }
 
         var days = FindReadingDays(startDate, endDate);
 
