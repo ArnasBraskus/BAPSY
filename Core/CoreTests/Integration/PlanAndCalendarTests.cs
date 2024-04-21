@@ -20,7 +20,7 @@ public class PlanAndCalendarTests
     [MemberData(nameof(GetTestPlans), MemberType = typeof(PlanAndCalendarTests))]
     public static void Test_CreatePlan_AllPagesAreAccountedFor(string deadline, bool[] days, string time, string title, string author, int pages)
     {
-        var NOW = new DateTime(2024, 04, 01);
+        var NOW = new DateTime(2024, 04, 01, 15, 0, 0);
         var USER_ID = 1;
 
         Database database = TestUtils.CreateDatabase();
