@@ -26,6 +26,7 @@ public static class DatabaseSchema
         date TEXT NOT NULL,
         goal INTEGER NOT NULL,
         actual INTEGER DEFAULT 0,
+        completed INTEGER DEFAULT 0,
         FOREIGN KEY (planId) REFERENCES plans(id));
     ";
 }

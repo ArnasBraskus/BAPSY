@@ -6,6 +6,8 @@ public class ReadingSession
     public int Goal { get; }
 
     private int _Actual;
+
+    public int IsCompleted { get;  }
     public int Actual
     {
         get {
@@ -26,12 +28,13 @@ public class ReadingSession
         Goal = goal;
     }
 
-    public ReadingSession(ReadingSessions events, int id, string date, int goal, int actual)
+    public ReadingSession(ReadingSessions events, int id, string date, int goal, int actual, int isCompleted)
     {
         ReadingSessions = events;
         Id = id;
         Date = date;
         Goal = goal;
         _Actual = actual;
+        IsCompleted = isCompleted;
     }
 }

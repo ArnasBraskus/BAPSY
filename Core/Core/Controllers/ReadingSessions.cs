@@ -16,10 +16,11 @@ public class ReadingSessions {
         {
             {"$planId", planId},
             {"$date", ev.Date},
-            {"$goal", ev.Goal}
+            {"$goal", ev.Goal},
+            {"$completed", ev.IsCompleted},
         };
 
-        DB.ExecuteNonQuery("INSERT INTO readingsessions (planId, date, goal) VALUES ($planId, $date, $goal)", parameters);
+        DB.ExecuteNonQuery("INSERT INTO readingsessions (planId, date, goal, completed) VALUES ($planId, $date, $goal, $completed)", parameters);
     }
 
     public void Delete(int planId) {
@@ -47,7 +48,7 @@ public class ReadingSessions {
             {"$id", id}
         };
 
-        var reader = DB.ExecuteSingle("SELECT date, goal, actual FROM readingsessions WHERE id = $id", parameters);
+        var reader = DB.ExecuteSingle("SELECT date, goal, actual, completed FROM readingsessions WHERE id = $id", parameters);
 
         if (reader == null)
             throw new KeyNotFoundException("Reading session not found");
@@ -55,8 +56,9 @@ public class ReadingSessions {
         string date = reader.GetString(0);
         int goal = reader.GetInt32(1);
         int actual = reader.GetInt32(2);
+        int isCompleted = reader.GetInt32(3);  
 
-        return new ReadingSession(this, id, date, goal, actual);
+        return new ReadingSession(this, id, date, goal, actual, isCompleted);
     }
 
 
@@ -68,13 +70,14 @@ public class ReadingSessions {
 
         var sessions = new List<ReadingSession>();
 
-        foreach (var ev in DB.Execute("SELECT id, date, goal, actual FROM readingsessions WHERE planId = $planId", parameters)) {
+        foreach (var ev in DB.Execute("SELECT id, date, goal, actual, completed FROM readingsessions WHERE planId = $planId", parameters)) {
             int id = ev.GetInt32(0);
             string date = ev.GetString(1);
             int goal = ev.GetInt32(2);
             int actual = ev.GetInt32(3);
+            int isCompleted = ev.GetInt32(4);
 
-            sessions.Add(new ReadingSession(this, id, date, goal, actual));
+            sessions.Add(new ReadingSession(this, id, date, goal, actual, isCompleted));
         }
 
         return sessions;
@@ -92,4 +95,17 @@ public class ReadingSessions {
 
         DB.ExecuteNonQuery("UPDATE readingsessions SET actual = $actual WHERE id = $id", parameters);
     }
+
+    public void UpdateCompletion(int id, int completion)
+    {
+        var parameters = new Dictionary<string, dynamic>
+        {
+            {"$id", id},
+            {"$completed", completion}
+        };
+        DB.ExecuteNonQuery("UPDATE readingsessions SET completed = $completed WHERE id = $id", parameters);
+
+    }
+
+
 }
