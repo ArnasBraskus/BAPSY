@@ -74,6 +74,7 @@ public class BookPlanApi : ApiBase
         public string Deadline { get; set; } = null!;
         public bool[] Weekdays { get; set; } = null!;
         public string TimeOfDay { get; set; } = null!;
+        public List<ReadingSession> Sessions { get; set; } = null!;
     }
 
     public IResult GetBookPlan(HttpContext context, int id)
@@ -93,7 +94,8 @@ public class BookPlanApi : ApiBase
             Pages = plan.PageCount,
             Deadline = plan.DeadLine,
             Weekdays = Weekdays.FromBitField(plan.DayOfWeek),
-            TimeOfDay = plan.timeOfDay
+            TimeOfDay = plan.timeOfDay,
+            Sessions = plan.ReadingSessions
         });
     }
 
