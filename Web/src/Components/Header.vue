@@ -1,15 +1,5 @@
 <script setup>
-import router from '../router';
-import { logout } from '../utils/auth.js';
-import { ref } from 'vue';
-import { requestToken } from '../utils/auth.js'
 
-async function loginCallback(res) {
-  if (!await requestToken(res.credential))
-    return;
-
-  router.push({ path: 'plan' });
-}
 </script>
 
 <template>
@@ -17,8 +7,7 @@ async function loginCallback(res) {
         <div class="logo"></div>
         <nav>
             <RouterLink to="/">Home</RouterLink>
-            <RouterLink to="/about">About</RouterLink>
-            <GoogleLogin :callback="loginCallback" />             
+            <RouterLink to="/about">About</RouterLink>            
         </nav>
     </header>
 </template>

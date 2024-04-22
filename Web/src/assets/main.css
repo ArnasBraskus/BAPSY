@@ -9,7 +9,7 @@ body {
 }
 
 .plan-background {
-  background-color: #FFFFEC;
+  background: linear-gradient(178deg, #B99470 10%, #FFFFEC);
   background-size: cover;
   background-position: center;
   position: relative;
@@ -46,44 +46,6 @@ header {
   align-items: center;
   justify-content: space-between;
   background-color: var(--primary-color);
-}
-
-.edit-button {
-  font-size: large;
-  display: inline-block;
-  margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #d67c0d;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 3px;
-  transition: background-color 0.3s ease;
-}
-
-.edit-button:hover {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-.edit-button:active {
-  background-color: #004080;
-}
-
-.remove-button {
-  font-size: large;
-  display: inline-block;
-  margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #be0e0e;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 3px;
-  transition: background-color 0.3s ease;
-}
-
-.remove-button:hover {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-.remove-button:active {
-  background-color: #004080;
 }
 
 .cta-button {
