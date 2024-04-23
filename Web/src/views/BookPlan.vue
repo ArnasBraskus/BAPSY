@@ -1,10 +1,11 @@
 <script>
 import { ModalsContainer, useModal } from 'vue-final-modal';
-import ModalConfirmPlainCss from '../Components/ModalConfirmPlainCss.vue';
+import ModalPlan from '../Components/ModalPlan.vue';
 import { RouterView } from 'vue-router';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 import { getPlans, removePlan } from '../utils/plans.js';
+import { markCompleted, markNotCompleted } from '../utils/confirmation.js';
 import { logout } from '../utils/auth.js';
 import { apiDoGet } from '../utils/api.js'
 import router from '../router';
@@ -42,6 +43,9 @@ const componentOptions = {
         console.error('Error fetching user profile:', error);
       }
     },
+    markCompletedPlan(planId, sesId) {
+      markCompleted(planId, sesId)
+    },
     removePlan(planId) {
         removePlan(planId)
         .then(() => {
@@ -60,7 +64,7 @@ const componentOptions = {
     },
     async showModal() {
     const modal = useModal({
-    component: ModalConfirmPlainCss,
+    component: ModalPlan,
         attrs: {
             title: 'Plan',
             onConfirm: () => {
@@ -72,7 +76,7 @@ const componentOptions = {
     },
     showEditModal(plan) {
       const modal = useModal({
-        component: ModalConfirmPlainCss,
+        component: ModalPlan,
       attrs: {
         title: 'Edit Plan',
         plan: plan,
@@ -111,6 +115,7 @@ export default componentOptions;
             <button class="cta-button" @click="showModal">Create a Plan</button>
           <div v-if="plans && plans.length > 0">
               <div class="container">
+                <p>Your Plans</p>
                 <div class="select">
                   <select v-model="selectedPlan">
                     <option value="">Select a plan</option>
@@ -120,7 +125,14 @@ export default componentOptions;
               </div>
             <template v-if="selectedPlan">
               <div class="info-container">
-                <p> {{ selectedPlan.sessions }} </p>
+                <div class="sesh-container">
+                  <p>Your Sessions</p>
+                  <div class="select-sesh">
+                    <select v-model="selectedSession">
+                      <option  v-for="session in selectedPlan.sessions" :key="session.id" :value="session"> {{ session.date }} </option>
+                    </select>
+                  </div>
+                </div>
                 <div class="deadline">Deadline: {{ selectedPlan.deadline }} </div>
               </div>
               <div class="progress-container"> Progress bar</div>
@@ -128,6 +140,7 @@ export default componentOptions;
                 <div role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" style="--value: 67"></div>
               </div>
               <div class="progress-container">
+                <button class="edit-button" style="--clr:white" @click="markCompletedPlan(selectedPlan.id, selectedSession.id)"><span>markCompleted</span></button>
                 <button class="edit-button" style="--clr:white" @click="showEditModal(selectedPlan)"><span>Edit</span></button>
                 <button class="remove-button" style="--clr:white" @click="removePlan(selectedPlan.id)"><span>Remove</span></button>
               </div>
@@ -281,6 +294,32 @@ select::-ms-expand {
   color: #f39c12;
 }
 
+.select-sesh {
+  position: relative;
+  display: flex;
+  width: 20em;
+  height: 3em;
+  border-radius: .25em;
+  overflow: hidden;
+}
+/* Arrow */
+.select-sesh::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1em;
+  background-color: #5F6F52;
+  transition: .25s all ease;
+  pointer-events: none;
+}
+/* Transition */
+.select-sesh:hover::after {
+  color: #f39c12;
+}
+
+
+
 @keyframes progress {
   0% { --percentage: 0; }
   100% { --percentage: var(--value); }
@@ -300,22 +339,21 @@ select::-ms-expand {
 .deadline {
   position : absolute;
   left : 85%;
-  margin-top: 50px;
+  margin-top: 60px;
   text-align: right;
 }
-
-.next-session {
-  position : absolute;
-  left: 4%;
-  margin-top: 50px;
-  text-align: left;
-}
-
 .progress-container {
   display: flex;
   justify-content: center;
   align-items: center;
     margin-top: 50px;
+}
+
+.sesh-container {
+  position : absolute;
+  left : 15%;
+  transform :
+  translate(-50%,-50%); 
 }
 
 .container {
