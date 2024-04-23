@@ -1,7 +1,7 @@
 import { apiDoPost } from './api.js';
 
 export async function markCompleted(planId, sessionId) {
-  const res = await apiDoPost('/api/mark-session-completed', {
+  const res = await apiDoPost('/api/api/mark-session-completed', {
     planId: planId,
     sessionId: sessionId,
   });
@@ -9,7 +9,7 @@ export async function markCompleted(planId, sessionId) {
 }
 
 export async function markNotCompleted(planId, sessionId) {
-  const res = await apiDoPost('/api/mark-session-not-completed', {
+  const res = await apiDoPost('/api//api/mark-session-not-completed', {
     planId: planId,
     sessionId: sessionId,
   });
