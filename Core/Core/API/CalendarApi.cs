@@ -59,10 +59,32 @@ public class CalendarApi : ApiBase
         });
     }
 
-    public IResult GetExportCalendar(HttpContext context, int userId)
+    private string GenerateCalendarToken(User user)
+    {
+        return Auth.GenerateHash(user, $"CAL-{user.Id}");
+    }
+
+    public class GetCalendarTokenResponse
+    {
+        public string Token { get; set; } = null!;
+    }
+
+    public IResult GetCalendarToken(HttpContext context)
+    {
+        User user = GetUser(context);
+
+        return Results.Ok(new GetCalendarTokenResponse {
+            Token = GenerateCalendarToken(user)
+        });
+    }
+
+    public IResult GetExportCalendar(HttpContext context, int userId, string t)
     {
         try {
             User user = Users.FindUser(userId);
+
+            if (t != Auth.GenerateHash(user, $"CAL-{userId}"))
+                return Results.BadRequest(new ErrorResponse { Error = "Invalid token" });
 
             ReadingCalendar calendar = new ReadingCalendar();
 
@@ -80,13 +102,14 @@ public class CalendarApi : ApiBase
             return Results.Bytes(bytes, "text/calendar");
         }
         catch (KeyNotFoundException) {
-            return Results.BadRequest(new ErrorResponse { Error = "Plan not found" });
+            return Results.BadRequest(new ErrorResponse { Error = "Calendar not found" });
         }
     }
 
     public override void Map(WebApplication app)
     {
         app.MapGet("/calendar/events", GetCalendarEvents).RequireAuthorization("Users");
+        app.MapGet("/calendar/token", GetCalendarToken).RequireAuthorization("Users");
         app.MapGet("/calendar/{userId}/export", GetExportCalendar);
     }
 }
