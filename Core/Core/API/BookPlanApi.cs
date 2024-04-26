@@ -71,6 +71,7 @@ public class BookPlanApi : ApiBase
         public string Title { get; set; } = null!;
         public string Author { get; set; } = null!;
         public int Pages { get; set; }
+        public int PagesRead { get; set; }
         public string Deadline { get; set; } = null!;
         public bool[] Weekdays { get; set; } = null!;
         public string TimeOfDay { get; set; } = null!;
@@ -92,6 +93,7 @@ public class BookPlanApi : ApiBase
             Author = plan.Author,
             Title = plan.Title,
             Pages = plan.PageCount,
+            PagesRead = plan.PagesRead,
             Deadline = plan.DeadLine,
             Weekdays = Weekdays.FromBitField(plan.DayOfWeek),
             TimeOfDay = plan.timeOfDay,
