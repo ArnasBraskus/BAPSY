@@ -13,7 +13,7 @@ public static class CalendarWriter
         foreach (var e in calendar.Events)
         {
             icalendar.Events.Add(new CalendarEvent {
-                Summary = $"Book Reading: {calendar.BookTitle} by {calendar.BookAuthor}",
+                Summary = $"Book Reading: {e.Metadata.BookTitle} by {e.Metadata.BookAuthor}",
                 Description = $"Today's goal: {e.PagesToRead} pages ({e.PageStart}-{e.PageEnd})",
                 Start = new CalDateTime(e.Date)
             });
