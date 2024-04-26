@@ -30,15 +30,17 @@ public class Users
             { "$email", email }
         };
 
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT id, name FROM users WHERE email = $email", parameters);
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT id, secret, secret_ver, name FROM users WHERE email = $email", parameters);
 
         if (reader == null)
             throw new KeyNotFoundException("User not found");
 
         int id = reader.GetInt32(0);
-        string name = reader.GetString(1);
+        string secret = reader.GetString(1);
+        int secretVer = reader.GetInt32(2);
+        string name = reader.GetString(3);
 
-        return new User(this, id, email, name);
+        return new User(this, id, secret, secretVer, email, name);
     }
 
     public User FindUser(int id) {
@@ -46,15 +48,17 @@ public class Users
             { "$id", id }
         };
 
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT email, name FROM users WHERE id = $id", parameters);
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT secret, secret_ver, email, name FROM users WHERE id = $id", parameters);
 
         if (reader == null)
             throw new KeyNotFoundException("User not found");
 
-        string email = reader.GetString(0);
-        string name = reader.GetString(1);
+        string secret = reader.GetString(0);
+        int secretVer = reader.GetInt32(1);
+        string email = reader.GetString(2);
+        string name = reader.GetString(3);
 
-        return new User(this, id, email, name);
+        return new User(this, id, secret, secretVer, email, name);
 
     }
 
@@ -80,12 +84,17 @@ public class Users
         if (!IsEmailValid(email))
             throw new FormatException("Email is not valid");
 
+        var secret = Auth.GenerateSecret();
+        var secretVer = 0;
+
         var parameters = new Dictionary<string, dynamic> {
             { "$email", email },
-            { "$name", name }
+            { "$name", name },
+            { "$secret", secret },
+            { "$secret_ver", secretVer }
         };
 
-        DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name) VALUES ($email, $name)", parameters);
+        DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name, secret, secret_ver) VALUES ($email, $name, $secret, $secret_ver)", parameters);
     }
 
     public void UpdateName(int id, string name) {

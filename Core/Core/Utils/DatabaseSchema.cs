@@ -4,6 +4,8 @@ public static class DatabaseSchema
     @"
     CREATE TABLE users(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        secret TEXT NOT NULL,
+        secret_ver INTEGER NOT NULL,
         email TEXT UNIQUE NOT NULL,
         name TEXT NOT NULL);
 

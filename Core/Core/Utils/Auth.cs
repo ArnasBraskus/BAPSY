@@ -1,8 +1,8 @@
-using Google.Apis.Auth;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 public class Auth
@@ -29,6 +29,28 @@ public class Auth
             throw new KeyNotFoundException("NameIdentifier claim not found");
 
         return email.Value;
+    }
+
+    public static string GenerateSecret(int length = 16) {
+        var alphanum = "ABCDEFGHIJKLMONOPQRSTUVWXYZabcdefghijklmonopqrstuvwxyz0123456789";
+
+        char[] chars = new char[length];
+
+        for (int i = 0; i < length; i++)
+        {
+            chars[i] = alphanum[RandomNumberGenerator.GetInt32(0, alphanum.Length)];
+        }
+
+        return new string(chars);
+    }
+
+    public static string GenerateHash(User user, string data) {
+        string payload = $"{user.Secret}{user.SecretVersion}{data}";
+        byte[] bytes = Encoding.ASCII.GetBytes(payload);
+
+        var hash = SHA256.Create().ComputeHash(bytes);
+
+        return Convert.ToHexString(hash).ToLower();
     }
 
     public void Add(IServiceCollection services)
