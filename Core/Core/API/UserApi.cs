@@ -6,8 +6,8 @@ public class UserApi : ApiBase {
     }
 
     public class UserProfileResponse {
-        public string? Email = null!;
-        public string? Name = null!;
+        public required string Email { get; set; } = null!;
+        public required string Name { get; set; } = null!;
     }
 
     public IResult GetUserProfile(HttpContext context) {
