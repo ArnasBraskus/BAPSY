@@ -2,6 +2,7 @@ public class ReadingSession
 {
     private ReadingSessions? ReadingSessions;
     public int Id { get; }
+    public int PlanId { get; }
     public string Date { get; }
     public int Goal { get; }
 
@@ -28,13 +29,24 @@ public class ReadingSession
         Goal = goal;
     }
 
-    public ReadingSession(ReadingSessions events, int id, string date, int goal, int actual, int isCompleted)
+    public ReadingSession(ReadingSessions events, int id, int planId, string date, int goal, int actual, int isCompleted)
     {
         ReadingSessions = events;
         Id = id;
+        PlanId = planId;
         Date = date;
         Goal = goal;
         _Actual = actual;
         IsCompleted = isCompleted;
+    }
+
+    public string GenerateToken()
+    {
+        if (ReadingSessions is null)
+            throw new InvalidOperationException("ReadingSession is not connected to database");
+
+        User user = ReadingSessions.GetUser(Id);
+
+        return Auth.GenerateHash(user, $"SESSION-{Id}");
     }
 }

@@ -69,10 +69,7 @@ public class Plans
             var id = reader.GetInt32(0);
             ids.Add(id);
         }
-        if (ids.Count == 0)
-        {
-            return null;
-        }
+
         return ids;
     }
 

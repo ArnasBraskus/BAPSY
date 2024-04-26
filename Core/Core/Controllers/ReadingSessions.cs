@@ -1,8 +1,11 @@
 public class ReadingSessions {
     private Database DB;
 
+    private Users Users;
+
     public ReadingSessions(Database db) {
         DB = db;
+        Users = new Users(DB);
     }
 
     public void Add(int planId, ReadingSession ev) {
@@ -48,17 +51,18 @@ public class ReadingSessions {
             {"$id", id}
         };
 
-        var reader = DB.ExecuteSingle("SELECT date, goal, actual, completed FROM readingsessions WHERE id = $id", parameters);
+        var reader = DB.ExecuteSingle("SELECT planId, date, goal, actual, completed FROM readingsessions WHERE id = $id", parameters);
 
         if (reader == null)
             throw new KeyNotFoundException("Reading session not found");
 
-        string date = reader.GetString(0);
-        int goal = reader.GetInt32(1);
-        int actual = reader.GetInt32(2);
-        int isCompleted = reader.GetInt32(3);  
+        int planId = reader.GetInt32(0);
+        string date = reader.GetString(1);
+        int goal = reader.GetInt32(2);
+        int actual = reader.GetInt32(3);
+        int isCompleted = reader.GetInt32(4);  
 
-        return new ReadingSession(this, id, date, goal, actual, isCompleted);
+        return new ReadingSession(this, id, planId, date, goal, actual, isCompleted);
     }
 
 
@@ -77,7 +81,7 @@ public class ReadingSessions {
             int actual = ev.GetInt32(3);
             int isCompleted = ev.GetInt32(4);
 
-            sessions.Add(new ReadingSession(this, id, date, goal, actual, isCompleted));
+            sessions.Add(new ReadingSession(this, id, planId, date, goal, actual, isCompleted));
         }
 
         return sessions;
@@ -107,5 +111,18 @@ public class ReadingSessions {
 
     }
 
+    private int GetUserId(int id)
+    {
+        var parameters = new Dictionary<string, dynamic>
+        {
+            {"$id", id}
+        };
 
+        return DB.ExecuteScalar("SELECT p.userId FROM plans p LEFT JOIN readingsessions s ON s.planId = p.id");
+    }
+
+    public User GetUser(int id)
+    {
+        return Users.FindUser(GetUserId(id));
+    }
 }

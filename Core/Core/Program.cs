@@ -34,7 +34,8 @@ ApiBase[] apis = new ApiBase[] {
     new AuthApi(auth, users),
     new UserApi(users),
     new CalendarApi(users, plans),
-    new BookPlanApi(users, plans, sessions)
+    new BookPlanApi(users, plans, sessions),
+    new SessionApi(users, plans, sessions)
 };
 
 foreach (var api in apis) {
