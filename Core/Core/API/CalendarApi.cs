@@ -66,6 +66,7 @@ public class CalendarApi : ApiBase
 
     public class GetCalendarTokenResponse
     {
+        public int UserId { get; set; }
         public string Token { get; set; } = null!;
     }
 
@@ -74,6 +75,7 @@ public class CalendarApi : ApiBase
         User user = GetUser(context);
 
         return Results.Ok(new GetCalendarTokenResponse {
+            UserId = user.Id,
             Token = GenerateCalendarToken(user)
         });
     }
