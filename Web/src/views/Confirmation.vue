@@ -1,5 +1,5 @@
 <script>
-import Footer from '../Components/Footer.vue'
+import Footer from '../Components/Footer.vue';
 import { markCompleted } from '../utils/confirmation.js';
 import ModalConfirmation from '../Components/ModalConfirmation.vue';
 import { ModalsContainer, useModal } from 'vue-final-modal';
@@ -11,19 +11,19 @@ const componentOptions = {
   },
   methods: {
     markCompletedPlan(planId, sesId) {
-      markCompleted(planId, sesId)
+      markCompleted(planId, sesId);
     },
     async showModal() {
-    const modal = useModal({
-    component: ModalConfirmation,
+      const modal = useModal({
+        component: ModalConfirmation,
         attrs: {
-            title: 'Confirmation',
-            onConfirm: () => {
+          title: 'Confirmation',
+          onConfirm: () => {
             modal.close();
+          }
         }
-    }
-    });
-        modal.open();
+      });
+      modal.open();
     }
   }
 };

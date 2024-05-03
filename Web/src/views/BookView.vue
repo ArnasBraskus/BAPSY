@@ -8,7 +8,7 @@ import { chooseColor } from '../utils/books.js';
 import router from '../router';
 
 import Menu from '../Components/Menu.vue';
-import Footer from '../Components/Footer.vue'
+import Footer from '../Components/Footer.vue';
 import BookCover from '../Components/BookCover.vue';
 import ModalPlan from '../Components/ModalPlan.vue';
 

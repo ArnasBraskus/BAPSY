@@ -1,6 +1,6 @@
 <script setup>
-import Footer from '../Components/Footer.vue'
-import { requestToken } from '../utils/auth.js'
+import Footer from '../Components/Footer.vue';
+import { requestToken } from '../utils/auth.js';
 import router from '../router';
 import { GoogleLogin } from 'vue3-google-login';
 

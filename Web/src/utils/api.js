@@ -9,7 +9,7 @@ function checkResponse(response) {
 
 export async function apiDoGetUnauthenticated(endpoint) {
   const response = await fetch(endpoint, {
-      method: 'GET'
+    method: 'GET'
   });
 
   checkResponse(response);
@@ -52,10 +52,10 @@ export async function apiDoGet(endpoint) {
   const token = getCookie('api-token');
 
   const response = await fetch(endpoint, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
   });
 
   checkResponse(response);

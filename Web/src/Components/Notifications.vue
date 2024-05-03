@@ -20,14 +20,14 @@ var notifications = useNotifications();
 notifications.value = (message, type) => {
 
   switch (type) {
-    case 'error':
-      toastTypeClass.value = TOAST_CLASS_ERROR;
-      break;
-    case 'warning':
-      toastTypeClass.value = TOAST_CLASS_WARNING;
-      break;
-    case 'info':
-      toastTypeClass.value = TOAST_CLASS_INFO;
+  case 'error':
+    toastTypeClass.value = TOAST_CLASS_ERROR;
+    break;
+  case 'warning':
+    toastTypeClass.value = TOAST_CLASS_WARNING;
+    break;
+  case 'info':
+    toastTypeClass.value = TOAST_CLASS_INFO;
   }
 
   toastMessage.value = message;
@@ -37,7 +37,7 @@ notifications.value = (message, type) => {
     toastAnimTypeClass.value = TOAST_ANIM_DONE;
 
     setTimeout(() => {
-        toastAnimTypeClass.value = TOAST_ANIM_ENTER;
+      toastAnimTypeClass.value = TOAST_ANIM_ENTER;
     }, 3000);
 
   }, 500);

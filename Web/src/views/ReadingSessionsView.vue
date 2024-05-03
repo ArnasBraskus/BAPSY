@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '../router';
 
-import Footer from '../Components/Footer.vue'
+import Footer from '../Components/Footer.vue';
 import Menu from '../Components/Menu.vue';
 
 import { getPlan } from '../utils/plans.js';

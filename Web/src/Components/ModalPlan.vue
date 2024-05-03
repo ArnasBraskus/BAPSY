@@ -1,6 +1,6 @@
 <script>
 import { addPlan, editPlan } from '../utils/plans.js';
-import { VueFinalModal } from 'vue-final-modal'
+import { VueFinalModal } from 'vue-final-modal';
 
 export default {
   components: {
@@ -29,16 +29,16 @@ export default {
     checkForm() {
       this.errors = [];
 
-      if (!this.formData.bookTitle) this.errors.push("Book title required.");
-      if (!this.formData.author) this.errors.push("Author required.");
-      if (!this.formData.pages) this.errors.push("Page count required.");
-      if (this.formData.pages <= 0 && (this.formData.pages)) this.errors.push("Page count cannot be negative.");
-      if (!this.formData.deadline) this.errors.push("Deadline date required.");
-      if (new Date() > new Date(this.formData.deadline)) this.errors.push("Deadline date cannot be older than today.");
+      if (!this.formData.bookTitle) this.errors.push('Book title required.');
+      if (!this.formData.author) this.errors.push('Author required.');
+      if (!this.formData.pages) this.errors.push('Page count required.');
+      if (this.formData.pages <= 0 && (this.formData.pages)) this.errors.push('Page count cannot be negative.');
+      if (!this.formData.deadline) this.errors.push('Deadline date required.');
+      if (new Date() > new Date(this.formData.deadline)) this.errors.push('Deadline date cannot be older than today.');
       if (!this.formData.day1 && !this.formData.day2 && !this.formData.day3 && !this.formData.day4 && !this.formData.day5 && !this.formData.day6 && !this.formData.day7) {
-        this.errors.push("At least one day required.");
+        this.errors.push('At least one day required.');
       }
-      if (!this.formData.timeOfDay) this.errors.push("Hour required.");
+      if (!this.formData.timeOfDay) this.errors.push('Hour required.');
 
       if (this.errors.length === 0) {
         if (this.plan){
@@ -46,23 +46,23 @@ export default {
           weekdays.push(this.formData.day7, this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6);
           const convertedWeekdays = weekdays.map(day => !!day);
           editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
-          .then(() => {
-            this.$emit('confirm');
-          })
-          .catch(error => {
-            console.error('Error editing plan:', error);
-          });
+            .then(() => {
+              this.$emit('confirm');
+            })
+            .catch(error => {
+              console.error('Error editing plan:', error);
+            });
         } else {
           let weekdays = [];
           weekdays.push(this.formData.day7, this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6);
           const convertedWeekdays = weekdays.map(day => !!day);
           addPlan(this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
-          .then(() => {
-            this.$emit('confirm');
-          })
-          .catch(error => {
-            console.error('Error adding plan:', error);
-          });
+            .then(() => {
+              this.$emit('confirm');
+            })
+            .catch(error => {
+              console.error('Error adding plan:', error);
+            });
         }
       }
     },

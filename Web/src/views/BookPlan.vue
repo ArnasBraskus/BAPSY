@@ -7,7 +7,7 @@ import Footer from '../Components/Footer.vue';
 import { getPlans, removePlan } from '../utils/plans.js';
 import { markCompleted, markNotCompleted } from '../utils/confirmation.js';
 import { logout } from '../utils/auth.js';
-import { apiDoGet } from '../utils/api.js'
+import { apiDoGet } from '../utils/api.js';
 import router from '../router';
 
 
@@ -44,10 +44,10 @@ const componentOptions = {
       }
     },
     markCompletedPlan(planId, sesId) {
-      markCompleted(planId, sesId)
+      markCompleted(planId, sesId);
     },
     removePlan(planId) {
-        removePlan(planId)
+      removePlan(planId)
         .then(() => {
           this.plans = this.plans.filter(plan => plan.id !== planId);
         })
@@ -63,26 +63,26 @@ const componentOptions = {
       }
     },
     async showModal() {
-    const modal = useModal({
-    component: ModalPlan,
+      const modal = useModal({
+        component: ModalPlan,
         attrs: {
-            title: 'Plan',
-            onConfirm: () => {
+          title: 'Plan',
+          onConfirm: () => {
             modal.close();
+          }
         }
-    }
-    });
-        modal.open();
+      });
+      modal.open();
     },
     showEditModal(plan) {
       const modal = useModal({
         component: ModalPlan,
-      attrs: {
-        title: 'Edit Plan',
-        plan: plan,
-        onConfirm: () => {
-          modal.close();
-         }
+        attrs: {
+          title: 'Edit Plan',
+          plan: plan,
+          onConfirm: () => {
+            modal.close();
+          }
         }
       });
       modal.open();

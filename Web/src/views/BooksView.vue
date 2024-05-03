@@ -32,13 +32,13 @@ const fetchPlans = (async() => {
 function showModal() {
   const modal = useModal({
     component: ModalPlan,
-      attrs: {
-        title: 'Plan',
-        onConfirm: () => {
-          modal.close();
-          fetchPlans();
-        }
+    attrs: {
+      title: 'Plan',
+      onConfirm: () => {
+        modal.close();
+        fetchPlans();
       }
+    }
   });
 
   modal.open();

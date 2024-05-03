@@ -1,5 +1,5 @@
 <script>
-import { VueFinalModal } from 'vue-final-modal'
+import { VueFinalModal } from 'vue-final-modal';
 import { markNotCompleted } from '../utils/confirmation.js';
 
 export default {
@@ -18,10 +18,10 @@ export default {
 
       if(this.pages == 0 || (this.pages)) {
         markNotCompleted(planId, sesId)
-        .then(() => {
+          .then(() => {
             this.$emit('confirm');
             window.location.reload();
-        });
+          });
       } 
     },
     clearErrors() {
@@ -31,10 +31,10 @@ export default {
       this.$emit('confirm');
     },
   },
-    title: {
-      type: String,
-      default: 'Default Title'
-    }
+  title: {
+    type: String,
+    default: 'Default Title'
+  }
 };
 
 </script>
