@@ -130,12 +130,12 @@
             throw new InvalidOperationException("pagesRead cannot exceed remaining page count");
 
         session.Actual = pagesRead;
-        if (pagesRead != 0)
-        {
-            PagesRead += realPagesRead;
-        }
+        PagesRead += realPagesRead;
 
         Plans.UpdatePagesRead(Id, PagesRead);
-        ReadingSessions = Plans.UpdateReadingSessions(Id, date);
+
+        if (session.Actual != session.Goal) {
+            ReadingSessions = Plans.UpdateReadingSessions(Id, date);
+        }
     }
 }
