@@ -2,7 +2,8 @@ public class DateTimeProvider
 {
     public virtual DateTime Now
     {
-        get {
+        get
+        {
             return DateTime.Now;
         }
     }

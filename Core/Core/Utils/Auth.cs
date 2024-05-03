@@ -22,7 +22,8 @@ public class Auth
         GoogleTokenValidator = validator;
     }
 
-    public static string GetNameIdentifier(HttpContext context) {
+    public static string GetNameIdentifier(HttpContext context)
+    {
         var email = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
 
         if (email == null)
@@ -31,7 +32,8 @@ public class Auth
         return email.Value;
     }
 
-    public static string GenerateSecret(int length = 16) {
+    public static string GenerateSecret(int length = 16)
+    {
         var alphanum = "ABCDEFGHIJKLMONOPQRSTUVWXYZabcdefghijklmonopqrstuvwxyz0123456789";
 
         char[] chars = new char[length];
@@ -44,7 +46,8 @@ public class Auth
         return new string(chars);
     }
 
-    public static string GenerateHash(User user, string data) {
+    public static string GenerateHash(User user, string data)
+    {
         string payload = $"{user.Secret}{user.SecretVersion}{data}";
         byte[] bytes = Encoding.ASCII.GetBytes(payload);
 

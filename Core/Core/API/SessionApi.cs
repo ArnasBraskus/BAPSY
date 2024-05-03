@@ -10,13 +10,15 @@ public class SessionApi : ApiBase
     }
 
     // FIXME
-    public async Task<IResult> GetListSessions(HttpContext context, int planId) {
-        return Results.Ok(Sessions.GetAll(planId));
+    public Task<IResult> GetListSessions(HttpContext context, int planId)
+    {
+        return Task.FromResult(Results.Ok(Sessions.GetAll(planId)));
     }
 
     // FIXME
-    public async Task<IResult> GetSession(HttpContext context, int id) {
-        return Results.Ok(Sessions.Get(id));
+    public Task<IResult> GetSession(HttpContext context, int id)
+    {
+        return Task.FromResult(Results.Ok(Sessions.Get(id)));
     }
 
     public class PostMarkSessionRequest
@@ -31,15 +33,16 @@ public class SessionApi : ApiBase
     }
 
     // FIXME
-    public async Task<IResult> PostMarkSession(HttpContext context) {
-        var req = await ReadJson<PostMarkSessionRequest>(context.Request);
+    public async Task<IResult> PostMarkSession(HttpContext context)
+    {
+        var req = await ReadJson<PostMarkSessionRequest>(context.Request).ConfigureAwait(false);
 
         ReadingSession session = Sessions.Get(req.Id);
         BookPlan plan = Plans.FindPlan(session.PlanId);
 
         plan.MarkReadingSession(session, req.PagesRead);
 
-        return Results.Ok(new PostMarkSessionNoAuthResponse {});
+        return Results.Ok(new PostMarkSessionNoAuthResponse { });
     }
 
     public class GetSessionNoAuthResponse
@@ -52,20 +55,23 @@ public class SessionApi : ApiBase
 
     public IResult GetSessionNoAuth(HttpContext context, int id, string token)
     {
-        try {
+        try
+        {
             ReadingSession session = Sessions.Get(id);
 
             if (token != session.GenerateToken())
                 return Results.BadRequest(new ErrorResponse { Error = "Bad token" });
 
-            return Results.Ok(new GetSessionNoAuthResponse {
+            return Results.Ok(new GetSessionNoAuthResponse
+            {
                 Id = session.Id,
                 Date = session.Date,
                 Goal = session.Goal,
                 Actual = session.Actual
             });
         }
-        catch (KeyNotFoundException) {
+        catch (KeyNotFoundException)
+        {
             return Results.BadRequest(new ErrorResponse { Error = "Session not found" });
         }
     }
@@ -84,7 +90,7 @@ public class SessionApi : ApiBase
 
     public async Task<IResult> PostMarkSessionNoAuth(HttpRequest request)
     {
-        var req = await ReadJson<PostMarkSessionNoAuthRequest>(request);
+        var req = await ReadJson<PostMarkSessionNoAuthRequest>(request).ConfigureAwait(false);
 
         ReadingSession session = Sessions.Get(req.SessionId);
 
@@ -98,7 +104,7 @@ public class SessionApi : ApiBase
 
         plan.MarkReadingSession(session, req.PagesRead);
 
-        return Results.Ok(new PostMarkSessionNoAuthResponse{});
+        return Results.Ok(new PostMarkSessionNoAuthResponse { });
     }
 
     public override void Map(WebApplication app)

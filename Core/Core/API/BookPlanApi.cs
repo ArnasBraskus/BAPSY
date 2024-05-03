@@ -49,7 +49,7 @@ public class BookPlanApi : ApiBase
     {
         User user = GetUser(context);
 
-        var req = await ReadJson<AddBookPlanRequest>(context.Request);
+        var req = await ReadJson<AddBookPlanRequest>(context.Request).ConfigureAwait(false);
 
         try
         {
@@ -62,7 +62,7 @@ public class BookPlanApi : ApiBase
             return Results.BadRequest(new ErrorResponse { Error = e.Message });
         }
 
-        return Results.Ok(new AddBookPlanResponse {});
+        return Results.Ok(new AddBookPlanResponse { });
     }
 
     public class GetBookPlanResponse
@@ -115,7 +115,7 @@ public class BookPlanApi : ApiBase
     {
         User user = GetUser(context);
 
-        var req = await ReadJson<RemoveBookPlanRequest>(context.Request);
+        var req = await ReadJson<RemoveBookPlanRequest>(context.Request).ConfigureAwait(false);
 
         BookPlan? plan = Plans.FindPlan(req.Id);
 
@@ -147,7 +147,7 @@ public class BookPlanApi : ApiBase
     {
         User user = GetUser(context);
 
-        var data = await ReadJson<EditBookPlanRequest>(context.Request);
+        var data = await ReadJson<EditBookPlanRequest>(context.Request).ConfigureAwait(false);
 
         BookPlan? plan = Plans.FindPlan(data.Id);
 

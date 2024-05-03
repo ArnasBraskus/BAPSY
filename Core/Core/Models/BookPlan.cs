@@ -134,7 +134,8 @@
 
         Plans.UpdatePagesRead(Id, PagesRead);
 
-        if (session.Actual != session.Goal) {
+        if (session.Actual != session.Goal)
+        {
             ReadingSessions = Plans.UpdateReadingSessions(Id, date);
         }
     }

@@ -8,13 +8,15 @@ public class ReadingSession
 
     private int _Actual;
 
-    public int IsCompleted { get;  }
+    public int IsCompleted { get; }
     public int Actual
     {
-        get {
+        get
+        {
             return _Actual;
         }
-        set {
+        set
+        {
             if (ReadingSessions is null)
                 throw new InvalidOperationException("ReadingSession is not connected to database");
 
@@ -24,7 +26,8 @@ public class ReadingSession
         }
     }
 
-    public ReadingSession(string date, int goal) {
+    public ReadingSession(string date, int goal)
+    {
         Date = date;
         Goal = goal;
     }

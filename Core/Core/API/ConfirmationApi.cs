@@ -35,7 +35,7 @@ public class ConfirmationApi : ApiBase
     {
         User user = GetUser(context);
 
-        var data = await ReadJson<MarkSessionCompletedRequest>(context.Request);
+        var data = await ReadJson<MarkSessionCompletedRequest>(context.Request).ConfigureAwait(false);
 
         BookPlan? plan = Plans.FindPlan(data.PlanId);
 
@@ -48,7 +48,7 @@ public class ConfirmationApi : ApiBase
         {
             Sessions.UpdateCompletion(session.Id, 1);
             plan.MarkReadingSession(session, session.Actual);
-            
+
         }
         catch (ArgumentException e)
         {
@@ -62,12 +62,12 @@ public class ConfirmationApi : ApiBase
     {
         User user = GetUser(context);
 
-        var data = await ReadJson<MarkSessionNotCompletedRequest>(context.Request);
+        var data = await ReadJson<MarkSessionNotCompletedRequest>(context.Request).ConfigureAwait(false);
 
         ReadingSession? session = Sessions.Get(data.SessionId);
         BookPlan? plan = Plans.FindPlan(data.PlanId);
 
-        if (session == null || plan == null )
+        if (session == null || plan == null)
             return Results.BadRequest(new ErrorResponse { Error = "Session or plan not found." });
 
         try

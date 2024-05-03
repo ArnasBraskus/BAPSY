@@ -9,21 +9,26 @@ public class Database
         Connection = new SqliteConnection(connectionString);
     }
 
-    public bool Empty() {
+    public bool Empty()
+    {
         return GetUserVersion() == 0;
     }
 
-    public void Create(string schema) {
+    public void Create(string schema)
+    {
         ExecuteNonQuery(schema);
         ExecuteNonQuery("PRAGMA user_version = 1");
     }
 
-    public int LastInsertedRowId() {
+    public int LastInsertedRowId()
+    {
         return ExecuteScalar("SELECT last_insert_rowid()");
     }
 
-    public void CreateIfEmpty(string schema) {
-        if (Empty()) {
+    public void CreateIfEmpty(string schema)
+    {
+        if (Empty())
+        {
             Create(schema);
         }
     }
@@ -33,7 +38,8 @@ public class Database
         Connection.Open();
     }
 
-    public int ExecuteScalar(string statement) {
+    public int ExecuteScalar(string statement)
+    {
         var command = CreateCommand(statement, null);
         object? result = command.ExecuteScalar();
 
@@ -43,7 +49,8 @@ public class Database
         return (int)((long)result);
     }
 
-    private int GetUserVersion() {
+    private int GetUserVersion()
+    {
         return ExecuteScalar("PRAGMA user_version");
     }
 

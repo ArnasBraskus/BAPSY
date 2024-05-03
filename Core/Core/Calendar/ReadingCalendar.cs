@@ -35,10 +35,12 @@ public class ReadingCalendar
 
             Events.Add(new ReadingEvent(date, pages, session.Goal, metadata));
 
-            if (session.Actual != 0) {
+            if (session.Actual != 0)
+            {
                 pages += session.Actual;
             }
-            else {
+            else
+            {
                 pages += session.Goal;
             }
         }

@@ -1,13 +1,16 @@
 using Google.Apis.Auth;
 
-public class GoogleTokenValidator {
+public class GoogleTokenValidator
+{
     private GoogleJsonWebSignature.ValidationSettings GoogleValidationSettings;
 
-    public GoogleTokenValidator(string googleClientId) {
+    public GoogleTokenValidator(string googleClientId)
+    {
         GoogleValidationSettings = new GoogleJsonWebSignature.ValidationSettings() { Audience = new string[] { googleClientId } };
     }
 
-    public GoogleTokenValidator() {
+    public GoogleTokenValidator()
+    {
         GoogleValidationSettings = new GoogleJsonWebSignature.ValidationSettings();
     }
 

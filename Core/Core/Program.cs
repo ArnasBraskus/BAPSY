@@ -38,7 +38,8 @@ ApiBase[] apis = new ApiBase[] {
     new SessionApi(users, plans, sessions)
 };
 
-foreach (var api in apis) {
+foreach (var api in apis)
+{
     api.Map(app);
 }
 

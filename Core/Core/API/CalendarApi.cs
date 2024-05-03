@@ -13,7 +13,7 @@ public class CalendarApi : ApiBase
         DateTimeProvider = dateTimeProvider;
     }
 
-    public CalendarApi(Users users, Plans plans) : this(users, plans, new DateTimeProvider()) {}
+    public CalendarApi(Users users, Plans plans) : this(users, plans, new DateTimeProvider()) { }
 
     public class GetCalendarEventsResponse
     {
@@ -38,7 +38,8 @@ public class CalendarApi : ApiBase
 
         ReadingCalendar calendar = new ReadingCalendar();
 
-        foreach (int id in Plans.FindPlanByUser(user.Id)) {
+        foreach (int id in Plans.FindPlanByUser(user.Id))
+        {
             BookPlan? plan = Plans.FindPlan(id);
 
             if (plan is null)
@@ -47,8 +48,10 @@ public class CalendarApi : ApiBase
             calendar.Add(plan);
         }
 
-        return Results.Ok(new GetCalendarEventsResponse {
-            Events = calendar.Events.Select(x => new GetCalendarEventsResponse.ReadingEvent {
+        return Results.Ok(new GetCalendarEventsResponse
+        {
+            Events = calendar.Events.Select(x => new GetCalendarEventsResponse.ReadingEvent
+            {
                 Date = x.Date.ToString("yyyy-MM-dd HH:mm:ss"),
                 BookTitle = x.Metadata.BookTitle,
                 BookAuthor = x.Metadata.BookAuthor,
@@ -74,7 +77,8 @@ public class CalendarApi : ApiBase
     {
         User user = GetUser(context);
 
-        return Results.Ok(new GetCalendarTokenResponse {
+        return Results.Ok(new GetCalendarTokenResponse
+        {
             UserId = user.Id,
             Token = GenerateCalendarToken(user)
         });
@@ -82,7 +86,8 @@ public class CalendarApi : ApiBase
 
     public IResult GetExportCalendar(HttpContext context, int userId, string t)
     {
-        try {
+        try
+        {
             User user = Users.FindUser(userId);
 
             if (t != Auth.GenerateHash(user, $"CAL-{userId}"))
@@ -90,7 +95,8 @@ public class CalendarApi : ApiBase
 
             ReadingCalendar calendar = new ReadingCalendar();
 
-            foreach (int id in Plans.FindPlanByUser(user.Id)) {
+            foreach (int id in Plans.FindPlanByUser(user.Id))
+            {
                 BookPlan? plan = Plans.FindPlan(id);
 
                 if (plan is null)
@@ -103,7 +109,8 @@ public class CalendarApi : ApiBase
 
             return Results.Bytes(bytes, "text/calendar");
         }
-        catch (KeyNotFoundException) {
+        catch (KeyNotFoundException)
+        {
             return Results.BadRequest(new ErrorResponse { Error = "Calendar not found" });
         }
     }

@@ -43,7 +43,8 @@ public class Users
         return new User(this, id, secret, secretVer, email, name);
     }
 
-    public User FindUser(int id) {
+    public User FindUser(int id)
+    {
         var parameters = new Dictionary<string, dynamic> {
             { "$id", id }
         };
@@ -62,13 +63,16 @@ public class Users
 
     }
 
-    private bool IsEmailValid(string address) {
-        try {
+    private bool IsEmailValid(string address)
+    {
+        try
+        {
             MailAddress addr = new MailAddress(address);
 
             return addr.Address == address;
         }
-        catch (FormatException) {
+        catch (FormatException)
+        {
             return false;
         }
     }
@@ -97,7 +101,8 @@ public class Users
         DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name, secret, secret_ver) VALUES ($email, $name, $secret, $secret_ver)", parameters);
     }
 
-    public void UpdateName(int id, string name) {
+    public void UpdateName(int id, string name)
+    {
         if (name.Length == 0)
             throw new ArgumentException("Name is empty");
 

@@ -1,14 +1,17 @@
-public class ReadingSessions {
+public class ReadingSessions
+{
     private Database DB;
 
     private Users Users;
 
-    public ReadingSessions(Database db) {
+    public ReadingSessions(Database db)
+    {
         DB = db;
         Users = new Users(DB);
     }
 
-    public void Add(int planId, ReadingSession ev) {
+    public void Add(int planId, ReadingSession ev)
+    {
         if (ev.Date.Length == 0)
             throw new ArgumentException("Date is empty");
 
@@ -26,7 +29,8 @@ public class ReadingSessions {
         DB.ExecuteNonQuery("INSERT INTO readingsessions (planId, date, goal, completed) VALUES ($planId, $date, $goal, $completed)", parameters);
     }
 
-    public void Delete(int planId) {
+    public void Delete(int planId)
+    {
         var parameters = new Dictionary<string, dynamic>
         {
             {"$planId", planId}
@@ -35,7 +39,8 @@ public class ReadingSessions {
         DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId", parameters);
     }
 
-    public void Invalidate(int planId, DateTime dateAfter) {
+    public void Invalidate(int planId, DateTime dateAfter)
+    {
         var parameters = new Dictionary<string, dynamic>
         {
             {"$planId", planId},
@@ -45,7 +50,8 @@ public class ReadingSessions {
         DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId AND date >= $dateAfter", parameters);
     }
 
-    public ReadingSession Get(int id) {
+    public ReadingSession Get(int id)
+    {
         var parameters = new Dictionary<string, dynamic>
         {
             {"$id", id}
@@ -60,13 +66,14 @@ public class ReadingSessions {
         string date = reader.GetString(1);
         int goal = reader.GetInt32(2);
         int actual = reader.GetInt32(3);
-        int isCompleted = reader.GetInt32(4);  
+        int isCompleted = reader.GetInt32(4);
 
         return new ReadingSession(this, id, planId, date, goal, actual, isCompleted);
     }
 
 
-    public List<ReadingSession> GetAll(int planId) {
+    public List<ReadingSession> GetAll(int planId)
+    {
         var parameters = new Dictionary<string, dynamic>
         {
             {"$planId", planId}
@@ -74,7 +81,8 @@ public class ReadingSessions {
 
         var sessions = new List<ReadingSession>();
 
-        foreach (var ev in DB.Execute("SELECT id, date, goal, actual, completed FROM readingsessions WHERE planId = $planId", parameters)) {
+        foreach (var ev in DB.Execute("SELECT id, date, goal, actual, completed FROM readingsessions WHERE planId = $planId", parameters))
+        {
             int id = ev.GetInt32(0);
             string date = ev.GetString(1);
             int goal = ev.GetInt32(2);
@@ -87,7 +95,8 @@ public class ReadingSessions {
         return sessions;
     }
 
-    public void SetActual(int id, int actual) {
+    public void SetActual(int id, int actual)
+    {
         if (actual < 0)
             throw new ArgumentException("Actual is negative.");
 

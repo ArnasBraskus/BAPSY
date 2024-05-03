@@ -1,8 +1,10 @@
-public class AuthApi : ApiBase {
+public class AuthApi : ApiBase
+{
     private Auth Auth;
     private Users Users;
 
-    public AuthApi(Auth auth, Users users) : base(users) {
+    public AuthApi(Auth auth, Users users) : base(users)
+    {
         Auth = auth;
         Users = users;
     }
@@ -12,13 +14,15 @@ public class AuthApi : ApiBase {
         public required string JwtToken { get; set; } = null!;
     };
 
-    public class GoogleAuthResponse {
+    public class GoogleAuthResponse
+    {
         public string Token { get; set; } = null!;
         public double Validity { get; set; }
     };
 
-    public async Task<IResult> PostAuthGoogle(HttpRequest request) {
-        var req = await ReadJson<GoogleAuthRequest>(request);
+    public async Task<IResult> PostAuthGoogle(HttpRequest request)
+    {
+        var req = await ReadJson<GoogleAuthRequest>(request).ConfigureAwait(false);
 
         string email = string.Empty;
         string name = string.Empty;
@@ -26,13 +30,16 @@ public class AuthApi : ApiBase {
         if (!Auth.ValidateGoogleJWT(req.JwtToken, ref email, ref name))
             return Results.BadRequest(new ErrorResponse { Error = "jwttoken is invalid." });
 
-        if (!Users.UserExists(email)) {
+        if (!Users.UserExists(email))
+        {
             Users.AddUser(email, name);
         }
-        else {
+        else
+        {
             User user = Users.FindUser(email);
 
-            if (user.Name != name) {
+            if (user.Name != name)
+            {
                 user.Name = name;
             }
         }

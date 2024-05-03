@@ -22,4 +22,9 @@ public class ReadingEvent
 
         return Date == other.Date && PageStart == other.PageStart && PagesToRead == other.PagesToRead;
     }
+
+    public override int GetHashCode()
+    {
+        throw new NotImplementedException();
+    }
 }
