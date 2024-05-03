@@ -3,14 +3,14 @@ public static class DatabaseSchema
     public static readonly string Schema =
     @"
     CREATE TABLE users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        id INTEGER PRIMARY KEY NOT NULL,
         secret TEXT NOT NULL,
         secret_ver INTEGER NOT NULL,
         email TEXT UNIQUE NOT NULL,
         name TEXT NOT NULL);
 
     CREATE TABLE plans(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        id INTEGER PRIMARY KEY NOT NULL,
         userId INTEGER NOT NULL,
         deadline TEXT NOT NULL,
         weekdays INTEGER NOT NULL,
@@ -23,7 +23,7 @@ public static class DatabaseSchema
         FOREIGN KEY (userid) REFERENCES users(id));
 
     CREATE TABLE readingsessions(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        id INTEGER PRIMARY KEY NOT NULL,
         planId INTEGER NOT NULL,
         date TEXT NOT NULL,
         goal INTEGER NOT NULL,
