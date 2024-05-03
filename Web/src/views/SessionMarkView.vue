@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from 'vue';
+import { ref } from 'vue';
 import router from '../router';
 import { logout } from '../utils/auth.js'
 import { apiDoGet } from '../utils/api.js'
@@ -12,6 +12,10 @@ import Menu from '../Components/Menu.vue';
   <div id="app" class="plan-background">
     <Menu/>
     <main>
+      <h1>AAAA</h1>
     </main>
   </div>
 </template>
+
+<style scoped>
+</style>

@@ -7,7 +7,10 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/HomeView.vue'),
+      meta: {
+        hideForAuth: true
+      }
     },
     {
       path: '/app',
@@ -18,14 +21,41 @@ const router = createRouter({
       }
     },
     {
+      path: '/books',
+      name: 'books',
+      component: () => import('../views/BooksView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path: '/plan',
-      name: 'plan',
-      component: () => import('../views/BookPlan.vue'),
+      path: '/books/:id',
+      name: 'book',
+      component: () => import('../views/BookView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/books/:id/sessions',
+      name: 'book_sessions',
+      component: () => import('../views/ReadingSessionsView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/books/:planId/sessions/:id',
+      name: 'book_session_mark',
+      component: () => import('../views/SessionMarkView.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/confirmation',
@@ -38,7 +68,7 @@ const router = createRouter({
 router.beforeEach((to, from) => {
   if (to.meta.requiresAuth && !isLoggedIn()) {
     return {
-      path: '/login',
+      path: '/',
       query: {redirect: to.fullPath}
     };
   }

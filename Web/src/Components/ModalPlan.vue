@@ -48,7 +48,6 @@ export default {
           editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
           .then(() => {
             this.$emit('confirm');
-            window.location.reload();
           })
           .catch(error => {
             console.error('Error editing plan:', error);
@@ -60,7 +59,6 @@ export default {
           addPlan(this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
           .then(() => {
             this.$emit('confirm');
-            window.location.reload();
           })
           .catch(error => {
             console.error('Error adding plan:', error);

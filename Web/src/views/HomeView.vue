@@ -1,5 +1,4 @@
 <script setup>
-import Header from '../Components/Header.vue'
 import Footer from '../Components/Footer.vue'
 import { requestToken } from '../utils/auth.js'
 import router from '../router';
@@ -9,13 +8,19 @@ async function loginCallback(res) {
   if (!await requestToken(res.credential))
     return;
 
-  router.push({ path: 'plan' });
+  router.push({ path: '/app' });
 }
 </script>
 
 <template>
   <div id="app" class="image-container">
-    <Header />
+    <header class="header">
+        <div class="logo"></div>
+        <nav>
+            <RouterLink to="/">Home</RouterLink>
+            <RouterLink to="/about">About</RouterLink>            
+        </nav>
+    </header>
 
     <main class="darker ">
       <div class="home">
@@ -38,6 +43,10 @@ async function loginCallback(res) {
 </template>
 
 <style scoped>
+main {
+  justify-content: center;
+  text-align: center;
+}
 .home {
   text-align: center;
   color: var(--quaternary-color);
@@ -48,8 +57,7 @@ async function loginCallback(res) {
   font-size:x-large;
   border-radius: 50px 50px 50px 50px;
  }
-
- .login {
+.login {
   display: inline-block;
   text-align: center;
   color: var(--quaternary-color);
@@ -59,6 +67,69 @@ async function loginCallback(res) {
   background-color: rgba(40, 39, 38, 0.75);
   font-size:x-large;
   border-radius: 50px 50px 50px 50px;
- }
-</style>
+}
+header {
+  background-color: #333;
+  padding: 20px;
+  color: #FFFFEC;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--primary-color);
+}
+header h1 {
+  margin: 0;
+  font-size: 24px;
+}
 
+header nav {
+  display: flex;
+  gap: 20px;
+  align-self: right;
+  padding-right: 20px;
+}
+
+header nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+header nav a:hover {
+  color: var(--secondary-color);
+}
+
+header button {
+  background-color: var(--primary-color);
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+header button:hover {
+  color: var(--secondary-color);
+}
+button {
+    align-self: unset;
+    background-color: var(--secondary-color);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    background-color: #004080;
+}
+</style>
