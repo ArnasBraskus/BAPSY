@@ -1,4 +1,6 @@
-﻿public class BookPlan
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+public class BookPlan
 {
     private Plans Plans;
     public int Id { get; }
@@ -139,4 +141,12 @@
             ReadingSessions = Plans.UpdateReadingSessions(Id, date);
         }
     }
+
+    public void AdditionalPagesRead (int pagesRead)
+    {
+		PagesRead += pagesRead;
+
+		Plans.UpdatePagesRead(Id, PagesRead);
+		ReadingSessions = Plans.UpdateReadingSessions(Id, DateTime.Now);
+	}
 }
