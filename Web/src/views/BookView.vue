@@ -60,6 +60,12 @@ async function deletePlan() {
   goBack();
 }
 
+async function submitAdditionalPagesRead() {
+  await additionalPagesRead(plan.id, additionalPagesRead);
+  goBack();
+}
+
+
 function getReadingSessionsUrl() {
   return `/books/${planId}/sessions`;
 }
@@ -77,6 +83,8 @@ const deadline = ref('');
 const time = ref('');
 const schedule = ref('');
 const cover = ref('');
+
+const additionalPagesRead = ref('');
 
 fetchPlan();
 
@@ -121,6 +129,15 @@ fetchPlan();
             <tr>
               <td class="data-key">Schedule</td>
               <td class="data-value">{{ schedule }}</td>
+            </tr>
+
+            <!-- ///NOTdone -->
+            <tr>
+              <td class="data-key">Additional Pages Read</td>
+              <td class="data-value">
+                <input type="number" v-model="additionalPagesRead" placeholder="Enter additional pages read">
+                <button class="cta-button" @click="submitAdditionalPagesRead">Submit</button>
+              </td>
             </tr>
         </table>
         <BookCover :title="title" :author="author" :cover="cover"/>

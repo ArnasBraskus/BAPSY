@@ -54,3 +54,13 @@ export async function editPlan(id, title, author, pages, deadline, weekdays, tim
 
   return res.status == 200;
 }
+
+export async function additionalPagesRead(id, addPagesRead) {
+  const res = await apiDoPost('/api/bookplan/additionalPages', {
+    id: id,
+    addPagesRead:  addPagesRead
+  });
+
+  return res.status == 200;
+}
+
