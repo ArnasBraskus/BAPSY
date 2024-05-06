@@ -1,3 +1,4 @@
+
 public class SessionApi : ApiBase
 {
     private Plans Plans;
@@ -28,11 +29,40 @@ public class SessionApi : ApiBase
 		return Results.Ok(new ListReadingSessionsResponse { Sessions = sessions });	
     }
 
-    // FIXME
-    public Task<IResult> GetSession(HttpContext context, int id)
+    public class GetSessionResponse
     {
-        return Task.FromResult(Results.Ok(Sessions.Get(id)));
-    }
+        public int Id { get; set; }
+        public int PlanId { get; set; } 
+        public string Date { get; set; }
+        public int Goal { get; set; }
+        public int _Actual { get; set; }
+        public int IsCompleted { get; set; }
+	}
+
+    // FIXME 
+    public IResult GetSession(HttpContext context, int id)
+    {
+		try
+		{	
+			User user = GetUser(context);
+
+			ReadingSession session = Sessions.Get(id);
+
+            return Results.Ok(new GetSessionResponse
+            {
+                Id = id,
+                PlanId = session.Id,
+                Date = session.Date,
+                Goal = session.Goal,
+                _Actual = session.Actual,
+                IsCompleted = session.IsCompleted
+            }) ;
+		}
+		catch (KeyNotFoundException)
+		{
+			return Results.NotFound("Reading session not found.");
+		}
+	}
 
     public class PostMarkSessionRequest
     {
