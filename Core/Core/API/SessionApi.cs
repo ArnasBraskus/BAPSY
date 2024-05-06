@@ -8,11 +8,24 @@ public class SessionApi : ApiBase
         Plans = plans;
         Sessions = sessions;
     }
+	public class ListReadingSessionsResponse
+	{
+		public List<ReadingSession> Sessions { get; set; } = null!;
+	}
 
-    // FIXME
-    public Task<IResult> GetListSessions(HttpContext context, int planId)
+	// FIXME
+	public IResult GetListSessions(HttpContext context, int planId)
+
     {
-        return Task.FromResult(Results.Ok(Sessions.GetAll(planId)));
+		User user = GetUser(context);
+		if (Plans.FindPlan(planId) == null)
+		{
+			return Results.BadRequest( "Plan not found." );
+		}
+
+		List<ReadingSession> sessions = Sessions.GetAll(planId);
+
+		return Results.Ok(new ListReadingSessionsResponse { Sessions = sessions });	
     }
 
     // FIXME
