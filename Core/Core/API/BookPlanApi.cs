@@ -172,7 +172,7 @@ public class BookPlanApi : ApiBase
 	public class UpdateAdditionalPagesReadRequest
 	{
 		public int PlanId { get; set; }
-		public int ActualPagesRead { get; set; }
+		public int AdditionalPagesRead { get; set; }
 	}
 
 	public class UpdateAdditionalPagesReadResponse
@@ -191,7 +191,7 @@ public class BookPlanApi : ApiBase
 			if (plan == null || plan.UserId != user.Id)
 				return Results.BadRequest(new ErrorResponse { Error = "Plan not found." });
 
-			plan.AdditionalPagesRead(data.ActualPagesRead);
+			plan.AdditionalPagesRead(data.AdditionalPagesRead);
 
 			return Results.Ok(new UpdateAdditionalPagesReadResponse { Message = "Actual pages read updated successfully." });
 		}
