@@ -1,3 +1,4 @@
+
 public class BookPlanApi : ApiBase
 {
     private Users Users;
@@ -168,12 +169,45 @@ public class BookPlanApi : ApiBase
         return Results.Ok(new EditBookPlanResponse { });
     }
 
-    public override void Map(WebApplication app)
+	public class UpdateAdditionalPagesReadRequest
+	{
+		public int PlanId { get; set; }
+		public int ActualPagesRead { get; set; }
+	}
+
+	public class UpdateAdditionalPagesReadResponse
+	{
+		public string Message { get; set; }
+	}
+	public async Task<IResult> PostAdditionalPagesRead(HttpContext context)
+	{
+		try
+		{
+			User user = GetUser(context);
+			var data = await ReadJson<UpdateAdditionalPagesReadRequest>(context.Request).ConfigureAwait(false);
+
+			BookPlan? plan = Plans.FindPlan(data.PlanId);
+
+			if (plan == null || plan.UserId != user.Id)
+				return Results.BadRequest(new ErrorResponse { Error = "Plan not found." });
+
+			plan.AdditionalPagesRead(data.ActualPagesRead);
+
+			return Results.Ok(new UpdateAdditionalPagesReadResponse { Message = "Actual pages read updated successfully." });
+		}
+		catch (ArgumentException e)
+		{
+			return Results.BadRequest(new ErrorResponse { Error = e.Message });
+		}
+	}
+
+	public override void Map(WebApplication app)
     {
         app.MapGet("/bookplan/list", ListBookPlans).RequireAuthorization("Users");
         app.MapGet("/bookplan/get/{id}", GetBookPlan).RequireAuthorization("Users");
         app.MapPost("/bookplan/add", PostAddBookPlan).RequireAuthorization("Users");
         app.MapPost("/bookplan/remove", PostRemoveBookPlan).RequireAuthorization("Users");
         app.MapPost("/bookplan/edit", PostEditBookPlan).RequireAuthorization("Users");
-    }
+		app.MapPost("/bookplan/additionalPages", PostAdditionalPagesRead).RequireAuthorization("Users");
+	}
 }
