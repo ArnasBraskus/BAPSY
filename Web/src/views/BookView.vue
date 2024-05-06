@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { ModalsContainer, useModal } from 'vue-final-modal';
 
-import { getPlan, removePlan } from '../utils/plans.js';
+import { getPlan, removePlan, additionalPagesRead } from '../utils/plans.js';
 import { chooseColor } from '../utils/books.js';
 import router from '../router';
 
@@ -61,7 +61,7 @@ async function deletePlan() {
 }
 
 async function submitAdditionalPagesRead() {
-  await additionalPagesRead(plan.id, additionalPagesRead);
+  await additionalPagesRead(plan.id, addPagesRead);
   goBack();
 }
 
@@ -84,7 +84,7 @@ const time = ref('');
 const schedule = ref('');
 const cover = ref('');
 
-const additionalPagesRead = ref('');
+const addPagesRead = ref('');
 
 fetchPlan();
 
@@ -135,7 +135,7 @@ fetchPlan();
             <tr>
               <td class="data-key">Additional Pages Read</td>
               <td class="data-value">
-                <input type="number" v-model="additionalPagesRead" placeholder="Enter additional pages read">
+                <input type="number" v-model="addPagesRead" placeholder="Enter additional pages read">
                 <button class="cta-button" @click="submitAdditionalPagesRead">Submit</button>
               </td>
             </tr>
