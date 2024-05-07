@@ -14,9 +14,10 @@ public class BookPlan
     public int PageCount { get; }
     public int PagesRead { get; private set; }
     public List<ReadingSession> ReadingSessions { get; private set; }
+    public int Finished { get; }
 
     public BookPlan(Plans plans, int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
-        string title, string author, int pageCount, int pagesRead, List<ReadingSession> sessions)
+        string title, string author, int pageCount, int pagesRead, List<ReadingSession> sessions, int finished)
     {
         Plans = plans;
         Id = id;
@@ -30,10 +31,11 @@ public class BookPlan
         PageCount = pageCount;
         PagesRead = pagesRead;
         ReadingSessions = sessions;
+        Finished = finished;
     }
 
     public BookPlan(int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
-        string title, string author, int pageCount, int pagesRead, List<ReadingSession> sessions)
+        string title, string author, int pageCount, int pagesRead, List<ReadingSession> sessions, int finished)
     {
         Id = id;
         UserId = userId;
@@ -46,6 +48,7 @@ public class BookPlan
         PageCount = pageCount;
         PagesRead = pagesRead;
         ReadingSessions = sessions;
+        Finished = finished;
     }
 
     public List<ReadingSession> GenerateReadingSessions(DateTime startDate)

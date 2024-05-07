@@ -39,7 +39,7 @@ public class Plans
 
     public BookPlan? FindPlan(int id)
     {
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, finished FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
 
         if (reader == null)
             return null;
@@ -53,9 +53,10 @@ public class Plans
         string author = reader.GetString(6);
         int pageCount = reader.GetInt32(7);
         int pagesRead = reader.GetInt32(8);
+        int finished = reader.GetInt32(9);
         List<ReadingSession> sessions = ReadingSessions.GetAll(id);
 
-        return new BookPlan(this, id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, sessions);
+        return new BookPlan(this, id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, sessions, finished);
     }
 
     public List<int> FindPlanByUser(int userId)
@@ -149,5 +150,30 @@ public class Plans
         DB.ExecuteNonQuery(@"DELETE FROM plans WHERE id=$id ", new Dictionary<string, dynamic> { { "$id", id } });
 
         return true;
+    }
+    public void UpdateFinished(int id)
+    {
+        if (id < 0 || FindPlan(id) == null)
+            throw new ArgumentException("invalid plan id");
+        var BookPlan = FindPlan(id);
+        
+
+        //nezinau ar isCompleted taip veikia
+        int completedSessions = 0; int totalSessions = 0;
+        foreach (var session in BookPlan.ReadingSessions)
+        {
+            if (session.IsCompleted == 1)
+                completedSessions++;
+            totalSessions++;
+        }
+        if (completedSessions == totalSessions || DateTime.Parse(BookPlan.DeadLine) > DateTime.Now.AddDays(1))
+        {
+            var parameters = new Dictionary<string, dynamic>
+            {
+                { "$id", id },
+                { "$finished", 1 }
+            };
+            DB.ExecuteNonQuery(@"UPDATE plans SET finished = $finished WHERE id = $id", parameters);
+        }
     }
 }
