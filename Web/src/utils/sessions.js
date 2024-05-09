@@ -18,7 +18,7 @@ export async function getSessions(planId) {
   const res = await apiDoGet(`/api/sessions/list/${planId}`);
   const data = await res.json();
 
-  return data;
+  return data.sessions;
 }
 
 export async function markSession(id, pagesRead) {

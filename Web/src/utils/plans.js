@@ -57,8 +57,8 @@ export async function editPlan(id, title, author, pages, deadline, weekdays, tim
 
 export async function additionalPagesRead(id, addPagesRead) {
   const res = await apiDoPost('/api/bookplan/additionalPages', {
-    id: id,
-    addPagesRead:  addPagesRead
+    planId: id,
+    additionalPagesRead:  addPagesRead
   });
 
   return res.status == 200;

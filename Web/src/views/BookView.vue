@@ -61,8 +61,8 @@ async function deletePlan() {
 }
 
 async function submitAdditionalPagesRead() {
-  await additionalPagesRead(plan.id, addPagesRead);
-  goBack();
+  await additionalPagesRead(plan.id, addPagesRead.value);
+  fetchPlan();
 }
 
 
