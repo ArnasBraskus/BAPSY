@@ -1,3 +1,5 @@
+using Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
 Config conf = new Config();

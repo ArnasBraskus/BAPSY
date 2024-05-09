@@ -1,3 +1,5 @@
+namespace Core;
+
 public static class DatabaseSchema
 {
     public static readonly string Schema =

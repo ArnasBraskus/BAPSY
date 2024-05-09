@@ -1,4 +1,6 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿namespace Core;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class BookPlan
 {

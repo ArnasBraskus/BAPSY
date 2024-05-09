@@ -1,4 +1,5 @@
-﻿
+﻿namespace Core;
+
 using System.Numerics;
 
 public class ConfirmationApi : ApiBase

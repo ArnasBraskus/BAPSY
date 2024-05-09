@@ -1,3 +1,5 @@
+namespace Core;
+
 public class ReadingEvent
 {
     public DateTime Date { get; }

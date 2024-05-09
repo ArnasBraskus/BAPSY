@@ -1,3 +1,5 @@
+namespace Core;
+
 public class Config
 {
     public string DatabaseConnectionString { get; set; } = null!;

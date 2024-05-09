@@ -1,3 +1,5 @@
+namespace Core;
+
 using Google.Apis.Auth;
 
 public class GoogleTokenValidator

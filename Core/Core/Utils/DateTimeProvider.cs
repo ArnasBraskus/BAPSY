@@ -1,3 +1,5 @@
+namespace Core;
+
 public class DateTimeProvider
 {
     public virtual DateTime Now

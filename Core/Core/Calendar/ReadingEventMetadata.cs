@@ -1,3 +1,5 @@
+namespace Core;
+
 public class ReadingEventMetadata
 {
     public string BookTitle { get; }

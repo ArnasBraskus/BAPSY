@@ -1,3 +1,5 @@
+namespace Core;
+
 public class UserApi : ApiBase
 {
     private Users Users;

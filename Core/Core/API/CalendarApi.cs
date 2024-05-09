@@ -1,3 +1,5 @@
+namespace Core;
+
 using System.Linq;
 
 public class CalendarApi : ApiBase

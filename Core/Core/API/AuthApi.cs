@@ -1,3 +1,5 @@
+namespace Core;
+
 public class AuthApi : ApiBase
 {
     private Auth Auth;

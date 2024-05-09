@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.Sqlite;
+﻿namespace Core;
+
+using Microsoft.Data.Sqlite;
 
 public class Plans
 {

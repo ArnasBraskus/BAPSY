@@ -1,3 +1,5 @@
+namespace Core;
+
 using System.Text.Json;
 
 public abstract class ApiBase

@@ -1,3 +1,5 @@
+namespace Core;
+
 public static class Weekdays
 {
     public static readonly int Sunday = (1 << 0);

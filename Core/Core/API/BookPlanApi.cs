@@ -1,3 +1,4 @@
+namespace Core;
 
 public class BookPlanApi : ApiBase
 {

@@ -1,3 +1,5 @@
+namespace Core;
+
 using Microsoft.Data.Sqlite;
 
 public class Database

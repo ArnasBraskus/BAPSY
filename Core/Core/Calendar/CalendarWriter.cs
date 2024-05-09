@@ -1,3 +1,5 @@
+namespace Core;
+
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Ical.Net.Serialization;

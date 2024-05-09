@@ -1,3 +1,5 @@
+namespace Core;
+
 public class ReadingSession
 {
     private ReadingSessions? ReadingSessions;
