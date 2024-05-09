@@ -2,20 +2,16 @@ namespace Core;
 
 public class BookPlanApi : ApiBase
 {
-    private Users Users;
     private Plans Plans;
-    private ReadingSessions ReadingSessions;
     private DateTimeProvider DateTimeProvider;
 
-    public BookPlanApi(Users users, Plans plans, ReadingSessions sessions, DateTimeProvider dateTimeProvider) : base(users)
+    public BookPlanApi(Users users, Plans plans, DateTimeProvider dateTimeProvider) : base(users)
     {
-        Users = users;
         Plans = plans;
-        ReadingSessions = sessions;
         DateTimeProvider = dateTimeProvider;
     }
 
-    public BookPlanApi(Users users, Plans plans, ReadingSessions sessions) : this(users, plans, sessions, new DateTimeProvider())
+    public BookPlanApi(Users users, Plans plans) : this(users, plans, new DateTimeProvider())
     {
     }
 

@@ -4,14 +4,11 @@ using System.Numerics;
 
 public class ConfirmationApi : ApiBase
 {
-    private readonly Users Users;
     private readonly Plans Plans;
     private readonly ReadingSessions Sessions;
 
-
     public ConfirmationApi(Users users, Plans plans, ReadingSessions sessions) : base(users)
     {
-        Users = users;
         Plans = plans;
         Sessions = sessions;
     }

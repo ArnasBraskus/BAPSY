@@ -2,11 +2,8 @@ namespace Core;
 
 public class UserApi : ApiBase
 {
-    private Users Users;
-
     public UserApi(Users users) : base(users)
     {
-        Users = users;
     }
 
     public class UserProfileResponse
