@@ -38,7 +38,7 @@ public class CalendarApi : ApiBase
     {
         User user = GetUser(context);
 
-        ReadingCalendar calendar = new ReadingCalendar();
+        ReadingCalendar calendar = new ReadingCalendar(DateTimeProvider);
 
         foreach (int id in Plans.FindPlanByUser(user.Id))
         {
@@ -95,7 +95,7 @@ public class CalendarApi : ApiBase
             if (t != Auth.GenerateHash(user, $"CAL-{userId}"))
                 return Results.BadRequest(new ErrorResponse { Error = "Invalid token" });
 
-            ReadingCalendar calendar = new ReadingCalendar();
+            ReadingCalendar calendar = new ReadingCalendar(DateTimeProvider);
 
             foreach (int id in Plans.FindPlanByUser(user.Id))
             {
