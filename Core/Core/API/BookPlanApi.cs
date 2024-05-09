@@ -171,8 +171,8 @@ public class BookPlanApi : ApiBase
 
 	public class UpdateAdditionalPagesReadRequest
 	{
-		public int PlanId { get; set; }
-		public int AdditionalPagesRead { get; set; }
+		public required int PlanId { get; set; }
+		public required int AdditionalPagesRead { get; set; }
 	}
 
 	public class UpdateAdditionalPagesReadResponse
