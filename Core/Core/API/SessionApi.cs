@@ -36,7 +36,7 @@ public class SessionApi : ApiBase
         public int PlanId { get; set; } 
         public string Date { get; set; }
         public int Goal { get; set; }
-        public int _Actual { get; set; }
+        public int Actual { get; set; }
         public int IsCompleted { get; set; }
 	}
 
@@ -54,7 +54,7 @@ public class SessionApi : ApiBase
                 PlanId = session.Id,
                 Date = session.Date,
                 Goal = session.Goal,
-                _Actual = session.Actual,
+                Actual = session.Actual,
                 IsCompleted = session.IsCompleted
             }) ;
 		}
@@ -81,7 +81,7 @@ public class SessionApi : ApiBase
 
         plan.MarkReadingSession(session, req.PagesRead);
 
-        return Results.Ok();
+        return Results.Ok(new {});
     }
 
     public class GetSessionNoAuthResponse
