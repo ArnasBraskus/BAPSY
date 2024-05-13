@@ -43,7 +43,7 @@ public class BookPlanApi : ApiBase
         public required string TimeOfDay { get; set; } = null!;
     }
 
-    public class AddBookPlanResponse
+    internal class AddBookPlanResponse
     {
     };
 
