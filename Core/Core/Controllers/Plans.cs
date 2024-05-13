@@ -4,8 +4,8 @@ using Microsoft.Data.Sqlite;
 
 public class Plans
 {
-    private Database DB;
-    private ReadingSessions ReadingSessions;
+    private readonly Database DB;
+    private readonly ReadingSessions ReadingSessions;
 
     public Plans(Database db)
     {
@@ -16,12 +16,18 @@ public class Plans
     public int AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
             string title, string author, int pageCount)
     {
+        if (user == null)
+            throw new ArgumentNullException(nameof(user), "User cannot be null");
+        if (title == null)
+            throw new ArgumentNullException(nameof(title), "Title cannot be null");
+        if (author == null)
+            throw new ArgumentNullException(nameof(author), "Author cannot be null");
         if (pageCount < 0)
             throw new ArgumentException("Page count must be greater than zero");
         if (title.Length == 0)
-            throw new ArgumentException("where title");
+            throw new ArgumentException("Title cannot be empty");
         if (author.Length == 0)
-            throw new ArgumentException("where author");
+            throw new ArgumentException("Author cannot be empty");
 
         Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> {
             { "$userid", user.Id },
@@ -78,6 +84,10 @@ public class Plans
 
     public bool UpdatePlan(int id, string deadLine, int weekdays, string timeOfDay, string title, string author, int pageCount)
     {
+        if (title == null)
+            throw new ArgumentNullException(nameof(title), "Title cannot be null");
+        if (author == null)
+            throw new ArgumentNullException(nameof(author), "Author cannot be null");
         if (pageCount < 0)
             throw new ArgumentException("Page count must be greater than zero");
         if (title.Length == 0)
