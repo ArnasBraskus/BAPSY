@@ -49,7 +49,7 @@ public class ReadingSessions
             {"$dateAfter", dateAfter.ToString("yyyy-MM-dd")}
         };
 
-        DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId AND date >= $dateAfter", parameters);
+        DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId AND date >= $dateAfter AND completed = 0", parameters);
     }
 
     public ReadingSession Get(int id)
@@ -108,7 +108,7 @@ public class ReadingSessions
             {"$actual", actual}
         };
 
-        DB.ExecuteNonQuery("UPDATE readingsessions SET actual = $actual WHERE id = $id", parameters);
+        DB.ExecuteNonQuery("UPDATE readingsessions SET completed = 1, actual = $actual WHERE id = $id", parameters);
     }
 
     public void UpdateCompletion(int id, int completion)
