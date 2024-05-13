@@ -1,8 +1,10 @@
+using System.Globalization;
+
 namespace Core;
 
 public class ReadingCalendar
 {
-    private DateTimeProvider DateTimeProvider;
+    private readonly DateTimeProvider DateTimeProvider;
 
     public List<ReadingEvent> Events { get; }
 
@@ -18,6 +20,7 @@ public class ReadingCalendar
 
     public void Add(BookPlan plan)
     {
+
         if (plan.PagesRead == plan.PageCount)
             return;
 
@@ -27,13 +30,13 @@ public class ReadingCalendar
 
         foreach (var session in plan.ReadingSessions)
         {
-            var date = DateTime.Parse($"{session.Date} {plan.timeOfDay}");
+            var date = DateTime.Parse($"{session.Date} {plan.timeOfDay}", CultureInfo.CurrentCulture);
 
             if (date < DateTimeProvider.Now)
                 continue;
 
             if (session.Goal < 0)
-                throw new ArgumentException("Page goal cannot be negative", nameof(session.Goal));
+                throw new ArgumentException("Page goal cannot be negative", nameof(plan));
 
             Events.Add(new ReadingEvent(date, pages, session.Goal, metadata));
 

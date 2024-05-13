@@ -2,15 +2,15 @@ namespace Core;
 
 public class SessionApi : ApiBase
 {
-    private Plans Plans;
-    private ReadingSessions Sessions;
+    private readonly Plans Plans;
+    private readonly ReadingSessions Sessions;
 
     public SessionApi(Users users, Plans plans, ReadingSessions sessions) : base(users)
     {
         Plans = plans;
         Sessions = sessions;
     }
-	public class ListReadingSessionsResponse
+	internal class ListReadingSessionsResponse
 	{
 		public List<ReadingSession> Sessions { get; set; } = null!;
 	}
@@ -19,7 +19,7 @@ public class SessionApi : ApiBase
 	public IResult GetListSessions(HttpContext context, int planId)
 
     {
-		User user = GetUser(context);
+		
 		if (Plans.FindPlan(planId) == null)
 		{
 			return Results.BadRequest( "Plan not found." );
@@ -30,7 +30,7 @@ public class SessionApi : ApiBase
 		return Results.Ok(new ListReadingSessionsResponse { Sessions = sessions });	
     }
 
-    public class GetSessionResponse
+    internal class GetSessionResponse
     {
         public int Id { get; set; }
         public int PlanId { get; set; } 
@@ -45,7 +45,6 @@ public class SessionApi : ApiBase
     {
 		try
 		{	
-			User user = GetUser(context);
 
 			ReadingSession session = Sessions.Get(id);
 
@@ -65,16 +64,12 @@ public class SessionApi : ApiBase
 		}
 	}
 
-    public class PostMarkSessionRequest
+    internal class PostMarkSessionRequest
     {
         public required int Id { get; set; }
         public required int PagesRead { get; set; }
     }
 
-    public class PostMarkSessionResponse
-    {
-
-    }
 
     // FIXME
     public async Task<IResult> PostMarkSession(HttpContext context)
@@ -86,7 +81,7 @@ public class SessionApi : ApiBase
 
         plan.MarkReadingSession(session, req.PagesRead);
 
-        return Results.Ok(new PostMarkSessionNoAuthResponse { });
+        return Results.Ok();
     }
 
     public class GetSessionNoAuthResponse
@@ -127,10 +122,6 @@ public class SessionApi : ApiBase
         public required int PagesRead { get; set; }
     }
 
-    public class PostMarkSessionNoAuthResponse
-    {
-
-    }
 
     public async Task<IResult> PostMarkSessionNoAuth(HttpRequest request)
     {
@@ -148,7 +139,7 @@ public class SessionApi : ApiBase
 
         plan.MarkReadingSession(session, req.PagesRead);
 
-        return Results.Ok(new PostMarkSessionNoAuthResponse { });
+        return Results.Ok();
     }
 
     public override void Map(WebApplication app)

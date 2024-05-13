@@ -4,9 +4,9 @@ using System.Linq;
 
 public class CalendarApi : ApiBase
 {
-    private Users Users;
-    private Plans Plans;
-    private DateTimeProvider DateTimeProvider;
+    private readonly Users Users;
+    private readonly Plans Plans;
+    private readonly DateTimeProvider DateTimeProvider;
 
     public CalendarApi(Users users, Plans plans, DateTimeProvider dateTimeProvider) : base(users)
     {

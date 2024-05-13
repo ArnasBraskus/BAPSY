@@ -2,8 +2,8 @@ namespace Core;
 
 public class BookPlanApi : ApiBase
 {
-    private Plans Plans;
-    private DateTimeProvider DateTimeProvider;
+    private readonly Plans Plans;
+    private readonly DateTimeProvider DateTimeProvider;
 
     public BookPlanApi(Users users, Plans plans, DateTimeProvider dateTimeProvider) : base(users)
     {
@@ -15,10 +15,14 @@ public class BookPlanApi : ApiBase
     {
     }
 
-    public class ListBookPlansResponse
+    internal class ListBookPlansResponse
     {
-        public List<int> Ids { get; set; } = null!;
-    }
+        public List<int> Ids { get; } = null!;
+		public ListBookPlansResponse(List<int> ids)
+		{
+			Ids = ids;
+		}
+	}
 
     public IResult ListBookPlans(HttpContext context)
     {
@@ -26,10 +30,10 @@ public class BookPlanApi : ApiBase
 
         List<int> ids = Plans.FindPlanByUser(user.Id);
 
-        return Results.Ok(new ListBookPlansResponse { Ids = ids });
-    }
+		return Results.Ok(new ListBookPlansResponse(ids));
+	}
 
-    public class AddBookPlanRequest
+    internal class AddBookPlanRequest
     {
         public required string Title { get; set; } = null!;
         public required string Author { get; set; } = null!;
@@ -63,7 +67,7 @@ public class BookPlanApi : ApiBase
         return Results.Ok(new AddBookPlanResponse { });
     }
 
-    public class GetBookPlanResponse
+    internal class GetBookPlanResponse
     {
         public int Id { get; set; }
         public string Title { get; set; } = null!;
@@ -99,7 +103,7 @@ public class BookPlanApi : ApiBase
         });
     }
 
-    public class RemoveBookPlanRequest
+    internal class RemoveBookPlanRequest
     {
         public required int Id { get; set; }
     }
@@ -125,7 +129,7 @@ public class BookPlanApi : ApiBase
         return Results.Ok(new RemoveBookPlanResponse { });
     }
 
-    private class EditBookPlanRequest
+    private sealed class EditBookPlanRequest
     {
         public required int Id { get; set; }
         public required string Title { get; set; } = null!;
@@ -166,13 +170,13 @@ public class BookPlanApi : ApiBase
         return Results.Ok(new EditBookPlanResponse { });
     }
 
-	public class UpdateAdditionalPagesReadRequest
+	internal class UpdateAdditionalPagesReadRequest
 	{
 		public required int PlanId { get; set; }
 		public required int AdditionalPagesRead { get; set; }
 	}
 
-	public class UpdateAdditionalPagesReadResponse
+	internal class UpdateAdditionalPagesReadResponse
 	{
 		public string Message { get; set; }
 	}

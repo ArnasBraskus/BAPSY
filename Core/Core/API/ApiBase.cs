@@ -4,7 +4,7 @@ using System.Text.Json;
 
 public abstract class ApiBase
 {
-    private Users Users;
+    private readonly Users Users;
 
     public class ErrorResponse
     {
