@@ -174,6 +174,7 @@ function close() {
   }
 
   &.toast--anim-enter {
+    display: none;
     opacity: 0;
     margin-bottom: 0;
   }
