@@ -63,9 +63,9 @@ public class BookPlanApi : ApiBase
 
             Plans.UpdateReadingSessions(id, DateTimeProvider.Now);
         }
-        catch (ArgumentException e)
+        catch (ArgumentException exception)
         {
-            return Results.BadRequest(new ErrorResponse { Error = e.Message });
+            return Results.BadRequest(new ErrorResponse { Error = exception.Message });
         }
 
         return Results.Ok(new AddBookPlanResponse { });
@@ -166,9 +166,9 @@ public class BookPlanApi : ApiBase
             Plans.UpdateReadingSessions(plan.Id, DateTimeProvider.Now);
 
         }
-        catch (ArgumentException e)
+        catch (ArgumentException exception)
         {
-            return Results.BadRequest(new ErrorResponse { Error = e.Message });
+            return Results.BadRequest(new ErrorResponse { Error = exception.Message });
         }
 
         return Results.Ok(new EditBookPlanResponse { });
@@ -200,9 +200,9 @@ public class BookPlanApi : ApiBase
 
 			return Results.Ok(new UpdateAdditionalPagesReadResponse { Message = "Actual pages read updated successfully." });
 		}
-		catch (ArgumentException e)
+		catch (ArgumentException exception)
 		{
-			return Results.BadRequest(new ErrorResponse { Error = e.Message });
+			return Results.BadRequest(new ErrorResponse { Error = exception.Message });
 		}
 	}
     

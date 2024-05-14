@@ -27,6 +27,10 @@ public class ReadingEvent
 
     public override int GetHashCode()
     {
-        throw new NotImplementedException();
+        int hash = 17;
+        hash = hash * 23 + Date.GetHashCode();
+        hash = hash * 23 + PageStart.GetHashCode();
+        hash = hash * 23 + PagesToRead.GetHashCode();
+        return hash;
     }
 }

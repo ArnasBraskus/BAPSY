@@ -17,7 +17,6 @@ public class SessionApi : ApiBase
 
 	// FIXME
 	public IResult GetListSessions(HttpContext context, int planId)
-
     {
 		
 		if (Plans.FindPlan(planId) == null)
@@ -44,8 +43,7 @@ public class SessionApi : ApiBase
     public IResult GetSession(HttpContext context, int id)
     {
 		try
-		{	
-
+		{
 			ReadingSession session = Sessions.Get(id);
 
             return Results.Ok(new GetSessionResponse

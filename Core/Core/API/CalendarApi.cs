@@ -1,5 +1,6 @@
 namespace Core;
 
+using System.Globalization;
 using System.Linq;
 
 public class CalendarApi : ApiBase
@@ -55,7 +56,7 @@ public class CalendarApi : ApiBase
         {
             Events = calendar.Events.Select(plan => new GetCalendarEventsResponse.ReadingEvent
             {
-                Date = plan.Date.ToString(DateFormat),
+                Date = plan.Date.ToString(DateFormat, CultureInfo.InvariantCulture),
                 BookTitle = plan.Metadata.BookTitle,
                 BookAuthor = plan.Metadata.BookAuthor,
                 PageStart = plan.PageStart,

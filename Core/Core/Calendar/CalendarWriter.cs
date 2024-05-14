@@ -16,13 +16,13 @@ public static class CalendarWriter
 
         icalendar.AddTimeZone(new VTimeZone(TimeZone));
 
-        foreach (var e in calendar.Events)
+        foreach (var calEvent in calendar.Events)
         {
             icalendar.Events.Add(new CalendarEvent
             {
-                Summary = $"Book Reading: {e.Metadata.BookTitle} by {e.Metadata.BookAuthor}",
-                Description = $"Today's goal: {e.PagesToRead} pages ({e.PageStart}-{e.PageEnd})",
-                Start = new CalDateTime(e.Date, TimeZone)
+                Summary = $"Book Reading: {calEvent.Metadata.BookTitle} by {calEvent.Metadata.BookAuthor}",
+                Description = $"Today's goal: {calEvent.PagesToRead} pages ({calEvent.PageStart}-{calEvent.PageEnd})",
+                Start = new CalDateTime(calEvent.Date, TimeZone)
             });
         }
 
