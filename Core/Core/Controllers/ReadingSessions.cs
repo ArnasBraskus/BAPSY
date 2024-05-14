@@ -1,15 +1,17 @@
+using System.Globalization;
+
 namespace Core;
 
 public class ReadingSessions
 {
-    private Database DB;
+    private readonly Database _dataBase;
 
-    private Users Users;
+    private readonly Users _users;
 
     public ReadingSessions(Database db)
     {
-        DB = db;
-        Users = new Users(DB);
+        _dataBase = db;
+        _users = new Users(_dataBase);
     }
 
     public void Add(int planId, ReadingSession ev)
@@ -28,7 +30,7 @@ public class ReadingSessions
             {"$completed", ev.IsCompleted},
         };
 
-        DB.ExecuteNonQuery("INSERT INTO readingsessions (planId, date, goal, completed) VALUES ($planId, $date, $goal, $completed)", parameters);
+        _dataBase.ExecuteNonQuery("INSERT INTO readingsessions (planId, date, goal, completed) VALUES ($planId, $date, $goal, $completed)", parameters);
     }
 
     public void Delete(int planId)
@@ -38,7 +40,7 @@ public class ReadingSessions
             {"$planId", planId}
         };
 
-        DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId", parameters);
+        _dataBase.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId", parameters);
     }
 
     public void Invalidate(int planId, DateTime dateAfter)
@@ -46,10 +48,10 @@ public class ReadingSessions
         var parameters = new Dictionary<string, dynamic>
         {
             {"$planId", planId},
-            {"$dateAfter", dateAfter.ToString("yyyy-MM-dd")}
+            {"$dateAfter", dateAfter.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}
         };
 
-        DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId AND date >= $dateAfter AND completed = 0", parameters);
+        _dataBase.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId AND date >= $dateAfter AND completed = 0", parameters);
     }
 
     public ReadingSession Get(int id)
@@ -59,7 +61,7 @@ public class ReadingSessions
             {"$id", id}
         };
 
-        var reader = DB.ExecuteSingle("SELECT planId, date, goal, actual, completed FROM readingsessions WHERE id = $id", parameters);
+        var reader = _dataBase.ExecuteSingle("SELECT planId, date, goal, actual, completed FROM readingsessions WHERE id = $id", parameters);
 
         if (reader == null)
             throw new KeyNotFoundException("Reading session not found");
@@ -83,7 +85,7 @@ public class ReadingSessions
 
         var sessions = new List<ReadingSession>();
 
-        foreach (var ev in DB.Execute("SELECT id, date, goal, actual, completed FROM readingsessions WHERE planId = $planId", parameters))
+        foreach (var ev in _dataBase.Execute("SELECT id, date, goal, actual, completed FROM readingsessions WHERE planId = $planId", parameters))
         {
             int id = ev.GetInt32(0);
             string date = ev.GetString(1);
@@ -108,7 +110,7 @@ public class ReadingSessions
             {"$actual", actual}
         };
 
-        DB.ExecuteNonQuery("UPDATE readingsessions SET completed = 1, actual = $actual WHERE id = $id", parameters);
+        _dataBase.ExecuteNonQuery("UPDATE readingsessions SET completed = 1, actual = $actual WHERE id = $id", parameters);
     }
 
     public void UpdateCompletion(int id, int completion)
@@ -118,7 +120,7 @@ public class ReadingSessions
             {"$id", id},
             {"$completed", completion}
         };
-        DB.ExecuteNonQuery("UPDATE readingsessions SET completed = $completed WHERE id = $id", parameters);
+        _dataBase.ExecuteNonQuery("UPDATE readingsessions SET completed = $completed WHERE id = $id", parameters);
 
     }
 
@@ -129,11 +131,11 @@ public class ReadingSessions
             {"$id", id}
         };
 
-        return DB.ExecuteScalar("SELECT p.userId FROM plans p LEFT JOIN readingsessions s ON s.planId = p.id");
+        return _dataBase.ExecuteScalar("SELECT p.userId FROM plans p LEFT JOIN readingsessions s ON s.planId = p.id");
     }
 
     public User GetUser(int id)
     {
-        return Users.FindUser(GetUserId(id));
+        return _users.FindUser(GetUserId(id));
     }
 }

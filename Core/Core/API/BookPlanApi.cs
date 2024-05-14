@@ -4,7 +4,6 @@ public class BookPlanApi : ApiBase
 {
     private readonly Plans Plans;
     private readonly DateTimeProvider DateTimeProvider;
-
     private const string planNotFound = "Plan not found.";
 
     public BookPlanApi(Users users, Plans plans, DateTimeProvider dateTimeProvider) : base(users)
