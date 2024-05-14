@@ -1,5 +1,7 @@
 ﻿namespace Core;
 
+using System.Globalization;
+
 using Microsoft.Data.Sqlite;
 
 public class Plans
@@ -178,7 +180,7 @@ public class Plans
                 completedSessions++;
             totalSessions++;
         }
-        if (completedSessions == totalSessions || DateTime.Parse(BookPlan.DeadLine) > DateTime.Now.AddDays(1))
+        if (completedSessions == totalSessions || DateTime.Parse(BookPlan.DeadLine, CultureInfo.InvariantCulture) > DateTime.Now.AddDays(1))
         {
             var parameters = new Dictionary<string, dynamic>
             {

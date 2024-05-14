@@ -1,10 +1,12 @@
+using System.Globalization;
+
 namespace Core;
 
 public class ReadingSessions
 {
-    private Database DB;
+    private readonly Database DB;
 
-    private Users Users;
+    private readonly Users Users;
 
     public ReadingSessions(Database db)
     {
@@ -46,7 +48,7 @@ public class ReadingSessions
         var parameters = new Dictionary<string, dynamic>
         {
             {"$planId", planId},
-            {"$dateAfter", dateAfter.ToString("yyyy-MM-dd")}
+            {"$dateAfter", dateAfter.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}
         };
 
         DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId AND date >= $dateAfter AND completed = 0", parameters);
