@@ -12,13 +12,13 @@ public class ConfirmationApi : ApiBase
         Plans = plans;
         Sessions = sessions;
     }
-    public class MarkSessionCompletedRequest
+    internal class MarkSessionCompletedRequest
     {
         public int PlanId { get; set; }
         public int SessionId { get; set; }
     };
 
-    public class MarkSessionNotCompletedRequest
+    internal class MarkSessionNotCompletedRequest
     {
         public int PlanId { get; set; }
         public int SessionId { get; set; }

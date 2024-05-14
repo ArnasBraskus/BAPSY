@@ -34,7 +34,7 @@ public class SessionApi : ApiBase
     {
         public int Id { get; set; }
         public int PlanId { get; set; } 
-        public string Date { get; set; }
+        public required string Date { get; set; }
         public int Goal { get; set; }
         public int Actual { get; set; }
         public int IsCompleted { get; set; }
@@ -77,9 +77,12 @@ public class SessionApi : ApiBase
         var req = await ReadJson<PostMarkSessionRequest>(context.Request).ConfigureAwait(false);
 
         ReadingSession session = Sessions.Get(req.Id);
-        BookPlan plan = Plans.FindPlan(session.PlanId);
+        BookPlan? plan = Plans.FindPlan(session.PlanId);
 
-        plan.MarkReadingSession(session, req.PagesRead);
+        if (plan != null)
+        {
+            plan.MarkReadingSession(session, req.PagesRead);
+        }
 
         return Results.Ok(new {});
     }
@@ -115,7 +118,7 @@ public class SessionApi : ApiBase
         }
     }
 
-    public class PostMarkSessionNoAuthRequest
+    internal class PostMarkSessionNoAuthRequest
     {
         public required string Token { get; set; }
         public required int SessionId { get; set; }
