@@ -1,5 +1,7 @@
 using System.Globalization;
 
+using System.Globalization;
+
 namespace Core;
 
 public class ReadingSessions
@@ -48,6 +50,7 @@ public class ReadingSessions
         var parameters = new Dictionary<string, dynamic>
         {
             {"$planId", planId},
+            {"$dateAfter", dateAfter.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}
             {"$dateAfter", dateAfter.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}
         };
 
