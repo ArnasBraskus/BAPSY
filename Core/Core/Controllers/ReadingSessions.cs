@@ -85,13 +85,13 @@ public class ReadingSessions
 
         var sessions = new List<ReadingSession>();
 
-        foreach (var ev in DB.Execute("SELECT id, date, goal, actual, completed FROM readingsessions WHERE planId = $planId", parameters))
+        foreach (var session in DB.Execute("SELECT id, date, goal, actual, completed FROM readingsessions WHERE planId = $planId", parameters))
         {
-            int id = ev.GetInt32(0);
-            string date = ev.GetString(1);
-            int goal = ev.GetInt32(2);
-            int actual = ev.GetInt32(3);
-            int isCompleted = ev.GetInt32(4);
+            int id = session.GetInt32(0);
+            string date = session.GetString(1);
+            int goal = session.GetInt32(2);
+            int actual = session.GetInt32(3);
+            int isCompleted = session.GetInt32(4);
 
             sessions.Add(new ReadingSession(this, id, planId, date, goal, actual, isCompleted));
         }

@@ -50,6 +50,6 @@ public class ReadingCalendar
             }
         }
 
-        Events.Sort((a, b) => a.Date.CompareTo(b.Date));
+        Events.Sort((oneEvent, otherEvent) => oneEvent.Date.CompareTo(otherEvent.Date));
     }
 }

@@ -4,19 +4,19 @@ using System.Globalization;
 
 using Microsoft.Data.Sqlite;
 
-public class Plans
+
+public struct PlanParams
 {
-    private readonly Database DB;
-    private readonly ReadingSessions ReadingSessions;
+    public User User { get; }
+    public string Deadline { get; }
+    public int Weekdays { get; }
+    public string TimeOfDay { get; }
+    public int PagesPerDay { get; }
+    public string Title { get; }
+    public string Author { get; }
+    public int PageCount { get; }
 
-    public Plans(Database db)
-    {
-        DB = db;
-        ReadingSessions = new ReadingSessions(db);
-    }
-
-    public int AddPlan(User user, string deadLine, int weekdays, string timeOfDay, int pagesPerDay,
-            string title, string author, int pageCount)
+    public PlanParams(User user, string deadline, int weekdays, string timeOfDay, int pagesPerDay, string title, string author, int pageCount)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user), "User cannot be null");
@@ -31,15 +31,39 @@ public class Plans
         if (author.Length == 0)
             throw new ArgumentException("Author cannot be empty");
 
+        User = user;
+        Deadline = deadline;
+        Weekdays = weekdays;
+        TimeOfDay = timeOfDay;
+        PagesPerDay = pagesPerDay;
+        Title = title;
+        Author = author;
+        PageCount = pageCount;
+    }
+}
+
+public class Plans
+{
+    private readonly Database DB;
+    private readonly ReadingSessions ReadingSessions;
+
+    public Plans(Database db)
+    {
+        DB = db;
+        ReadingSessions = new ReadingSessions(db);
+    }
+
+    public int AddPlan(PlanParams planParams)
+    {
         Dictionary<string, dynamic> dictionary = new Dictionary<string, dynamic> {
-            { "$userid", user.Id },
-            { "$deadline", deadLine },
-            { "$weekdays", weekdays },
-            { "$timeOfDay", timeOfDay },
-            { "$pagesPerDay", pagesPerDay },
-            { "$title", title },
-            { "$author", author },
-            { "$pageCount", pageCount }
+            { "$userid", planParams.User.Id },
+            { "$deadline", planParams.Deadline },
+            { "$weekdays", planParams.Weekdays },
+            { "$timeOfDay", planParams.TimeOfDay },
+            { "$pagesPerDay", planParams.PagesPerDay },
+            { "$title", planParams.Title },
+            { "$author", planParams.Author },
+            { "$pageCount", planParams.PageCount }
         };
 
         DB.ExecuteNonQuery(@"INSERT INTO PLANS (userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount) VALUES ($userid, $deadline, $weekdays, $timeOfDay, $pagesPerDay, $title, $author, $pageCount)", dictionary);
@@ -93,9 +117,9 @@ public class Plans
         if (pageCount < 0)
             throw new ArgumentException("Page count must be greater than zero");
         if (title.Length == 0)
-            throw new ArgumentException("where title");
+            throw new ArgumentException("Title cannot be empty");
         if (author.Length == 0)
-            throw new ArgumentException("where author");
+            throw new ArgumentException("Author cannot be empty");
 
         var parameters = new Dictionary<string, dynamic> {
             { "$id", id },
@@ -171,8 +195,6 @@ public class Plans
             throw new ArgumentException("invalid plan id");
         var BookPlan = FindPlan(id);
         
-
-        //nezinau ar isCompleted taip veikia
         int completedSessions = 0; int totalSessions = 0;
         foreach (var session in BookPlan.ReadingSessions)
         {

@@ -4,6 +4,7 @@ using System.Linq;
 
 public class CalendarApi : ApiBase
 {
+    private readonly string DateFormat = "yyyy-MM-dd HH:mm:ss";
     private readonly Users Users;
     private readonly Plans Plans;
     private readonly DateTimeProvider DateTimeProvider;
@@ -52,14 +53,14 @@ public class CalendarApi : ApiBase
 
         return Results.Ok(new GetCalendarEventsResponse
         {
-            Events = calendar.Events.Select(x => new GetCalendarEventsResponse.ReadingEvent
+            Events = calendar.Events.Select(plan => new GetCalendarEventsResponse.ReadingEvent
             {
-                Date = x.Date.ToString("yyyy-MM-dd HH:mm:ss"),
-                BookTitle = x.Metadata.BookTitle,
-                BookAuthor = x.Metadata.BookAuthor,
-                PageStart = x.PageStart,
-                PageEnd = x.PageEnd,
-                PagesToRead = x.PagesToRead
+                Date = plan.Date.ToString(DateFormat),
+                BookTitle = plan.Metadata.BookTitle,
+                BookAuthor = plan.Metadata.BookAuthor,
+                PageStart = plan.PageStart,
+                PageEnd = plan.PageEnd,
+                PagesToRead = plan.PagesToRead
             }).ToList()
         });
     }

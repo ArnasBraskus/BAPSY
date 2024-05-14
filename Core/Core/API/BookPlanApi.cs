@@ -57,7 +57,9 @@ public class BookPlanApi : ApiBase
 
         try
         {
-            int id = Plans.AddPlan(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Pages);
+            PlanParams planParams = new PlanParams(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Pages);
+
+            int id = Plans.AddPlan(planParams);
 
             Plans.UpdateReadingSessions(id, DateTimeProvider.Now);
         }
