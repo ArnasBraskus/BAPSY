@@ -24,15 +24,13 @@ public class ConfirmationApi : ApiBase
         public int SessionId { get; set; }
     };
 
-    public class MarkSessionResponse
+    internal class MarkSessionResponse
     {
 
     };
 
     public async Task<IResult> PostMarkSessionCompleted(HttpContext context)
     {
-        User user = GetUser(context);
-
         var data = await ReadJson<MarkSessionCompletedRequest>(context.Request).ConfigureAwait(false);
 
         BookPlan? plan = Plans.FindPlan(data.PlanId);
@@ -58,8 +56,6 @@ public class ConfirmationApi : ApiBase
 
     public async Task<IResult> PostMarkSessionNotCompleted(HttpContext context)
     {
-        User user = GetUser(context);
-
         var data = await ReadJson<MarkSessionNotCompletedRequest>(context.Request).ConfigureAwait(false);
 
         ReadingSession? session = Sessions.Get(data.SessionId);

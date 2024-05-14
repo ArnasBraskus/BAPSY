@@ -17,7 +17,7 @@ public class CalendarApi : ApiBase
 
     public CalendarApi(Users users, Plans plans) : this(users, plans, new DateTimeProvider()) { }
 
-    public class GetCalendarEventsResponse
+    internal class GetCalendarEventsResponse
     {
         public class ReadingEvent
         {
@@ -64,12 +64,12 @@ public class CalendarApi : ApiBase
         });
     }
 
-    private string GenerateCalendarToken(User user)
+    private static string GenerateCalendarToken(User user)
     {
         return Auth.GenerateHash(user, $"CAL-{user.Id}");
     }
 
-    public class GetCalendarTokenResponse
+    internal class GetCalendarTokenResponse
     {
         public int UserId { get; set; }
         public string Token { get; set; } = null!;
