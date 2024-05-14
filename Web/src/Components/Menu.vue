@@ -29,7 +29,7 @@ const email = ref(localStorage.getItem('email'));
       <nav class="nav">
         <div class="nav-left">
           <ul>
-            <li><span style="margin-right: 15px">BookQuest</span></li>
+            <li><span>BookQuest</span></li>
             <li><RouterLink to="/app">Home</RouterLink></li>
             <li><RouterLink to="/books">Books</RouterLink></li>
             <li><RouterLink to="/calendar">Calendar</RouterLink></li>
@@ -47,6 +47,10 @@ const email = ref(localStorage.getItem('email'));
 </template>
 
 <style scoped>
+span {
+  margin-right: 15px;
+}
+
 li:has( > a.router-link-active) {
   border-bottom: solid 3px transparent;
   border-bottom-color: white;

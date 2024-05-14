@@ -40,7 +40,7 @@ fetchSessions();
     <Menu/>
     <main>
       <h1>Reading sessions</h1>
-      <div style="margin-top: 20px; margin-bottom: 20px">
+      <div class="div-margin">
         <button class="cta-button" @click="goBack">Back</button>
       </div>
       <table class="sessions-table">
@@ -53,8 +53,8 @@ fetchSessions();
           <td class="sessions-data"><a href="#" @click="goToSession(session.id)">{{ session.date }}</a></td>
           <td class="sessions-data">{{ session.actual }} / {{ session.goal }}</td>
           <td class="sessions-data">
-            <a v-if="session.actual > 0" style="color: green">✓</a>
-            <a v-else href="#" @click="doMarkSession(session.id, session.goal)" style="color: white">✓</a>
+            <a v-if="session.actual > 0" class="green">✓</a>
+            <a v-else href="#" @click="doMarkSession(session.id, session.goal)" class="white">✓</a>
           </td>
 
         </tr>
@@ -64,6 +64,16 @@ fetchSessions();
 </template>
 
 <style scoped>
+.white{
+  color: white;
+}
+.green {
+  color: green;
+}
+.div-margin {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 .sessions-table {
   width: 1000px;
   color: white;

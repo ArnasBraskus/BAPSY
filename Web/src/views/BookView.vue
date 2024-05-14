@@ -95,7 +95,7 @@ fetchPlan();
     <Menu/>
     <main>
       <ModalsContainer/>
-      <div style="margin-bottom: 10px">
+      <div class="margin">
         <button class="cta-button" @click="goBack">Back</button>
         <button class="cta-button" @click="editPlan">Edit</button>
         <button class="cta-button" @click="deletePlan">Delete</button>
@@ -150,6 +150,9 @@ fetchPlan();
 </template>
 
 <style scroped>
+.margin {
+  margin-bottom: 10px;
+}
 .reading-sessions {
   margin-top: 20px;
   font-weight: bold;

@@ -53,7 +53,7 @@ function close() {
   <div class="shared-toast-container">
     <div :class="[ 'shared-toast-wrapper', toastAnimTypeClass ]">
       <div :class="[ 'toast', toastTypeClass ]" @click="close">
-        <div style="height: auto;" aria-hidden="false">
+        <div class="height-auto" aria-hidden="false">
           <div class="toast_content" style="transition: opacity 250ms ease 0ms;">
             <div class="_icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -71,6 +71,9 @@ function close() {
 </template>
 
 <style scoped>
+.height-auto {
+  height: auto;
+}
 .shared-toast-container {
   position: fixed;
   right: 0;
