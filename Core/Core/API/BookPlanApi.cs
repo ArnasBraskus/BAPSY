@@ -5,6 +5,8 @@ public class BookPlanApi : ApiBase
     private readonly Plans Plans;
     private readonly DateTimeProvider DateTimeProvider;
 
+    private const string planNotFound = "Plan not found.";
+
     public BookPlanApi(Users users, Plans plans, DateTimeProvider dateTimeProvider) : base(users)
     {
         Plans = plans;
@@ -87,7 +89,7 @@ public class BookPlanApi : ApiBase
         BookPlan? plan = Plans.FindPlan(id);
 
         if (plan == null || plan.UserId != user.Id)
-            return Results.BadRequest(new ErrorResponse { Error = "Plan not found." });
+            return Results.BadRequest(new ErrorResponse { Error = planNotFound });
 
         return Results.Ok(new GetBookPlanResponse
         {
@@ -122,7 +124,7 @@ public class BookPlanApi : ApiBase
         BookPlan? plan = Plans.FindPlan(req.Id);
 
         if (plan == null || plan.UserId != user.Id)
-            return Results.BadRequest(new ErrorResponse { Error = "Plan not found." });
+            return Results.BadRequest(new ErrorResponse { Error = planNotFound });
 
         Plans.DeletePlan(plan.Id);
 
@@ -154,7 +156,7 @@ public class BookPlanApi : ApiBase
         BookPlan? plan = Plans.FindPlan(data.Id);
 
         if (plan == null || plan.UserId != user.Id)
-            return Results.BadRequest(new ErrorResponse { Error = "Plan not found." });
+            return Results.BadRequest(new ErrorResponse { Error = planNotFound });
 
         try
         {
@@ -190,7 +192,7 @@ public class BookPlanApi : ApiBase
 			BookPlan? plan = Plans.FindPlan(data.PlanId);
 
 			if (plan == null || plan.UserId != user.Id)
-				return Results.BadRequest(new ErrorResponse { Error = "Plan not found." });
+				return Results.BadRequest(new ErrorResponse { Error = planNotFound });
 
 			plan.AdditionalPagesRead(data.AdditionalPagesRead);
 
