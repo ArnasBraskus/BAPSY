@@ -203,14 +203,15 @@ public class BookPlanApi : ApiBase
 			return Results.BadRequest(new ErrorResponse { Error = e.Message });
 		}
 	}
-
+    private const string AuthorizationPolicyName = "Users";
+    
 	public override void Map(WebApplication app)
     {
-        app.MapGet("/bookplan/list", ListBookPlans).RequireAuthorization("Users");
-        app.MapGet("/bookplan/get/{id}", GetBookPlan).RequireAuthorization("Users");
-        app.MapPost("/bookplan/add", PostAddBookPlan).RequireAuthorization("Users");
-        app.MapPost("/bookplan/remove", PostRemoveBookPlan).RequireAuthorization("Users");
-        app.MapPost("/bookplan/edit", PostEditBookPlan).RequireAuthorization("Users");
-		app.MapPost("/bookplan/additionalPages", PostAdditionalPagesRead).RequireAuthorization("Users");
+        app.MapGet("/bookplan/list", ListBookPlans).RequireAuthorization(AuthorizationPolicyName);
+        app.MapGet("/bookplan/get/{id}", GetBookPlan).RequireAuthorization(AuthorizationPolicyName);
+        app.MapPost("/bookplan/add", PostAddBookPlan).RequireAuthorization(AuthorizationPolicyName);
+        app.MapPost("/bookplan/remove", PostRemoveBookPlan).RequireAuthorization(AuthorizationPolicyName);
+        app.MapPost("/bookplan/edit", PostEditBookPlan).RequireAuthorization(AuthorizationPolicyName);
+		app.MapPost("/bookplan/additionalPages", PostAdditionalPagesRead).RequireAuthorization(AuthorizationPolicyName);
 	}
 }
