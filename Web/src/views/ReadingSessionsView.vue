@@ -26,6 +26,10 @@ function goToSession(id) {
   router.push({path: `/books/${planId}/sessions/${id}`});
 }
 
+function sessionUrl(id) {
+  return `/books/${planId}/sessions/${id}`;
+}
+
 function doMarkSession(id, actual) {
   markSession(id, actual);
   fetchSessions();
@@ -50,11 +54,11 @@ fetchSessions();
           <th class="sessions-header">Status</th>
         </tr>
         <tr v-for="session in sessionInfo" class="sessions-row">
-          <td class="sessions-data"><a href="#" @click="goToSession(session.id)">{{ session.date }}</a></td>
+          <td class="sessions-data"><RouterLink :to="sessionUrl(session.id)">{{ session.date }}</RouterLink></td>
           <td class="sessions-data">{{ session.actual }} / {{ session.goal }}</td>
           <td class="sessions-data">
-            <a v-if="session.actual > 0" class="green">✓</a>
-            <a v-else href="#" @click="doMarkSession(session.id, session.goal)" class="white">✓</a>
+            <a v-if="session.isCompleted == 1" class="green">✓</a>
+            <a v-else class="clickable" @click="doMarkSession(session.id, session.goal)" class="white">✓</a>
           </td>
 
         </tr>
@@ -64,7 +68,7 @@ fetchSessions();
 </template>
 
 <style scoped>
-.white{
+.white {
   color: white;
 }
 .green {
@@ -73,6 +77,12 @@ fetchSessions();
 .div-margin {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+a.clickable:hover {
+  cursor: pointer;
+}
+a {
+  color: blue;
 }
 .sessions-table {
   width: 1000px;
