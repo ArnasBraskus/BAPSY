@@ -10,11 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <!--
-      <ProjectReference Include="..\JsonSerializationClass\JsonSerializationClass.csproj">
+    <!--
+    <ProjectReference Include="..\JsonSerializationClass\JsonSerializationClass.csproj">
         <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <OutputItemType>Analyzer</OutputItemType>
-      </ProjectReference>
+        <OutputItemType>Analyzer</OutputItemType>
+    </ProjectReference>
       -->
     <InternalsVisibleTo Include="CoreTests" />
     <PackageReference Include="Google.Apis.Auth" Version="1.67.0" />

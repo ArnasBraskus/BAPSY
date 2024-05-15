@@ -11,12 +11,12 @@ public class AuthApi : ApiBase
         Users = users;
     }
 
-    private sealed class GoogleAuthRequest
+    private sealed class GoogleAuthRequestJson
     {
         public required string JwtToken { get; set; } = null!;
     };
 
-    internal class GoogleAuthResponse
+    internal class GoogleAuthResponseJson
     {
         public string Token { get; set; } = null!;
         public double Validity { get; set; }
@@ -24,7 +24,7 @@ public class AuthApi : ApiBase
 
     public async Task<IResult> PostAuthGoogle(HttpRequest request)
     {
-        var req = await ReadJson<GoogleAuthRequest>(request).ConfigureAwait(false);
+        var req = await ReadJson<GoogleAuthRequestJson>(request).ConfigureAwait(false);
 
         string email = string.Empty;
         string name = string.Empty;
@@ -50,7 +50,7 @@ public class AuthApi : ApiBase
 
         string jwt = Auth.GenerateJWT(email, validity);
 
-        return Results.Ok(new GoogleAuthResponse { Token = jwt, Validity = validity.TotalSeconds });
+        return Results.Ok(new GoogleAuthResponseJson { Token = jwt, Validity = validity.TotalSeconds });
     }
 
     public override void Map(WebApplication app)

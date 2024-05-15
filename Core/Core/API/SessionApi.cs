@@ -10,7 +10,7 @@ public class SessionApi : ApiBase
         Plans = plans;
         Sessions = sessions;
     }
-	internal class ListReadingSessionsResponse
+	internal class ListReadingSessionsResponseJson
 	{
 		public ICollection<ReadingSession> Sessions { get; set; } = null!;
 	}
@@ -25,10 +25,10 @@ public class SessionApi : ApiBase
 
 		ICollection<ReadingSession> sessions = Sessions.GetAll(planId);
 
-		return Results.Ok(new ListReadingSessionsResponse { Sessions = sessions });	
+		return Results.Ok(new ListReadingSessionsResponseJson { Sessions = sessions });	
     }
 
-    internal class GetSessionResponse
+    internal class GetSessionResponseJson
     {
         public int Id { get; set; }
         public int PlanId { get; set; } 
@@ -44,7 +44,7 @@ public class SessionApi : ApiBase
 		{
 			ReadingSession session = Sessions.Get(id);
 
-            return Results.Ok(new GetSessionResponse
+            return Results.Ok(new GetSessionResponseJson
             {
                 Id = id,
                 PlanId = session.Id,
@@ -60,7 +60,7 @@ public class SessionApi : ApiBase
 		}
 	}
 
-    internal class PostMarkSessionRequest
+    internal class PostMarkSessionRequestJson
     {
         public required int Id { get; set; }
         public required int PagesRead { get; set; }
@@ -68,7 +68,7 @@ public class SessionApi : ApiBase
 
     public async Task<IResult> PostMarkSession(HttpContext context)
     {
-        var req = await ReadJson<PostMarkSessionRequest>(context.Request).ConfigureAwait(false);
+        var req = await ReadJson<PostMarkSessionRequestJson>(context.Request).ConfigureAwait(false);
 
         ReadingSession session = Sessions.Get(req.Id);
         BookPlan? plan = Plans.FindPlan(session.PlanId);
@@ -81,7 +81,7 @@ public class SessionApi : ApiBase
         return Results.Ok(new {});
     }
 
-    internal class GetSessionNoAuthResponse
+    internal class GetSessionNoAuthResponseJson
     {
         public int Id { get; set; }
         public string Date { get; set; } = null!;
@@ -98,7 +98,7 @@ public class SessionApi : ApiBase
             if (token != session.GenerateToken())
                 return Results.BadRequest(new ErrorResponse { Error = "Bad token" });
 
-            return Results.Ok(new GetSessionNoAuthResponse
+            return Results.Ok(new GetSessionNoAuthResponseJson
             {
                 Id = session.Id,
                 Date = session.Date,
@@ -112,7 +112,7 @@ public class SessionApi : ApiBase
         }
     }
 
-    internal class PostMarkSessionNoAuthRequest
+    internal class PostMarkSessionNoAuthRequestJson
     {
         public required string Token { get; set; }
         public required int SessionId { get; set; }
@@ -122,7 +122,7 @@ public class SessionApi : ApiBase
 
     public async Task<IResult> PostMarkSessionNoAuth(HttpRequest request)
     {
-        var req = await ReadJson<PostMarkSessionNoAuthRequest>(request).ConfigureAwait(false);
+        var req = await ReadJson<PostMarkSessionNoAuthRequestJson>(request).ConfigureAwait(false);
 
         ReadingSession session = Sessions.Get(req.SessionId);
 

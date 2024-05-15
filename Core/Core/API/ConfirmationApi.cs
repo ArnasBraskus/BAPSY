@@ -12,23 +12,23 @@ public class ConfirmationApi : ApiBase
         Plans = plans;
         Sessions = sessions;
     }
-    internal class MarkSessionCompletedRequest
+    internal class MarkSessionCompletedRequestJson
     {
-        public int PlanId { get; set; }
-        public int SessionId { get; set; }
+        public required int PlanId { get; set; }
+        public required int SessionId { get; set; }
     };
 
-    internal class MarkSessionNotCompletedRequest
+    internal class MarkSessionNotCompletedRequestJson
     {
-        public int PlanId { get; set; }
-        public int SessionId { get; set; }
+        public required int PlanId { get; set; }
+        public required int SessionId { get; set; }
     };
 
 
 
     public async Task<IResult> PostMarkSessionCompleted(HttpContext context)
     {
-        var data = await ReadJson<MarkSessionCompletedRequest>(context.Request).ConfigureAwait(false);
+        var data = await ReadJson<MarkSessionCompletedRequestJson>(context.Request).ConfigureAwait(false);
 
         BookPlan? plan = Plans.FindPlan(data.PlanId);
 
@@ -53,7 +53,7 @@ public class ConfirmationApi : ApiBase
 
     public async Task<IResult> PostMarkSessionNotCompleted(HttpContext context)
     {
-        var data = await ReadJson<MarkSessionNotCompletedRequest>(context.Request).ConfigureAwait(false);
+        var data = await ReadJson<MarkSessionNotCompletedRequestJson>(context.Request).ConfigureAwait(false);
 
         ReadingSession? session = Sessions.Get(data.SessionId);
         BookPlan? plan = Plans.FindPlan(data.PlanId);

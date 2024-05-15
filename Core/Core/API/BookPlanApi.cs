@@ -19,10 +19,10 @@ public class BookPlanApi : ApiBase
     {
     }
 
-    internal class ListBookPlansResponse
+    internal class ListBookPlansResponseJson
     {
         public ICollection<int> Ids { get; }
-		public ListBookPlansResponse(ICollection<int> ids)
+		public ListBookPlansResponseJson(ICollection<int> ids)
 		{
 			Ids = ids;
 		}
@@ -34,10 +34,10 @@ public class BookPlanApi : ApiBase
 
         ICollection<int> ids = Plans.FindPlanByUser(user.Id);
 
-		return Results.Ok(new ListBookPlansResponse(ids));
+		return Results.Ok(new ListBookPlansResponseJson(ids));
 	}
 
-    internal class AddBookPlanRequest
+    internal class AddBookPlanRequestJson
     {
         public required string Title { get; set; } = null!;
         public required string Author { get; set; } = null!;
@@ -52,7 +52,7 @@ public class BookPlanApi : ApiBase
     {
         User user = GetUser(context);
 
-        var req = await ReadJson<AddBookPlanRequest>(context.Request).ConfigureAwait(false);
+        var req = await ReadJson<AddBookPlanRequestJson>(context.Request).ConfigureAwait(false);
 
         try
         {
@@ -70,7 +70,7 @@ public class BookPlanApi : ApiBase
         return Results.Ok(new { });
     }
 
-    internal class GetBookPlanResponse
+    internal class GetBookPlanResponseJson
     {
         public int Id { get; set; }
         public string Title { get; set; } = null!;
@@ -92,7 +92,7 @@ public class BookPlanApi : ApiBase
         if (plan == null || plan.UserId != user.Id)
             return Results.BadRequest(new ErrorResponse { Error = PlanNotFound });
 
-        return Results.Ok(new GetBookPlanResponse
+        return Results.Ok(new GetBookPlanResponseJson
         {
             Id = id,
             Author = plan.Author,
@@ -106,7 +106,7 @@ public class BookPlanApi : ApiBase
         });
     }
 
-    internal class RemoveBookPlanRequest
+    internal class RemoveBookPlanRequestJson
     {
         public required int Id { get; set; }
     }
@@ -117,7 +117,7 @@ public class BookPlanApi : ApiBase
     {
         User user = GetUser(context);
 
-        var req = await ReadJson<RemoveBookPlanRequest>(context.Request).ConfigureAwait(false);
+        var req = await ReadJson<RemoveBookPlanRequestJson>(context.Request).ConfigureAwait(false);
 
         BookPlan? plan = Plans.FindPlan(req.Id);
 
@@ -129,7 +129,7 @@ public class BookPlanApi : ApiBase
         return Results.Ok(new {});
     }
 
-    private sealed class EditBookPlanRequest
+    private sealed class EditBookPlanRequestJson
     {
         public required int Id { get; set; }
         public required string Title { get; set; } = null!;
@@ -145,7 +145,7 @@ public class BookPlanApi : ApiBase
     {
         User user = GetUser(context);
 
-        var data = await ReadJson<EditBookPlanRequest>(context.Request).ConfigureAwait(false);
+        var data = await ReadJson<EditBookPlanRequestJson>(context.Request).ConfigureAwait(false);
 
         BookPlan? plan = Plans.FindPlan(data.Id);
 
@@ -166,13 +166,13 @@ public class BookPlanApi : ApiBase
         return Results.Ok(new{ });
     }
 
-	internal class UpdateAdditionalPagesReadRequest
+	internal class UpdateAdditionalPagesReadRequestJson
 	{
 		public required int PlanId { get; set; }
 		public required int AdditionalPagesRead { get; set; }
 	}
 
-	internal class UpdateAdditionalPagesReadResponse
+	internal class UpdateAdditionalPagesReadResponseJson
 	{
 		public required string Message { get; set; }
 	}
@@ -181,7 +181,7 @@ public class BookPlanApi : ApiBase
 		try
 		{
 			User user = GetUser(context);
-			var data = await ReadJson<UpdateAdditionalPagesReadRequest>(context.Request).ConfigureAwait(false);
+			var data = await ReadJson<UpdateAdditionalPagesReadRequestJson>(context.Request).ConfigureAwait(false);
 
 			BookPlan? plan = Plans.FindPlan(data.PlanId);
 
@@ -190,7 +190,7 @@ public class BookPlanApi : ApiBase
 
 			plan.AdditionalPagesRead(data.AdditionalPagesRead);
 
-			return Results.Ok(new UpdateAdditionalPagesReadResponse { Message = "Actual pages read updated successfully." });
+			return Results.Ok(new UpdateAdditionalPagesReadResponseJson { Message = "Actual pages read updated successfully." });
 		}
 		catch (ArgumentException exception)
 		{
