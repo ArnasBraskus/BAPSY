@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 
 public class Database
 {
-    private SqliteConnection Connection;
+    private readonly SqliteConnection Connection;
 
     public Database(string connectionString)
     {

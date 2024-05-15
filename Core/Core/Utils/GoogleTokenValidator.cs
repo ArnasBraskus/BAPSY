@@ -4,7 +4,7 @@ using Google.Apis.Auth;
 
 public class GoogleTokenValidator
 {
-    private GoogleJsonWebSignature.ValidationSettings GoogleValidationSettings;
+    private readonly GoogleJsonWebSignature.ValidationSettings GoogleValidationSettings;
 
     public GoogleTokenValidator(string googleClientId)
     {

@@ -2,7 +2,7 @@ namespace Core;
 
 public class User
 {
-    private Users Users;
+    private readonly Users Users;
     public int Id { get; }
     public string Email { get; }
     public string Secret { get; }

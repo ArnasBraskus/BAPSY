@@ -24,10 +24,7 @@ public class ConfirmationApi : ApiBase
         public int SessionId { get; set; }
     };
 
-    internal class MarkSessionResponse
-    {
 
-    };
 
     public async Task<IResult> PostMarkSessionCompleted(HttpContext context)
     {
@@ -51,7 +48,7 @@ public class ConfirmationApi : ApiBase
             return Results.BadRequest(new ErrorResponse { Error = e.Message });
         }
 
-        return Results.Ok(new MarkSessionResponse { });
+        return Results.Ok(new { });
     }
 
     public async Task<IResult> PostMarkSessionNotCompleted(HttpContext context)
@@ -75,13 +72,13 @@ public class ConfirmationApi : ApiBase
             return Results.BadRequest(new ErrorResponse { Error = e.Message });
         }
 
-        return Results.Ok(new MarkSessionResponse { });
+        return Results.Ok(new { });
     }
 
     public override void Map(WebApplication app)
     {
-        app.MapPost("/api/mark-session-completed", PostMarkSessionCompleted).RequireAuthorization("Users");
-        app.MapPost("/api/mark-session-not-completed", PostMarkSessionNotCompleted).RequireAuthorization("Users");
+        app.MapPost("/api/mark-session-completed", (Delegate)PostMarkSessionCompleted).RequireAuthorization("Users");
+        app.MapPost("/api/mark-session-not-completed", (Delegate)PostMarkSessionNotCompleted).RequireAuthorization("Users");
     }
 
 }

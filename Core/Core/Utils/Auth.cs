@@ -9,11 +9,11 @@ using System.Text;
 
 public class Auth
 {
-    private JsonWebTokenHandler Handler;
-    private SigningCredentials Credentials;
-    private SymmetricSecurityKey Key;
-    private string Issuer;
-    private GoogleTokenValidator GoogleTokenValidator;
+    private readonly JsonWebTokenHandler Handler;
+    private readonly SigningCredentials Credentials;
+    private readonly SymmetricSecurityKey Key;
+    private readonly string Issuer;
+    private readonly GoogleTokenValidator GoogleTokenValidator;
 
     public Auth(string key, string issuer, GoogleTokenValidator validator)
     {
@@ -55,7 +55,7 @@ public class Auth
 
         var hash = SHA256.Create().ComputeHash(bytes);
 
-        return Convert.ToHexString(hash).ToLower();
+        return Convert.ToHexString(hash).ToLower(System.Globalization.CultureInfo.CurrentCulture);
     }
 
     public void Add(IServiceCollection services)

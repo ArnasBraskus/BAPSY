@@ -126,11 +126,6 @@ public class ReadingSessions
 
     private int GetUserId(int id)
     {
-        var parameters = new Dictionary<string, dynamic>
-        {
-            {"$id", id}
-        };
-
         return DB.ExecuteScalar("SELECT p.userId FROM plans p LEFT JOIN readingsessions s ON s.planId = p.id");
     }
 

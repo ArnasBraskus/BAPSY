@@ -19,7 +19,7 @@ public class BookPlanApi : ApiBase
 
     internal class ListBookPlansResponse
     {
-        public List<int> Ids { get; } = null!;
+        public List<int> Ids { get; }
 		public ListBookPlansResponse(List<int> ids)
 		{
 			Ids = ids;
@@ -45,9 +45,6 @@ public class BookPlanApi : ApiBase
         public required string TimeOfDay { get; set; } = null!;
     }
 
-    internal class AddBookPlanResponse
-    {
-    };
 
     public async Task<IResult> PostAddBookPlan(HttpContext context)
     {
@@ -68,7 +65,7 @@ public class BookPlanApi : ApiBase
             return Results.BadRequest(new ErrorResponse { Error = exception.Message });
         }
 
-        return Results.Ok(new AddBookPlanResponse { });
+        return Results.Ok(new { });
     }
 
     internal class GetBookPlanResponse
@@ -112,10 +109,7 @@ public class BookPlanApi : ApiBase
         public required int Id { get; set; }
     }
 
-    public class RemoveBookPlanResponse
-    {
-
-    }
+   
 
     public async Task<IResult> PostRemoveBookPlan(HttpContext context)
     {
@@ -130,7 +124,7 @@ public class BookPlanApi : ApiBase
 
         Plans.DeletePlan(plan.Id);
 
-        return Results.Ok(new RemoveBookPlanResponse { });
+        return Results.Ok(new {});
     }
 
     private sealed class EditBookPlanRequest
@@ -144,10 +138,6 @@ public class BookPlanApi : ApiBase
         public required string TimeOfDay { get; set; } = null!;
     };
 
-    public class EditBookPlanResponse
-    {
-
-    };
 
     public async Task<IResult> PostEditBookPlan(HttpContext context)
     {
@@ -171,7 +161,7 @@ public class BookPlanApi : ApiBase
             return Results.BadRequest(new ErrorResponse { Error = exception.Message });
         }
 
-        return Results.Ok(new EditBookPlanResponse { });
+        return Results.Ok(new{ });
     }
 
 	internal class UpdateAdditionalPagesReadRequest
@@ -182,7 +172,7 @@ public class BookPlanApi : ApiBase
 
 	internal class UpdateAdditionalPagesReadResponse
 	{
-		public string Message { get; set; }
+		public required string Message { get; set; }
 	}
 	public async Task<IResult> PostAdditionalPagesRead(HttpContext context)
 	{
@@ -210,9 +200,9 @@ public class BookPlanApi : ApiBase
     {
         app.MapGet("/bookplan/list", ListBookPlans).RequireAuthorization(AuthorizationPolicyName);
         app.MapGet("/bookplan/get/{id}", GetBookPlan).RequireAuthorization(AuthorizationPolicyName);
-        app.MapPost("/bookplan/add", PostAddBookPlan).RequireAuthorization(AuthorizationPolicyName);
-        app.MapPost("/bookplan/remove", PostRemoveBookPlan).RequireAuthorization(AuthorizationPolicyName);
-        app.MapPost("/bookplan/edit", PostEditBookPlan).RequireAuthorization(AuthorizationPolicyName);
-		app.MapPost("/bookplan/additionalPages", PostAdditionalPagesRead).RequireAuthorization(AuthorizationPolicyName);
+        app.MapPost("/bookplan/add", (Delegate)PostAddBookPlan).RequireAuthorization(AuthorizationPolicyName);
+        app.MapPost("/bookplan/remove", (Delegate)PostRemoveBookPlan).RequireAuthorization(AuthorizationPolicyName);
+        app.MapPost("/bookplan/edit", (Delegate)PostEditBookPlan).RequireAuthorization(AuthorizationPolicyName);
+		app.MapPost("/bookplan/additionalPages", (Delegate)PostAdditionalPagesRead).RequireAuthorization(AuthorizationPolicyName);
 	}
 }

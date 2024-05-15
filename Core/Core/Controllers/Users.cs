@@ -5,7 +5,7 @@ using System.Net.Mail;
 
 public class Users
 {
-    private Database DB;
+    private readonly Database DB;
 
     public Users(Database db)
     {

@@ -2,7 +2,7 @@ namespace Core;
 
 public class ReadingSession
 {
-    private ReadingSessions? ReadingSessions;
+    private readonly ReadingSessions? ReadingSessions;
     public int Id { get; }
     public int PlanId { get; }
     public string Date { get; }

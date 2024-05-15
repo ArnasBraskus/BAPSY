@@ -191,10 +191,13 @@ public class Plans
     }
     public void UpdateFinished(int id)
     {
-        if (id < 0 || FindPlan(id) == null)
+        if (id < 0 )
             throw new ArgumentException("invalid plan id");
         var BookPlan = FindPlan(id);
-        
+
+        if (BookPlan == null)
+            throw new ArgumentException("invalid plan id");
+
         int completedSessions = 0; int totalSessions = 0;
         foreach (var session in BookPlan.ReadingSessions)
         {

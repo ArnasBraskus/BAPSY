@@ -15,7 +15,6 @@ public class SessionApi : ApiBase
 		public List<ReadingSession> Sessions { get; set; } = null!;
 	}
 
-	// FIXME
 	public IResult GetListSessions(HttpContext context, int planId)
     {
 		
@@ -39,7 +38,6 @@ public class SessionApi : ApiBase
         public int IsCompleted { get; set; }
 	}
 
-    // FIXME 
     public IResult GetSession(HttpContext context, int id)
     {
 		try
@@ -68,8 +66,6 @@ public class SessionApi : ApiBase
         public required int PagesRead { get; set; }
     }
 
-
-    // FIXME
     public async Task<IResult> PostMarkSession(HttpContext context)
     {
         var req = await ReadJson<PostMarkSessionRequest>(context.Request).ConfigureAwait(false);
@@ -85,7 +81,7 @@ public class SessionApi : ApiBase
         return Results.Ok(new {});
     }
 
-    public class GetSessionNoAuthResponse
+    internal class GetSessionNoAuthResponse
     {
         public int Id { get; set; }
         public string Date { get; set; } = null!;
@@ -147,7 +143,7 @@ public class SessionApi : ApiBase
     {
         app.MapGet("/sessions/list/{planId}", GetListSessions).RequireAuthorization("Users");
         app.MapGet("/sessions/get/{id}", GetSession).RequireAuthorization("Users");
-        app.MapPost("/sessions/mark", PostMarkSession).RequireAuthorization("Users");
+        app.MapPost("/sessions/mark", (Delegate)PostMarkSession).RequireAuthorization("Users");
         app.MapPost("/sessions/get_noauth", GetSessionNoAuth);
         app.MapPost("/sessions/mark_noauth", PostMarkSessionNoAuth);
     }

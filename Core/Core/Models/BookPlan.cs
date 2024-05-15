@@ -1,10 +1,12 @@
 ﻿namespace Core;
 
+using System.Globalization;
+
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class BookPlan
 {
-    private Plans Plans;
+    private readonly Plans Plans;
     public int Id { get; }
     public int UserId { get; }
     public string DeadLine { get; }
@@ -55,12 +57,12 @@ public class BookPlan
 
     public List<ReadingSession> GenerateReadingSessions(DateTime startDate)
     {
-        DateTime endDate = DateTime.Parse($"{DeadLine} {timeOfDay}");
+        DateTime endDate = DateTime.Parse($"{DeadLine} {timeOfDay}", CultureInfo.CurrentCulture);
 
         if (startDate > endDate)
             throw new ArgumentException("Start date cannot be later than end date.");
 
-        if (TimeSpan.Parse(timeOfDay) < startDate.TimeOfDay)
+        if (TimeSpan.Parse(timeOfDay, CultureInfo.CurrentCulture) < startDate.TimeOfDay)
         {
             startDate = startDate.AddDays(1);
         }
@@ -80,7 +82,7 @@ public class BookPlan
             if (goal <= 0)
                 break;
 
-            sessions.Add(new ReadingSession(day.ToString("yyyy-MM-dd"), goal));
+            sessions.Add(new ReadingSession(day.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture), goal));
 
             if (pagesLeft < PagesPerDay)
                 break;
@@ -109,7 +111,7 @@ public class BookPlan
 
     public void PagesToReadBeforeDeadline(DateTime now)
     {
-        DateTime deadline = DateTime.Parse(DeadLine);
+        DateTime deadline = DateTime.Parse(DeadLine, CultureInfo.CurrentCulture);
         TimeSpan timeLeft = deadline.Subtract(now);
 
         if (timeLeft.Days < 0)
@@ -131,7 +133,7 @@ public class BookPlan
     public void MarkReadingSession(ReadingSession session, int pagesRead)
     {
         var realPagesRead = pagesRead - session.Actual;
-        var date = DateTime.Parse(session.Date).AddDays(1);
+        var date = DateTime.Parse(session.Date, CultureInfo.CurrentCulture).AddDays(1);
 
         if (realPagesRead > PageCount - pagesRead)
             throw new InvalidOperationException("pagesRead cannot exceed remaining page count");
