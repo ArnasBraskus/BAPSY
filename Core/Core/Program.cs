@@ -15,7 +15,7 @@ Users users = new Users(db);
 Plans plans = new Plans(db);
 ReadingSessions sessions = new ReadingSessions(db);
 
-Auth auth = new Auth(conf.JwtSecretKey, conf.JwtIssuer, new GoogleTokenValidator(conf.GoogleApiClientId));
+AuthUtils auth = new AuthUtils(conf.JwtSecretKey, conf.JwtIssuer, new GoogleTokenValidator(conf.GoogleApiClientId));
 
 auth.Add(builder.Services);
 
@@ -47,4 +47,4 @@ foreach (var api in apis)
 
 app.Run();
 
-public partial class Program { }
+public static partial class Program { }

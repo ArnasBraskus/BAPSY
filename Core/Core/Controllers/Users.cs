@@ -65,7 +65,7 @@ public class Users
 
     }
 
-    private bool IsEmailValid(string address)
+    private static bool IsEmailValid(string address)
     {
         try
         {
@@ -90,7 +90,7 @@ public class Users
         if (!IsEmailValid(email))
             throw new FormatException("Email is not valid");
 
-        var secret = Auth.GenerateSecret();
+        var secret = AuthUtils.GenerateSecret();
         var secretVer = 0;
 
         var parameters = new Dictionary<string, dynamic> {

@@ -2,10 +2,10 @@ namespace Core;
 
 public class AuthApi : ApiBase
 {
-    private readonly Auth Auth;
+    private readonly AuthUtils Auth;
     private readonly Users Users;
 
-    public AuthApi(Auth auth, Users users) : base(users)
+    public AuthApi(AuthUtils auth, Users users) : base(users)
     {
         Auth = auth;
         Users = users;
@@ -16,7 +16,7 @@ public class AuthApi : ApiBase
         public required string JwtToken { get; set; } = null!;
     };
 
-    public class GoogleAuthResponse
+    internal class GoogleAuthResponse
     {
         public string Token { get; set; } = null!;
         public double Validity { get; set; }

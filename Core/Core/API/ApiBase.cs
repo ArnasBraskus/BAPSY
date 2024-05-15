@@ -6,7 +6,7 @@ public abstract class ApiBase
 {
     private readonly Users Users;
 
-    public class ErrorResponse
+    protected class ErrorResponse
     {
         public string Error { get; set; } = null!;
     }
@@ -23,7 +23,7 @@ public abstract class ApiBase
 
     protected User GetUser(HttpContext context)
     {
-        var email = Auth.GetNameIdentifier(context);
+        var email = AuthUtils.GetNameIdentifier(context);
 
         return Users.FindUser(email);
     }
@@ -35,14 +35,16 @@ public abstract class ApiBase
 
     protected async Task<T> ReadJson<T>(HttpRequest request) where T : class
     {
-        var stream = await new StreamReader(request.Body).ReadToEndAsync().ConfigureAwait(false);
+        using (var reader = new StreamReader(request.Body)) {
+            var stream = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-        var data = JsonSerializer.Deserialize<T>(stream, JsonOptions);
+            var data = JsonSerializer.Deserialize<T>(stream, JsonOptions);
 
-        if (data is null)
-            throw new JsonException();
+            if (data is null)
+                throw new JsonException();
 
-        return data;
+            return data;
+        }
     }
 
     public abstract void Map(WebApplication app);

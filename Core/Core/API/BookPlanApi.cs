@@ -1,5 +1,7 @@
 namespace Core;
 
+using System.Collections.Generic;
+
 public class BookPlanApi : ApiBase
 {
     private readonly Plans Plans;
@@ -19,8 +21,8 @@ public class BookPlanApi : ApiBase
 
     internal class ListBookPlansResponse
     {
-        public List<int> Ids { get; }
-		public ListBookPlansResponse(List<int> ids)
+        public ICollection<int> Ids { get; }
+		public ListBookPlansResponse(ICollection<int> ids)
 		{
 			Ids = ids;
 		}
@@ -30,7 +32,7 @@ public class BookPlanApi : ApiBase
     {
         User user = GetUser(context);
 
-        List<int> ids = Plans.FindPlanByUser(user.Id);
+        ICollection<int> ids = Plans.FindPlanByUser(user.Id);
 
 		return Results.Ok(new ListBookPlansResponse(ids));
 	}
@@ -78,7 +80,7 @@ public class BookPlanApi : ApiBase
         public string Deadline { get; set; } = null!;
         public bool[] Weekdays { get; set; } = null!;
         public string TimeOfDay { get; set; } = null!;
-        public List<ReadingSession> Sessions { get; set; } = null!;
+        public ICollection<ReadingSession> Sessions { get; set; } = null!;
     }
 
     public IResult GetBookPlan(HttpContext context, int id)

@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Google.Apis.Auth;
 
-public class Auth
+public class AuthUtils
 {
     private readonly JsonWebTokenHandler Handler;
     private readonly SigningCredentials Credentials;
@@ -15,7 +16,7 @@ public class Auth
     private readonly string Issuer;
     private readonly GoogleTokenValidator GoogleTokenValidator;
 
-    public Auth(string key, string issuer, GoogleTokenValidator validator)
+    public AuthUtils(string key, string issuer, GoogleTokenValidator validator)
     {
         Handler = new JsonWebTokenHandler();
         Key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -53,7 +54,7 @@ public class Auth
         string payload = $"{user.Secret}{user.SecretVersion}{data}";
         byte[] bytes = Encoding.ASCII.GetBytes(payload);
 
-        var hash = SHA256.Create().ComputeHash(bytes);
+        var hash = SHA256.HashData(bytes);
 
         return Convert.ToHexString(hash).ToLower(System.Globalization.CultureInfo.CurrentCulture);
     }
@@ -118,7 +119,7 @@ public class Auth
 
             return true;
         }
-        catch (Exception)
+        catch (InvalidJwtException)
         {
             return false;
         }

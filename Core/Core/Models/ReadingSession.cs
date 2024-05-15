@@ -52,6 +52,6 @@ public class ReadingSession
 
         User user = ReadingSessions.GetUser(Id);
 
-        return Auth.GenerateHash(user, $"SESSION-{Id}");
+        return AuthUtils.GenerateHash(user, $"SESSION-{Id}");
     }
 }

@@ -88,12 +88,12 @@ public class Plans
         int pageCount = reader.GetInt32(7);
         int pagesRead = reader.GetInt32(8);
         int finished = reader.GetInt32(9);
-        List<ReadingSession> sessions = ReadingSessions.GetAll(id);
+        ICollection<ReadingSession> sessions = ReadingSessions.GetAll(id);
 
         return new BookPlan(this, id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, sessions, finished);
     }
 
-    public List<int> FindPlanByUser(int userId)
+    public ICollection<int> FindPlanByUser(int userId)
     {
         var ids = new List<int>();
 
@@ -136,11 +136,11 @@ public class Plans
         return true;
     }
 
-    public List<ReadingSession> UpdateReadingSessions(int id, DateTime now)
+    public ICollection<ReadingSession> UpdateReadingSessions(int id, DateTime now)
     {
         BookPlan plan = FindPlan(id)!;
 
-        List<ReadingSession> sessions = plan.GenerateReadingSessions(now);
+        ICollection<ReadingSession> sessions = plan.GenerateReadingSessions(now);
 
         ReadingSessions.Invalidate(plan.Id, now);
 

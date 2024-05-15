@@ -7,12 +7,7 @@ public class ReadingEvent
     public int PagesToRead { get; }
     public int PageEnd { get; }
 
-    private ReadingEventMetadata _metadata;
-    public ReadingEventMetadata Metadata
-    {
-        get => _metadata;
-        set => _metadata = value;
-    }
+    public ReadingEventMetadata Metadata { get; set; }
 
     public ReadingEvent(DateTime date, int pageStart, int pagesToRead, ReadingEventMetadata meta)
     {
@@ -20,7 +15,7 @@ public class ReadingEvent
         PagesToRead = pagesToRead;
         PageStart = pageStart;
         PageEnd = PageStart + PagesToRead - 1;
-        _metadata = meta;
+        Metadata = meta;
     }
 
     public override bool Equals(object? obj)

@@ -12,7 +12,7 @@ public class SessionApi : ApiBase
     }
 	internal class ListReadingSessionsResponse
 	{
-		public List<ReadingSession> Sessions { get; set; } = null!;
+		public ICollection<ReadingSession> Sessions { get; set; } = null!;
 	}
 
 	public IResult GetListSessions(HttpContext context, int planId)
@@ -23,7 +23,7 @@ public class SessionApi : ApiBase
 			return Results.BadRequest( "Plan not found." );
 		}
 
-		List<ReadingSession> sessions = Sessions.GetAll(planId);
+		ICollection<ReadingSession> sessions = Sessions.GetAll(planId);
 
 		return Results.Ok(new ListReadingSessionsResponse { Sessions = sessions });	
     }

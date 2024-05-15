@@ -1,12 +1,13 @@
 ﻿namespace Core;
 
 using System.Globalization;
+using System.Collections.Generic;
 
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class BookPlan
 {
-    private readonly Plans Plans;
+    private readonly Plans? Plans;
     public int Id { get; }
     public int UserId { get; }
     public string DeadLine { get; }
@@ -17,11 +18,11 @@ public class BookPlan
     public string Author { get; }
     public int PageCount { get; }
     public int PagesRead { get; private set; }
-    public List<ReadingSession> ReadingSessions { get; private set; }
+    public ICollection<ReadingSession> ReadingSessions { get; private set; }
     public int Finished { get; }
 
     public BookPlan(Plans plans, int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
-        string title, string author, int pageCount, int pagesRead, List<ReadingSession> sessions, int finished)
+        string title, string author, int pageCount, int pagesRead, ICollection<ReadingSession> sessions, int finished)
     {
         Plans = plans;
         Id = id;
@@ -39,7 +40,7 @@ public class BookPlan
     }
 
     public BookPlan(int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
-        string title, string author, int pageCount, int pagesRead, List<ReadingSession> sessions, int finished)
+        string title, string author, int pageCount, int pagesRead, ICollection<ReadingSession> sessions, int finished)
     {
         Id = id;
         UserId = userId;
@@ -55,7 +56,7 @@ public class BookPlan
         Finished = finished;
     }
 
-    public List<ReadingSession> GenerateReadingSessions(DateTime startDate)
+    public ICollection<ReadingSession> GenerateReadingSessions(DateTime startDate)
     {
         DateTime endDate = DateTime.Parse($"{DeadLine} {timeOfDay}", CultureInfo.CurrentCulture);
 
@@ -93,7 +94,7 @@ public class BookPlan
         return sessions;
     }
 
-    public List<DateTime> FindReadingDays(DateTime start, DateTime end)
+    public ICollection<DateTime> FindReadingDays(DateTime start, DateTime end)
     {
         var days = new List<DateTime>();
 
@@ -132,6 +133,9 @@ public class BookPlan
 
     public void MarkReadingSession(ReadingSession session, int pagesRead)
     {
+        if (Plans is null)
+            throw new InvalidOperationException("Not connected to database");
+
         var realPagesRead = pagesRead - session.Actual;
         var date = DateTime.Parse(session.Date, CultureInfo.CurrentCulture).AddDays(1);
 
@@ -151,6 +155,9 @@ public class BookPlan
 
     public void AdditionalPagesRead (int pagesRead)
     {
+        if (Plans is null)
+            throw new InvalidOperationException("Not connected to database");
+
 		PagesRead += pagesRead;
 
 		Plans.UpdatePagesRead(Id, PagesRead);

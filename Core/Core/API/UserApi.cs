@@ -6,7 +6,7 @@ public class UserApi : ApiBase
     {
     }
 
-    public class UserProfileResponse
+    internal class UserProfileResponse
     {
         public required string Email { get; set; } = null!;
         public required string Name { get; set; } = null!;

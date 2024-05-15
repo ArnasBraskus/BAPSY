@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Linq;
 
 namespace Core;
 
@@ -6,7 +7,7 @@ public class ReadingCalendar
 {
     private readonly DateTimeProvider DateTimeProvider;
 
-    public List<ReadingEvent> Events { get; }
+    public ICollection<ReadingEvent> Events { get; private set; }
 
     public ReadingCalendar(DateTimeProvider provider)
     {
@@ -50,6 +51,6 @@ public class ReadingCalendar
             }
         }
 
-        Events.Sort((oneEvent, otherEvent) => oneEvent.Date.CompareTo(otherEvent.Date));
+        Events = Events.OrderBy(e => e.Date).ToList();
     }
 }

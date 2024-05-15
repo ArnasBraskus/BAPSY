@@ -68,7 +68,7 @@ public class CalendarApi : ApiBase
 
     private static string GenerateCalendarToken(User user)
     {
-        return Auth.GenerateHash(user, $"CAL-{user.Id}");
+        return AuthUtils.GenerateHash(user, $"CAL-{user.Id}");
     }
 
     internal class GetCalendarTokenResponse
@@ -94,7 +94,7 @@ public class CalendarApi : ApiBase
         {
             User user = Users.FindUser(userId);
 
-            if (t != Auth.GenerateHash(user, $"CAL-{userId}"))
+            if (t != AuthUtils.GenerateHash(user, $"CAL-{userId}"))
                 return Results.BadRequest(new ErrorResponse { Error = "Invalid token" });
 
             ReadingCalendar calendar = new ReadingCalendar(DateTimeProvider);

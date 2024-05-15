@@ -76,7 +76,7 @@ public class ReadingSessions
     }
 
 
-    public List<ReadingSession> GetAll(int planId)
+    public ICollection<ReadingSession> GetAll(int planId)
     {
         var parameters = new Dictionary<string, dynamic>
         {
@@ -126,7 +126,17 @@ public class ReadingSessions
 
     private int GetUserId(int id)
     {
-        return DB.ExecuteScalar("SELECT p.userId FROM plans p LEFT JOIN readingsessions s ON s.planId = p.id");
+        var parameters = new Dictionary<string, dynamic>
+        {
+            {"$id", id}
+        };
+
+        var reader = DB.ExecuteSingle("SELECT p.userId FROM plans p LEFT JOIN readingsessions s ON s.planId = p.id WHERE p.id = $id", parameters);
+
+        if (reader is null)
+            throw new KeyNotFoundException("Could not find plan");
+
+        return reader.GetInt32(0);
     }
 
     public User GetUser(int id)

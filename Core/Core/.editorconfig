@@ -13,6 +13,7 @@ indent_size = 2
 
 # Roslyn static analysis
 dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA1815.severity = none
 
 #### Core EditorConfig Options ####
 

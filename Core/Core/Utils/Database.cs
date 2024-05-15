@@ -2,7 +2,7 @@ namespace Core;
 
 using Microsoft.Data.Sqlite;
 
-public class Database
+public class Database : IDisposable
 {
     private readonly SqliteConnection Connection;
 
@@ -56,6 +56,7 @@ public class Database
         return ExecuteScalar("PRAGMA user_version");
     }
 
+    #pragma warning disable CA2100
     private SqliteCommand CreateCommand(string statement, Dictionary<string, dynamic>? parameters)
     {
         var command = Connection.CreateCommand();
@@ -72,6 +73,7 @@ public class Database
 
         return command;
     }
+    #pragma warning restore CA2100
 
     public int ExecuteNonQuery(string statement, Dictionary<string, dynamic>? parameters)
     {
@@ -106,5 +108,16 @@ public class Database
             return null;
 
         return reader;
+    }
+
+    protected virtual void Dispose(bool disposing) {
+        if (disposing) {
+            Connection.Close();
+        }
+    }
+
+    public void Dispose() {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }
