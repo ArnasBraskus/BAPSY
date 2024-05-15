@@ -19,10 +19,8 @@ AuthUtils auth = new AuthUtils(conf.JwtSecretKey, conf.JwtIssuer, new GoogleToke
 
 auth.Add(builder.Services);
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Users", policy => policy.RequireAuthenticatedUser());
-});
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("Users", policy => policy.RequireAuthenticatedUser());
 
 var app = builder.Build();
 
