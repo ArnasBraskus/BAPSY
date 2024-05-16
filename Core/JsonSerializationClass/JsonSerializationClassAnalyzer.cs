@@ -75,7 +75,7 @@ namespace JsonSerializationClass
                         }
 
                         if (containsRequiredModifier)
-                            break;
+                            continue;
 
                         var diagnostic = Diagnostic.Create(RuleRequiredModifier, member.Locations[0], symbol.Name, member.Name);
 
