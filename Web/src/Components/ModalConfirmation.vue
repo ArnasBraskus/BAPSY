@@ -15,14 +15,7 @@ export default {
   methods: {
     checkForm() {
       this.errors = [];
-
-      if(this.pages == 0 || (this.pages)) {
-        markNotCompleted(planId, sesId)
-          .then(() => {
-            this.$emit('confirm');
-            window.location.reload();
-          });
-      } 
+      this.$emit('confirm', this.pages);
     },
     clearErrors() {
       this.errors = [];

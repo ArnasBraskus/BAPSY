@@ -1,45 +1,81 @@
-<script>
+<script setup>
 import Footer from '../Components/Footer.vue';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { markCompleted } from '../utils/confirmation.js';
+import { chooseColor } from '../utils/books.js';
+import { notify } from '../utils/notifications.js';
+import { getSessionNoAuth, markSessionNoAuth } from '../utils/sessions.js';
 import ModalConfirmation from '../Components/ModalConfirmation.vue';
 import { ModalsContainer, useModal } from 'vue-final-modal';
+import BookCover from '../Components/BookCover.vue';
 
-const componentOptions = {
-  components: {
-    ModalsContainer,
-    Footer
-  },
-  methods: {
-    markCompletedPlan(planId, sesId) {
-      markCompleted(planId, sesId);
-    },
-    async showModal() {
-      const modal = useModal({
-        component: ModalConfirmation,
-        attrs: {
-          title: 'Confirmation',
-          onConfirm: () => {
-            modal.close();
-          }
-        }
-      });
-      modal.open();
+var session;
+
+const title = ref('');
+const author = ref('');
+const cover = ref('');
+const goal = ref('');
+
+function showModal() {
+  const modal = useModal({
+    component: ModalConfirmation,
+    attrs: {
+      title: 'Confirmation',
+      onConfirm: (pages) => {
+        if (pages == null)
+          return;
+
+        markRead(pages);
+
+        modal.close();
+      }
     }
-  }
-};
+  });
+  modal.open();
+}
 
-export default componentOptions;
+function markReadAll() {
+  (async() => {
+    markSessionNoAuth(sessionId, session.goal, token).then(() => {
+      notify('Pages marked successfully!', 'info');
+    });
+  })();
+}
 
+function markRead(pages) {
+  (async() => {
+    await markSessionNoAuth(sessionId, pages, token).then(() => {
+      notify('Pages marked successfully!', 'info');
+    });
+  })();
+}
+
+const fetchSession = (async() => {
+  session = await getSessionNoAuth(sessionId, token);
+
+  title.value = session.metadata.title;
+  author.value = session.metadata.author;
+  cover.value = chooseColor(session.metadata);
+  goal.value = session.goal;
+});
+
+const route = useRoute();
+const sessionId = Number(route.params.id);
+const token = route.query.t;
+
+fetchSession();
 
 </script>
 
 <template>
   <div id="app" class="plan-background">
     <div class="box">
-        <p>Did you read the assigned pages?</p>
-        <button class="edit-button" style="--clr:white"><span>I did!</span></button>
+      <p>Did you read the assigned pages ({{ goal }})?</p>
+        <button class="edit-button" style="--clr:white" @click="markReadAll()"><span>I did!</span></button>
         <button class="remove-button" style="--clr:white" @click="showModal()"><span>I read more or less</span></button>
     </div>
+    <BookCover :title="title" :author="author" :cover="cover"/>
     <ModalsContainer />
     <Footer />
   </div>
@@ -117,7 +153,6 @@ export default componentOptions;
   display: inline-block;
   text-align: center;
   color: var(--quaternary-color);
-  margin-top: 250px;
   padding: 15px;
 
   background-color: #5F6F52;

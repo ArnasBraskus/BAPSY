@@ -8,7 +8,7 @@ export async function getSession(id) {
 }
 
 export async function getSessionNoAuth(id, token) {
-  const res = await apiDoGet(`/api/sessions/get_noauth/${id}?t=${token}`);
+  const res = await apiDoGet(`/api/sessions/get_noauth/${id}?token=${token}`);
   const data = await res.json();
 
   return data;
@@ -34,7 +34,7 @@ export async function markSession(id, pagesRead) {
 
 export async function markSessionNoAuth(id, pagesRead, token) {
   const res = await apiDoPost('/api/sessions/mark_noauth', {
-    id: id,
+    sessionId: id,
     pagesRead: pagesRead,
     token: token
   });
