@@ -139,7 +139,7 @@ public class BookPlan
         var realPagesRead = pagesRead - session.Actual;
         var date = DateTime.Parse(session.Date, CultureInfo.CurrentCulture).AddDays(1);
 
-        if (realPagesRead > PageCount - pagesRead)
+        if (realPagesRead > PageCount - PagesRead)
             throw new InvalidOperationException("pagesRead cannot exceed remaining page count");
 
         session.Actual = pagesRead;
