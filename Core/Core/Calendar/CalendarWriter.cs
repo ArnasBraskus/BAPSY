@@ -21,7 +21,7 @@ public static class CalendarWriter
             icalendar.Events.Add(new CalendarEvent
             {
                 Summary = $"Book Reading: {calEvent.Metadata.BookTitle} by {calEvent.Metadata.BookAuthor}",
-                Description = $"Today's goal: {calEvent.PagesToRead} pages ({calEvent.PageStart}-{calEvent.PageEnd})",
+                Description = $"Today's goal: {calEvent.PagesToRead} pages ({calEvent.PageStart}-{calEvent.PageEnd})\r\n{Program.Config.UrlBase}/confirmation/{calEvent.SessionId}?t={calEvent.MarkToken}",
                 Start = new CalDateTime(calEvent.Date, TimeZone)
             });
         }

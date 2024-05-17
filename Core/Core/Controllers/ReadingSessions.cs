@@ -131,7 +131,7 @@ public class ReadingSessions
             {"$id", id}
         };
 
-        var reader = DB.ExecuteSingle("SELECT p.userId FROM plans p LEFT JOIN readingsessions s ON s.planId = p.id WHERE p.id = $id", parameters);
+        var reader = DB.ExecuteSingle("SELECT p.userId FROM plans p LEFT JOIN readingsessions s ON s.planId = p.id WHERE s.id = $id", parameters);
 
         if (reader is null)
             throw new KeyNotFoundException("Could not find plan");

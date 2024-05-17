@@ -60,8 +60,10 @@ public class BookPlan
     {
         DateTime endDate = DateTime.Parse($"{DeadLine} {timeOfDay}", CultureInfo.CurrentCulture);
 
+        var sessions = new List<ReadingSession>();
+
         if (startDate > endDate)
-            throw new ArgumentException("Start date cannot be later than end date.");
+            return sessions;
 
         if (TimeSpan.Parse(timeOfDay, CultureInfo.CurrentCulture) < startDate.TimeOfDay)
         {
@@ -73,8 +75,6 @@ public class BookPlan
         PagesToReadBeforeDeadline(startDate);
 
         int pagesLeft = PageCount - PagesRead;
-
-        var sessions = new List<ReadingSession>();
 
         foreach (var day in days)
         {

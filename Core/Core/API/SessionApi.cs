@@ -87,6 +87,14 @@ public class SessionApi : ApiBase
         public string Date { get; set; } = null!;
         public int Goal { get; set; }
         public int Actual { get; set; }
+
+        internal class BookMetadata {
+            public int Id { get; set; }
+            public string Title { get; set; } = null!;
+            public string Author { get; set; } = null!;
+        }
+
+        public BookMetadata Metadata { get; set; } = null!;
     }
 
     public IResult GetSessionNoAuth(HttpContext context, int id, string token)
@@ -94,6 +102,10 @@ public class SessionApi : ApiBase
         try
         {
             ReadingSession session = Sessions.Get(id);
+            BookPlan? plan = Plans.FindPlan(session.PlanId);
+
+            if (plan is null)
+                return Results.BadRequest(new ErrorResponse { Error = "Plan not found" });
 
             if (token != session.GenerateToken())
                 return Results.BadRequest(new ErrorResponse { Error = "Bad token" });
@@ -103,7 +115,13 @@ public class SessionApi : ApiBase
                 Id = session.Id,
                 Date = session.Date,
                 Goal = session.Goal,
-                Actual = session.Actual
+                Actual = session.Actual,
+                Metadata = new GetSessionNoAuthResponseJson.BookMetadata
+                {
+                    Id = plan.Id,
+                    Title = plan.Title,
+                    Author = plan.Author
+                }
             });
         }
         catch (KeyNotFoundException)
@@ -118,7 +136,6 @@ public class SessionApi : ApiBase
         public required int SessionId { get; set; }
         public required int PagesRead { get; set; }
     }
-
 
     public async Task<IResult> PostMarkSessionNoAuth(HttpRequest request)
     {
@@ -136,7 +153,7 @@ public class SessionApi : ApiBase
 
         plan.MarkReadingSession(session, req.PagesRead);
 
-        return Results.Ok();
+        return Results.Ok(new { Success = true });
     }
 
     public override void Map(WebApplication app)
@@ -144,7 +161,7 @@ public class SessionApi : ApiBase
         app.MapGet("/sessions/list/{planId}", GetListSessions).RequireAuthorization("Users");
         app.MapGet("/sessions/get/{id}", GetSession).RequireAuthorization("Users");
         app.MapPost("/sessions/mark", (Delegate)PostMarkSession).RequireAuthorization("Users");
-        app.MapPost("/sessions/get_noauth", GetSessionNoAuth);
+        app.MapGet("/sessions/get_noauth/{id}", GetSessionNoAuth);
         app.MapPost("/sessions/mark_noauth", PostMarkSessionNoAuth);
     }
 }

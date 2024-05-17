@@ -6,15 +6,19 @@ public class ReadingEvent
     public int PageStart { get; }
     public int PagesToRead { get; }
     public int PageEnd { get; }
+    public int SessionId { get; }
+    public string MarkToken { get; }
 
     public ReadingEventMetadata Metadata { get; set; }
 
-    public ReadingEvent(DateTime date, int pageStart, int pagesToRead, ReadingEventMetadata meta)
+    public ReadingEvent(DateTime date, int pageStart, int pagesToRead, int sessionId, string markToken, ReadingEventMetadata meta)
     {
         Date = date;
         PagesToRead = pagesToRead;
         PageStart = pageStart;
         PageEnd = PageStart + PagesToRead - 1;
+        SessionId = sessionId;
+        MarkToken = markToken;
         Metadata = meta;
     }
 

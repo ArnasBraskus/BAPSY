@@ -32,6 +32,7 @@ public class ReadingCalendar
         foreach (var session in plan.ReadingSessions)
         {
             var date = DateTime.Parse($"{session.Date} {plan.timeOfDay}", CultureInfo.CurrentCulture);
+            var token = session.GenerateToken();
 
             if (date < DateTimeProvider.Now)
                 continue;
@@ -39,7 +40,7 @@ public class ReadingCalendar
             if (session.Goal < 0)
                 throw new ArgumentException("Page goal cannot be negative", nameof(plan));
 
-            Events.Add(new ReadingEvent(date, pages, session.Goal, metadata));
+            Events.Add(new ReadingEvent(date, pages, session.Goal, session.Id, token, metadata));
 
             if (session.Actual != 0)
             {
