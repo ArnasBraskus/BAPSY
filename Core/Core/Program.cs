@@ -2,11 +2,11 @@ using Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Config conf = new Config();
+var conf = Program.Config;
 
 builder.Configuration.Bind(conf);
 
-Database db = new Database(conf.DatabaseConnectionString);
+Database db = new Database(Config.DatabaseConnectionString);
 
 db.Open();
 db.CreateIfEmpty(DatabaseSchema.Schema);
@@ -45,4 +45,6 @@ foreach (var api in apis)
 
 app.Run();
 
-public static partial class Program { }
+public static partial class Program {
+    public static Config Config = new Config();
+}
