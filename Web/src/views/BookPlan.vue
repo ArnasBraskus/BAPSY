@@ -5,7 +5,7 @@ import { RouterView } from 'vue-router';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 import { getPlans, removePlan } from '../utils/plans.js';
-import { markCompleted, markNotCompleted } from '../utils/confirmation.js';
+import { markCompleted } from '../utils/confirmation.js';
 import { logout } from '../utils/auth.js';
 import { apiDoGet } from '../utils/api.js';
 import router from '../router';

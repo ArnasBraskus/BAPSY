@@ -42,7 +42,7 @@ async function loginCallback(res) {
   </div>
 </template>
 
-<style scoped>
+<style>
 main {
   justify-content: center;
   text-align: center;

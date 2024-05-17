@@ -1,11 +1,16 @@
 <script setup>
-import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 </script>
 
 <template>
   <div id="app" class="image-container">
-    <Header />
+    <header class="header">
+        <div class="logo"></div>
+        <nav>
+            <RouterLink to="/">Home</RouterLink>
+            <RouterLink to="/about">About</RouterLink>            
+        </nav>
+    </header>
 
     <main class="darker">
       <h1>About Page</h1>

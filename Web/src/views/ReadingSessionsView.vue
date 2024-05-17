@@ -3,10 +3,8 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '../router';
 
-import Footer from '../Components/Footer.vue';
 import Menu from '../Components/Menu.vue';
 
-import { getPlan } from '../utils/plans.js';
 import { getSessions, markSession } from '../utils/sessions.js';
 
 const route = useRoute();
@@ -20,10 +18,6 @@ var fetchSessions = (async () => {
 
 function goBack() {
   router.push({path: `/books/${planId}`});
-}
-
-function goToSession(id) {
-  router.push({path: `/books/${planId}/sessions/${id}`});
 }
 
 function sessionUrl(id) {
@@ -58,7 +52,7 @@ fetchSessions();
           <td class="sessions-data">{{ session.actual }} / {{ session.goal }}</td>
           <td class="sessions-data">
             <a v-if="session.isCompleted == 1" class="green">✓</a>
-            <a v-else class="clickable" @click="doMarkSession(session.id, session.goal)" class="white">✓</a>
+            <a v-else class="white clickable" @click="doMarkSession(session.id, session.goal)">✓</a>
           </td>
 
         </tr>

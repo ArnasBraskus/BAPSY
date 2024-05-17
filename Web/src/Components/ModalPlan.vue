@@ -184,7 +184,6 @@ export default {
       </label>
     </div>
     </fieldset>
-    </p>
     <p>
       <label for="hour"> Input what hour you prefer to read </label>
       <input type="time" name="timeOfDay" id="timeOfDay" v-model="formData.timeOfDay">

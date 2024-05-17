@@ -1,7 +1,6 @@
 <script setup>
 
 import { ref } from 'vue';
-import router from '../router';
 import Menu from '../Components/Menu.vue';
 import BookCover from '../Components/BookCover.vue';
 import { getPlans } from '../utils/plans.js';

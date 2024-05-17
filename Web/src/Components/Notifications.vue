@@ -47,7 +47,7 @@ function close() {
   toastAnimTypeClass.value = TOAST_ANIM_ENTER;
 }
 
-</script setup>
+</script>
 
 <template>
   <div class="shared-toast-container">
