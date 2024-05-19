@@ -1,4 +1,7 @@
 using System.Globalization;
+using System.Numerics;
+
+using Microsoft.Data.Sqlite;
 
 namespace Core;
 
@@ -142,5 +145,39 @@ public class ReadingSessions
     public User GetUser(int id)
     {
         return Users.FindUser(GetUserId(id));
+    }
+
+    public IEnumerable<ReadingSession> GetByUserAndDateRange(int userId, DateTime startDate, DateTime endDate)
+    {
+        var sessions = new List<ReadingSession>();
+
+        var parameters = new Dictionary<string, dynamic>
+        {
+            { "$userId", userId },
+            { "$startDate", startDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) },
+            { "$endDate", endDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) }
+        };
+
+
+        string query = @"
+            SELECT rs.id, rs.planId, rs.date, rs.goal, rs.actual, rs.completed
+            FROM readingsessions rs
+            JOIN plans p ON readingsessions.planId = p.id
+            WHERE p.userId = $userId AND rs.date >= $startDate AND rs.date <= $endDate";
+
+        IEnumerable<SqliteDataReader> readers = DB.Execute(query, parameters);
+
+        foreach (var session in readers)
+        {
+            int id = session.GetInt32(0);
+            int planId = session.GetInt32(1);
+            string date = session.GetString(2);
+            int goal = session.GetInt32(3);
+            int actual = session.GetInt32(4);
+            int isCompleted = session.GetInt32(5);
+
+            sessions.Add(new ReadingSession(this, id, planId, date, goal, actual, isCompleted));
+        }
+        return sessions;
     }
 }
