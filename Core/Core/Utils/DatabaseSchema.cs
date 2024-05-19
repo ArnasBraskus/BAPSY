@@ -33,5 +33,15 @@ public static class DatabaseSchema
         actual INTEGER DEFAULT 0,
         completed INTEGER DEFAULT 0,
         FOREIGN KEY (planId) REFERENCES plans(id));
+
+    CREATE TABLE reports(
+        id INTEGER PRIMARY KEY NOT NULL,
+        userId INTEGER NOT NULL,
+        totalPages INTEGER NOT NULL,
+        percentagePages INTEGER NOT NULL,
+        totalSessions INTEGER NOT NULL,
+        percentageSessions INTEGER NOT NULL,
+        date TEXT NOT NULL,
+        FOREIGN KEY (userId) REFERENCES users(id));
     ";
 }
