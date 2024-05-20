@@ -13,6 +13,7 @@ public static class DatabaseSchema
 
     CREATE TABLE plans(
         id INTEGER PRIMARY KEY NOT NULL,
+        cover TEXT DEFAULT NULL,
         userId INTEGER NOT NULL,
         deadline TEXT NOT NULL,
         weekdays INTEGER NOT NULL,
