@@ -6,7 +6,11 @@ var conf = Program.Config;
 
 builder.Configuration.Bind(conf);
 
-Database db = new Database(Config.DatabaseConnectionString);
+if (!Path.Exists(conf.ResourcesPath)) {
+    Directory.CreateDirectory(conf.ResourcesPath);
+}
+
+Database db = new Database(conf.DatabaseConnectionString);
 
 db.Open();
 db.CreateIfEmpty(DatabaseSchema.Schema);
@@ -35,7 +39,8 @@ ApiBase[] apis = new ApiBase[] {
     new UserApi(users),
     new CalendarApi(users, plans),
     new BookPlanApi(users, plans),
-    new SessionApi(users, plans, sessions)
+    new SessionApi(users, plans, sessions),
+    new ResourceApi(users)
 };
 
 foreach (var api in apis)

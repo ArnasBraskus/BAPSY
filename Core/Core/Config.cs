@@ -7,4 +7,5 @@ public class Config
     public string JwtIssuer { get; set; } = null!;
     public string GoogleApiClientId { get; set; } = null!;
     public string UrlBase { get; set; } = null!;
+    public string ResourcesPath { get; set; } = null!;
 }
