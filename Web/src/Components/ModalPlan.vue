@@ -1,5 +1,6 @@
 <script>
 import { addPlan, editPlan } from '../utils/plans.js';
+import { uploadImage } from '../utils/resources.js';
 import { VueFinalModal } from 'vue-final-modal';
 
 export default {
@@ -12,6 +13,7 @@ export default {
       formData: {
         bookTitle: '',
         author: '',
+        cover: null,
         day1: null,
         day2: null,
         day3: null,
@@ -26,6 +28,13 @@ export default {
     };
   },
   methods: {
+    onCoverImageChange(ev) {
+      const target = ev.target;
+
+      if (target && target.files) {
+        this.formData.cover = target.files[0];
+      }
+    },
     checkForm() {
       this.errors = [];
 
@@ -45,24 +54,54 @@ export default {
           let weekdays = [];
           weekdays.push(this.formData.day7, this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6);
           const convertedWeekdays = weekdays.map(day => !!day);
-          editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
-            .then(() => {
-              this.$emit('confirm');
-            })
-            .catch(error => {
-              console.error('Error editing plan:', error);
+
+          if (this.formData.cover) {
+            console.log(this.formData.cover);
+            uploadImage(this.formData.cover).then((res) => {
+              editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, res.image, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+                .then(() => {
+                  this.$emit('confirm');
+                })
+                .catch(error => {
+                  console.error('Error editing plan:', error);
+                });
             });
+          }
+          else {
+            editPlan(this.plan.id, this.formData.bookTitle, this.formData.author, '_unchanged', this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+              .then(() => {
+                this.$emit('confirm');
+              })
+              .catch(error => {
+                console.error('Error editing plan:', error);
+              });
+          }
         } else {
           let weekdays = [];
           weekdays.push(this.formData.day7, this.formData.day1, this.formData.day2, this.formData.day3, this.formData.day4, this.formData.day5, this.formData.day6);
           const convertedWeekdays = weekdays.map(day => !!day);
-          addPlan(this.formData.bookTitle, this.formData.author, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
-            .then(() => {
-              this.$emit('confirm');
-            })
-            .catch(error => {
-              console.error('Error adding plan:', error);
+          var cover = null;
+
+          if (this.formData.cover) {
+            uploadImage(this.formData.cover).then((res) => {
+              addPlan(this.formData.bookTitle, this.formData.author, res.image, this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+                .then(() => {
+                  this.$emit('confirm');
+                })
+                .catch(error => {
+                  console.error('Error adding plan:', error);
+                });
             });
+          }
+          else {
+            addPlan(this.formData.bookTitle, this.formData.author, "_none", this.formData.pages, this.formData.deadline, convertedWeekdays, this.formData.timeOfDay)
+              .then(() => {
+                this.$emit('confirm');
+              })
+              .catch(error => {
+                console.error('Error adding plan:', error);
+              });
+          }
         }
       }
     },
@@ -147,8 +186,12 @@ export default {
       </p>
       <p> 
         <label for="title"> Book author </label> 
-        <input type="text" name="author" v-model="formData.author"> 
+        <input type="text" name="author" v-model="formData.author">
       </p>
+      <p>
+        <label for="page">Cover image</label>
+        <input type="file" accept="image/*" capture v-on:change="onCoverImageChange">
+      </p> 
       <p>
         <label for="page"> How many pages? </label>
         <input type="number" name="pages"  v-model="formData.pages">

@@ -13,7 +13,9 @@ function openPlan() {
 </script>
 
 <template>
-  <div class="cover" @click="openPlan">
+  <div v-if="cover.startsWith('url')" class="cover cover-image" @click="openPlan">
+  </div>
+  <div v-else class="cover cover-color" @click="openPlan">
     <div v-if="author" class="cover-text">
       <span>{{ author }}</span>
     </div>
@@ -41,8 +43,14 @@ function openPlan() {
   padding-left: 10px;
   padding-right: 10px;
 }
-.cover {
+.cover-image {
+  background-image: v-bind('cover');
+
+}
+.cover-color {
   background: linear-gradient(to right, rgb(60, 13, 20) 3px, rgba(255, 255, 255, 0.5) 5px, rgba(255, 255, 255, 0.25) 7px, rgba(255, 255, 255, 0.25) 10px, transparent 12px, transparent 16px, rgba(255, 255, 255, 0.25) 17px, transparent 22px), v-bind('cover');
+}
+.cover {
   background-repeat: no-repeat;
   background-size: cover;
   box-shadow: 0 0 5px -1px black, inset -1px 1px 2px rgba(255, 255, 255, 0.5);
