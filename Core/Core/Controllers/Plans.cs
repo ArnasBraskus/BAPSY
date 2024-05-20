@@ -14,9 +14,10 @@ public struct PlanParams
     public int PagesPerDay { get; }
     public string Title { get; }
     public string Author { get; }
+    public string Cover { get; }
     public int PageCount { get; }
 
-    public PlanParams(User user, string deadline, int weekdays, string timeOfDay, int pagesPerDay, string title, string author, int pageCount)
+    public PlanParams(User user, string deadline, int weekdays, string timeOfDay, int pagesPerDay, string title, string author, string cover, int pageCount)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user), "User cannot be null");
@@ -38,6 +39,7 @@ public struct PlanParams
         PagesPerDay = pagesPerDay;
         Title = title;
         Author = author;
+        Cover = cover;
         PageCount = pageCount;
     }
 }
@@ -63,17 +65,18 @@ public class Plans
             { "$pagesPerDay", planParams.PagesPerDay },
             { "$title", planParams.Title },
             { "$author", planParams.Author },
+            { "$cover", planParams.Cover },
             { "$pageCount", planParams.PageCount }
         };
 
-        DB.ExecuteNonQuery(@"INSERT INTO PLANS (userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount) VALUES ($userid, $deadline, $weekdays, $timeOfDay, $pagesPerDay, $title, $author, $pageCount)", dictionary);
+        DB.ExecuteNonQuery(@"INSERT INTO PLANS (userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, cover, pageCount) VALUES ($userid, $deadline, $weekdays, $timeOfDay, $pagesPerDay, $title, $author, $cover, $pageCount)", dictionary);
 
         return DB.LastInsertedRowId();
     }
 
     public BookPlan? FindPlan(int id)
     {
-        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, finished FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, finished, cover FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
 
         if (reader == null)
             return null;
@@ -88,9 +91,10 @@ public class Plans
         int pageCount = reader.GetInt32(7);
         int pagesRead = reader.GetInt32(8);
         int finished = reader.GetInt32(9);
+        string cover = reader.GetString(10);
         ICollection<ReadingSession> sessions = ReadingSessions.GetAll(id);
 
-        return new BookPlan(this, id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, sessions, finished);
+        return new BookPlan(this, id, userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, cover, pageCount, pagesRead, sessions, finished);
     }
 
     public ICollection<int> FindPlanByUser(int userId)
@@ -108,7 +112,7 @@ public class Plans
         return ids;
     }
 
-    public bool UpdatePlan(int id, string deadLine, int weekdays, string timeOfDay, string title, string author, int pageCount)
+    public bool UpdatePlan(int id, string deadLine, int weekdays, string timeOfDay, string title, string author, string cover, int pageCount)
     {
         if (title == null)
             throw new ArgumentNullException(nameof(title), "Title cannot be null");
@@ -128,10 +132,11 @@ public class Plans
             { "$timeOfDay", timeOfDay },
             { "$title", title },
             { "$author", author },
+            { "$cover", cover },
             { "$pageCount", pageCount }
         };
 
-        DB.ExecuteNonQuery(@"UPDATE PLANS SET deadline = $deadline, weekdays = $weekdays, timeOfDay = $timeOfDay, title = $title, author = $author, pageCount = $pageCount WHERE id = $id", parameters);
+        DB.ExecuteNonQuery(@"UPDATE PLANS SET deadline = $deadline, weekdays = $weekdays, timeOfDay = $timeOfDay, title = $title, author = $author, cover = $cover, pageCount = $pageCount WHERE id = $id", parameters);
 
         return true;
     }

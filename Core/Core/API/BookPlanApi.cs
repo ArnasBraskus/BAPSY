@@ -41,6 +41,7 @@ public class BookPlanApi : ApiBase
     {
         public required string Title { get; set; } = null!;
         public required string Author { get; set; } = null!;
+        public required string Cover { get; set; } = null!;
         public required int Pages { get; set; }
         public required string Deadline { get; set; } = null!;
         public required bool[] Weekdays { get; set; } = null!;
@@ -56,7 +57,7 @@ public class BookPlanApi : ApiBase
 
         try
         {
-            PlanParams planParams = new PlanParams(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Pages);
+            PlanParams planParams = new PlanParams(user, req.Deadline, Weekdays.ToBitField(req.Weekdays), req.TimeOfDay, 0, req.Title, req.Author, req.Cover, req.Pages);
 
             int id = Plans.AddPlan(planParams);
 
@@ -75,6 +76,7 @@ public class BookPlanApi : ApiBase
         public int Id { get; set; }
         public string Title { get; set; } = null!;
         public string Author { get; set; } = null!;
+        public string Cover { get; set; } = null!;
         public int Pages { get; set; }
         public int PagesRead { get; set; }
         public string Deadline { get; set; } = null!;
@@ -97,6 +99,7 @@ public class BookPlanApi : ApiBase
             Id = id,
             Author = plan.Author,
             Title = plan.Title,
+            Cover = plan.Cover,
             Pages = plan.PageCount,
             PagesRead = plan.PagesRead,
             Deadline = plan.DeadLine,
@@ -134,6 +137,7 @@ public class BookPlanApi : ApiBase
         public required int Id { get; set; }
         public required string Title { get; set; } = null!;
         public required string Author { get; set; } = null!;
+        public required string Cover { get; set; } = null!;
         public required int Pages { get; set; }
         public required string Deadline { get; set; } = null!;
         public required bool[] Weekdays { get; set; } = null!;
@@ -152,9 +156,12 @@ public class BookPlanApi : ApiBase
         if (plan == null || plan.UserId != user.Id)
             return Results.BadRequest(new ErrorResponse { Error = PlanNotFound });
 
+        var cover = data.Cover == "_unchanged" ?
+            plan.Cover : data.Cover;
+
         try
         {
-            Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, data.Pages);
+            Plans.UpdatePlan(plan.Id, data.Deadline, Weekdays.ToBitField(data.Weekdays), data.TimeOfDay, data.Title, data.Author, cover, data.Pages);
             Plans.UpdateReadingSessions(plan.Id, DateTimeProvider.Now);
 
         }

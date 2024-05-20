@@ -92,6 +92,7 @@ public class SessionApi : ApiBase
             public int Id { get; set; }
             public string Title { get; set; } = null!;
             public string Author { get; set; } = null!;
+            public string Cover { get; set; } = null!;
         }
 
         public BookMetadata Metadata { get; set; } = null!;
@@ -120,7 +121,8 @@ public class SessionApi : ApiBase
                 {
                     Id = plan.Id,
                     Title = plan.Title,
-                    Author = plan.Author
+                    Author = plan.Author,
+                    Cover = plan.Cover
                 }
             });
         }

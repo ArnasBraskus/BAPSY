@@ -10,6 +10,7 @@ public class BookPlan
     private readonly Plans? Plans;
     public int Id { get; }
     public int UserId { get; }
+    public string Cover { get; }
     public string DeadLine { get; }
     public int DayOfWeek { get; }
     public string timeOfDay { get; }
@@ -22,7 +23,7 @@ public class BookPlan
     public int Finished { get; }
 
     public BookPlan(Plans plans, int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
-        string title, string author, int pageCount, int pagesRead, ICollection<ReadingSession> sessions, int finished)
+        string title, string author, string cover, int pageCount, int pagesRead, ICollection<ReadingSession> sessions, int finished)
     {
         Plans = plans;
         Id = id;
@@ -33,6 +34,7 @@ public class BookPlan
         PagesPerDay = pagesPerDay;
         Title = title;
         Author = author;
+        Cover = cover;
         PageCount = pageCount;
         PagesRead = pagesRead;
         ReadingSessions = sessions;
@@ -40,7 +42,7 @@ public class BookPlan
     }
 
     public BookPlan(int id, int userId, string deadLine, int dayOfWeek, string timeOfDay, int pagesPerDay,
-        string title, string author, int pageCount, int pagesRead, ICollection<ReadingSession> sessions, int finished)
+        string title, string author, string cover, int pageCount, int pagesRead, ICollection<ReadingSession> sessions, int finished)
     {
         Id = id;
         UserId = userId;
@@ -50,6 +52,7 @@ public class BookPlan
         PagesPerDay = pagesPerDay;
         Title = title;
         Author = author;
+        Cover = cover;
         PageCount = pageCount;
         PagesRead = pagesRead;
         ReadingSessions = sessions;
