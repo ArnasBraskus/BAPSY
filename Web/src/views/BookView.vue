@@ -29,7 +29,7 @@ const fetchPlan = (async() => {
   deadline.value = plan.deadline;
   time.value = plan.timeOfDay;
 
-  const WEEKDAYS = ['Monday', 'Tueday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const WEEKDAY_IDX = [1,2,3,4,5,6,0];
 
   const wks = WEEKDAYS.map((x, i) => plan.weekdays[WEEKDAY_IDX[i]] ? x : null).filter(Boolean);
