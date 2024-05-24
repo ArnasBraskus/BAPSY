@@ -21,6 +21,7 @@ public class Reports
 {
     private readonly Database DB;
     private readonly ReadingSessions ReadingSessions;
+    private readonly Plans Plans;
 
     public Reports(Database db)
     {
@@ -28,17 +29,44 @@ public class Reports
         ReadingSessions = new ReadingSessions(db);
     }
 
-    public int AddReport(ReportParams reportParams)
+    public int GenerateReportsIfNeeded(int userId)
+    {
+        DateTime currentDate = DateTime.UtcNow;
+        DateTime latestReportDate;
+        Report latestReport = FindLatestReportOfUser(userId);
+        if (latestReport == null) 
+        {
+
+            var plan = Plans.FindFirstPlanOfUser(userId);
+            latestReportDate = DateTime.Parse(plan.ReadingSessions.First().Date, CultureInfo.InvariantCulture);
+        }
+        else
+        {
+             latestReportDate = latestReport.Date;
+        }
+
+        while (latestReportDate.AddDays(14) <= currentDate)
+        {
+            DateTime reportStartDate = latestReportDate;
+            DateTime reportEndDate = reportStartDate.AddDays(14);
+
+            int newid = AddReport(userId, reportEndDate);
+            
+            latestReportDate = reportEndDate;
+        }
+        return DB.LastInsertedRowId();
+    }
+    public int AddReport(int userId, DateTime date)
     {
         int totalPages = 0;
         int completedPages = 0;
         int totalSessions = 0;
         int completedSessions = 0;
 
-        DateTime startDate = reportParams.Date.AddDays(-14);
-        DateTime endDate = reportParams.Date;
+        DateTime startDate = date.AddDays(-14);
+        DateTime endDate = date;
 
-        IEnumerable<ReadingSession> sessions = ReadingSessions.GetByUserAndDateRange(reportParams.UserId, startDate, endDate);
+        IEnumerable<ReadingSession> sessions = ReadingSessions.GetByUserAndDateRange(userId, startDate, endDate);
 
         foreach (var session in sessions)
         {
@@ -56,12 +84,12 @@ public class Reports
         int percentageSessions = (totalSessions > 0) ? (completedSessions * 100) / totalSessions : 0;
 
         var parameters = new Dictionary<string, dynamic> {
-            { "$userId", reportParams.UserId },
+            { "$userId", userId },
             { "$totalPages", completedPages },
             { "$percentagePages", percentagePages },
             { "$totalSessions", completedSessions },
             { "$percentageSessions", percentageSessions },
-            { "$date", reportParams.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) }
+            { "$date", date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) }
         };
 
         DB.ExecuteNonQuery(@"INSERT INTO Reports (userId, totalPages, percentagePages, totalSessions, percentageSessions, date) VALUES ($userId, $totalPages, $percentagePages, $totalSessions, $percentageSessions, $date)", parameters);
@@ -93,6 +121,24 @@ public class Reports
         }
 
         return ids;
+    }
+
+    public Report FindLatestReportOfUser(int userId)
+    {
+
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT id
+        FROM reports 
+        WHERE userId = $userId
+        ORDER BY date DESC
+        LIMIT 1", new Dictionary<string, dynamic> { { "$userId", userId } });
+
+        if (reader != null)
+        {
+           Report? report = FindReport(reader.GetInt32(0));
+            return report;
+        }
+        else return null;
+
     }
 
     public bool DeleteReport(int id)
