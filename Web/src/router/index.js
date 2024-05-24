@@ -50,6 +50,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/reports',
+      name: 'reports',
+      component: () => import('../views/ReportsView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/books/:id/sessions',
       name: 'book_sessions',
       component: () => import('../views/ReadingSessionsView.vue'),
