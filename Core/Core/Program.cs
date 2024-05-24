@@ -18,6 +18,7 @@ db.CreateIfEmpty(DatabaseSchema.Schema);
 Users users = new Users(db);
 Plans plans = new Plans(db);
 ReadingSessions sessions = new ReadingSessions(db);
+Reports reports = new Reports(db);
 
 AuthUtils auth = new AuthUtils(conf.JwtSecretKey, conf.JwtIssuer, new GoogleTokenValidator(conf.GoogleApiClientId));
 
@@ -40,7 +41,8 @@ ApiBase[] apis = new ApiBase[] {
     new CalendarApi(users, plans),
     new BookPlanApi(users, plans),
     new SessionApi(users, plans, sessions),
-    new ResourceApi(users)
+    new ResourceApi(users),
+    new ReportApi(users, reports)
 };
 
 foreach (var api in apis)
