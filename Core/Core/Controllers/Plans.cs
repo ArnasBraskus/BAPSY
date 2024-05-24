@@ -111,6 +111,32 @@ public class Plans
 
         return ids;
     }
+    public BookPlan? FindFirstPlanOfUser(int userId)
+    {
+        SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT id FROM plans WHERE userId = $userId ORDER BY id ASC LIMIT 1", new Dictionary<string, dynamic> { { "$userId", userId } });
+
+        if (reader == null)
+        {
+            Console.WriteLine("No plans found for user.");
+            return null;
+        }
+
+        if (!reader.Read())
+        {
+            Console.WriteLine("Reader did not return any rows.");
+            return null;
+        }
+
+        int planId = reader.GetInt32(0);
+        BookPlan? bookplan = FindPlan(planId);
+
+        if (bookplan == null)
+        {
+            Console.WriteLine($"Plan with ID {planId} not found.");
+        }
+        return bookplan;
+    }
+
 
     public bool UpdatePlan(int id, string deadLine, int weekdays, string timeOfDay, string title, string author, string cover, int pageCount)
     {
