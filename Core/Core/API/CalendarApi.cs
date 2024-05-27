@@ -99,7 +99,7 @@ public class CalendarApi : ApiBase
 
             ReadingCalendar calendar = new ReadingCalendar(DateTimeProvider);
 
-            foreach (int id in Plans.FindPlanByUser(user.Id))
+            foreach (int id in Plans.FindPlanByUser(userId))
             {
                 BookPlan? plan = Plans.FindPlan(id);
 
