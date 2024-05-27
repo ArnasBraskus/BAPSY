@@ -53,8 +53,40 @@ public class AuthApi : ApiBase
         return Results.Ok(new GoogleAuthResponseJson { Token = jwt, Validity = validity.TotalSeconds });
     }
 
+    internal class AuthDevRequestJson
+    {
+        public string Email { get; set; } = null!;
+        public string Name { get; set; } = null!;
+    }
+
+    internal class AuthDevResponseJson
+    {
+        public string Token { get; set; } = null!;
+        public double Validity { get; set; }
+    }
+
+    public async Task<IResult> PostAuthDev(HttpRequest request) {
+        var req = await ReadJson<AuthDevRequestJson>(request);
+
+        if (!Users.UserExists(req.Email)) {
+            Users.AddUser(req.Email, req.Name);
+        }
+
+        var user = Users.FindUser(req.Email);
+
+        var validity = new TimeSpan(1, 0, 0, 0);
+        string jwt = Auth.GenerateJWT(user.Email, validity);
+
+        return Results.Ok(new AuthDevResponseJson
+        {
+            Token = jwt,
+            Validity = validity.TotalSeconds
+        });
+    }
+
     public override void Map(WebApplication app)
     {
         app.MapPost("/auth/google", PostAuthGoogle);
+        app.MapPost("/auth/dev", PostAuthDev);
     }
 }
