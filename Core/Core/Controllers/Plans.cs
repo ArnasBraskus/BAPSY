@@ -117,13 +117,7 @@ public class Plans
 
         if (reader == null)
         {
-            Console.WriteLine("No plans found for user.");
-            return null;
-        }
-
-        if (!reader.Read())
-        {
-            Console.WriteLine("Reader did not return any rows.");
+            throw new Exception("No plans found for user.");
             return null;
         }
 
@@ -132,7 +126,7 @@ public class Plans
 
         if (bookplan == null)
         {
-            Console.WriteLine($"Plan with ID {planId} not found.");
+            throw new Exception($"Plan with ID {planId} not found.");
         }
         return bookplan;
     }

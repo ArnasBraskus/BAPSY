@@ -162,7 +162,7 @@ public class ReadingSessions
         string query = @"
             SELECT rs.id, rs.planId, rs.date, rs.goal, rs.actual, rs.completed
             FROM readingsessions rs
-            JOIN plans p ON readingsessions.planId = p.id
+            JOIN plans p ON rs.planId = p.id
             WHERE p.userId = $userId AND rs.date >= $startDate AND rs.date <= $endDate";
 
         IEnumerable<SqliteDataReader> readers = DB.Execute(query, parameters);

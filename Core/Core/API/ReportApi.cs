@@ -27,7 +27,7 @@ namespace Core
             var id = Reports.GenerateReportsIfNeeded(user.Id);
 
             ICollection<int> ids = Reports.FindReportsByUser(user.Id);
-
+          
             return Results.Ok(new ListReportsResponseJson(ids));
         }
 
@@ -48,7 +48,7 @@ namespace Core
         {
             User user = GetUser(context);
 
-           Report report = Reports.FindReport(id);
+           Report? report = Reports.FindReport(id);
             
 
             if (report == null || report.UserId != user.Id)

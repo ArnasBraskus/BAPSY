@@ -14,6 +14,11 @@ export async function getReports() {
 
     let reports = [];
 
+    if (data.ids == null)
+    {
+      return reports;
+    }
+
     for (const id of data.ids) {
       reports.push(await getReport(id));
     }

@@ -26,6 +26,7 @@ public class Reports
     public Reports(Database db)
     {
         DB = db;
+        Plans = new Plans(db);
         ReadingSessions = new ReadingSessions(db);
     }
 
