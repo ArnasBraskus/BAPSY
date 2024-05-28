@@ -33,7 +33,9 @@ public class ReadingSessions
             {"$completed", ev.IsCompleted},
         };
 
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery("INSERT INTO readingsessions (planId, date, goal, completed) VALUES ($planId, $date, $goal, $completed)", parameters);
+        DB.ExitWriteLock();
     }
 
     public void Delete(int planId)
@@ -43,7 +45,9 @@ public class ReadingSessions
             {"$planId", planId}
         };
 
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId", parameters);
+        DB.ExitWriteLock();
     }
 
     public void Invalidate(int planId, DateTime dateAfter)
@@ -54,7 +58,9 @@ public class ReadingSessions
             {"$dateAfter", dateAfter.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}
         };
 
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery("DELETE FROM readingsessions WHERE planId = $planId AND date >= $dateAfter AND completed = 0", parameters);
+        DB.ExitWriteLock();
     }
 
     public ReadingSession Get(int id)
@@ -64,7 +70,9 @@ public class ReadingSessions
             {"$id", id}
         };
 
+        DB.EnterReadLock();
         var reader = DB.ExecuteSingle("SELECT planId, date, goal, actual, completed FROM readingsessions WHERE id = $id", parameters);
+        DB.ExitReadLock();
 
         if (reader == null)
             throw new KeyNotFoundException("Reading session not found");
@@ -88,6 +96,7 @@ public class ReadingSessions
 
         var sessions = new List<ReadingSession>();
 
+        DB.EnterReadLock();
         foreach (var session in DB.Execute("SELECT id, date, goal, actual, completed FROM readingsessions WHERE planId = $planId", parameters))
         {
             int id = session.GetInt32(0);
@@ -98,6 +107,7 @@ public class ReadingSessions
 
             sessions.Add(new ReadingSession(this, id, planId, date, goal, actual, isCompleted));
         }
+        DB.ExitReadLock();
 
         return sessions;
     }
@@ -113,7 +123,9 @@ public class ReadingSessions
             {"$actual", actual}
         };
 
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery("UPDATE readingsessions SET completed = 1, actual = $actual WHERE id = $id", parameters);
+        DB.ExitWriteLock();
     }
 
     public void UpdateCompletion(int id, int completion)
@@ -123,7 +135,9 @@ public class ReadingSessions
             {"$id", id},
             {"$completed", completion}
         };
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery("UPDATE readingsessions SET completed = $completed WHERE id = $id", parameters);
+        DB.ExitWriteLock();
 
     }
 
@@ -134,7 +148,9 @@ public class ReadingSessions
             {"$id", id}
         };
 
+        DB.EnterReadLock();
         var reader = DB.ExecuteSingle("SELECT p.userId FROM plans p LEFT JOIN readingsessions s ON s.planId = p.id WHERE s.id = $id", parameters);
+        DB.ExitReadLock();
 
         if (reader is null)
             throw new KeyNotFoundException("Could not find plan");

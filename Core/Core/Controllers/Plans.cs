@@ -69,14 +69,21 @@ public class Plans
             { "$pageCount", planParams.PageCount }
         };
 
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery(@"INSERT INTO PLANS (userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, cover, pageCount) VALUES ($userid, $deadline, $weekdays, $timeOfDay, $pagesPerDay, $title, $author, $cover, $pageCount)", dictionary);
 
-        return DB.LastInsertedRowId();
+        var id = DB.LastInsertedRowId();
+
+        DB.ExitWriteLock();
+
+        return id;
     }
 
     public BookPlan? FindPlan(int id)
     {
+        DB.EnterReadLock();
         SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT userid, deadline, weekdays, timeOfDay, pagesPerDay, title, author, pageCount, pagesRead, finished, cover FROM plans WHERE id = $id", new Dictionary<string, dynamic> { { "$id", id } });
+        DB.ExitReadLock();
 
         if (reader == null)
             return null;
@@ -101,7 +108,9 @@ public class Plans
     {
         var ids = new List<int>();
 
+        DB.EnterReadLock();
         IEnumerable<SqliteDataReader> readers = DB.Execute(@"SELECT id FROM plans WHERE userId = $userId", new Dictionary<string, dynamic> { { "$userId", userId } });
+        DB.ExitReadLock();
 
         foreach (var reader in readers)
         {
@@ -156,7 +165,9 @@ public class Plans
             { "$pageCount", pageCount }
         };
 
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery(@"UPDATE PLANS SET deadline = $deadline, weekdays = $weekdays, timeOfDay = $timeOfDay, title = $title, author = $author, cover = $cover, pageCount = $pageCount WHERE id = $id", parameters);
+        DB.ExitWriteLock();
 
         return true;
     }
@@ -188,7 +199,9 @@ public class Plans
             { "$pagesRead", pagesRead }
         };
 
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery(@"UPDATE plans SET pagesRead = $pagesRead WHERE id = $id", parameters);
+        DB.ExitWriteLock();
     }
 
     public void UpdatePagesPerDay(int id, int pagesPerDay)
@@ -202,7 +215,9 @@ public class Plans
             { "$pagesPerDay", pagesPerDay }
         };
 
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery(@"UPDATE plans SET pagesPerDay = $pagesPerDay WHERE id = $id", parameters);
+        DB.ExitWriteLock();
     }
 
     public bool DeletePlan(int id)
@@ -210,7 +225,9 @@ public class Plans
         if (id < 0 || FindPlan(id) == null)
             throw new ArgumentException("invalid plan id");
         ReadingSessions.Delete(id);
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery(@"DELETE FROM plans WHERE id=$id ", new Dictionary<string, dynamic> { { "$id", id } });
+        DB.ExitWriteLock();
 
         return true;
     }

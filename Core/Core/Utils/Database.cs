@@ -1,20 +1,28 @@
 namespace Core;
 
 using Microsoft.Data.Sqlite;
+using System.Threading;
 
 public class Database : IDisposable
 {
     private readonly SqliteConnection Connection;
+    private ReaderWriterLockSlim readerWriterLock;
 
     public Database(string connectionString)
     {
         Connection = new SqliteConnection(connectionString);
+        readerWriterLock = new ReaderWriterLockSlim();
     }
 
     public bool Empty()
     {
         return GetUserVersion() == 0;
     }
+
+    public void EnterWriteLock() => readerWriterLock.EnterWriteLock();
+    public void ExitWriteLock() => readerWriterLock.ExitWriteLock();
+    public void EnterReadLock() => readerWriterLock.EnterWriteLock();
+    public void ExitReadLock() => readerWriterLock.ExitWriteLock();
 
     public void Create(string schema)
     {

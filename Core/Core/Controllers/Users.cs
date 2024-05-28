@@ -18,7 +18,9 @@ public class Users
             { "$email", email }
         };
 
+        DB.EnterReadLock();
         var reader = DB.ExecuteSingle(@"SELECT 1 FROM users WHERE email = $email", parameters);
+        DB.ExitReadLock();
 
         if (reader == null)
             return false;
@@ -32,7 +34,9 @@ public class Users
             { "$email", email }
         };
 
+        DB.EnterReadLock();
         SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT id, secret, secret_ver, name FROM users WHERE email = $email", parameters);
+        DB.ExitReadLock();
 
         if (reader == null)
             throw new KeyNotFoundException("User not found");
@@ -51,7 +55,9 @@ public class Users
             { "$id", id }
         };
 
+        DB.EnterReadLock();
         SqliteDataReader? reader = DB.ExecuteSingle(@"SELECT secret, secret_ver, email, name FROM users WHERE id = $id", parameters);
+        DB.ExitReadLock();
 
         if (reader == null)
             throw new KeyNotFoundException("User not found");
@@ -100,7 +106,9 @@ public class Users
             { "$secret_ver", secretVer }
         };
 
+        DB.EnterWriteLock();
         DB.ExecuteNonQuery(@"INSERT INTO USERS (email, name, secret, secret_ver) VALUES ($email, $name, $secret, $secret_ver)", parameters);
+        DB.ExitWriteLock();
     }
 
     public void UpdateName(int id, string name)
@@ -113,7 +121,11 @@ public class Users
             { "$name", name}
         };
 
-        if (DB.ExecuteNonQuery(@"UPDATE users SET name = $name WHERE id = $id", parameters) != 1)
+        DB.EnterWriteLock();
+        if (DB.ExecuteNonQuery(@"UPDATE users SET name = $name WHERE id = $id", parameters) != 1) {
+            DB.ExitWriteLock();
             throw new InvalidOperationException("User not found");
+        }
+        DB.ExitWriteLock();
     }
 }
