@@ -48,6 +48,11 @@ public class BookPlanApi : ApiBase
         public required string TimeOfDay { get; set; } = null!;
     }
 
+    internal class AddBookPlanResponseJson
+    {
+        public int Id { get; set; }
+    }
+
 
     public async Task<IResult> PostAddBookPlan(HttpContext context)
     {
@@ -62,13 +67,13 @@ public class BookPlanApi : ApiBase
             int id = Plans.AddPlan(planParams);
 
             Plans.UpdateReadingSessions(id, DateTimeProvider.Now);
+
+            return Results.Ok(new AddBookPlanResponseJson { Id = id });
         }
         catch (ArgumentException exception)
         {
             return Results.BadRequest(new ErrorResponse { Error = exception.Message });
         }
-
-        return Results.Ok(new { });
     }
 
     internal class GetBookPlanResponseJson
