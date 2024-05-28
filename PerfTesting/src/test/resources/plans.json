@@ -1,0 +1,182 @@
+[
+    {
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "pages": 511,
+        "cover": "_none",
+        "deadline": "2024-06-30",
+        "weekdays": "[true, false, true, true, false, true, false]",
+        "timeofday": "14:30"
+    },
+    {
+        "title": "1984",
+        "author": "George Orwell",
+        "pages": 384,
+        "cover": "_none",
+        "deadline": "2024-06-22",
+        "weekdays": "[true, false, false, false, false, true, true]",
+        "timeofday": "21:00"
+    },
+    {
+        "title": "Pride and Prejudice",
+        "author": "Jane Austen",
+        "pages": 221,
+        "cover": "_none",
+        "deadline": "2024-06-17",
+        "weekdays": "[true, false, true, true, false, false, false]",
+        "timeofday": "22:00"
+    },
+    {
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "pages": 324,
+        "cover": "_none",
+        "deadline": "2024-06-25",
+        "weekdays": "[true, false, true, false, true, false, false]",
+        "timeofday": "09:00"
+    },
+    {
+        "title": "Moby-Dick",
+        "author": "Herman Melville",
+        "pages": 440,
+        "cover": "_none",
+        "deadline": "2024-06-11",
+        "weekdays": "[true, true, true, false, false, false, false]",
+        "timeofday": "20:00"
+    },
+    {
+        "title": "War and Peace",
+        "author": "Leo Tolstoy",
+        "pages": 598,
+        "cover": "_none",
+        "deadline": "2024-06-24",
+        "weekdays": "[true, true, true, false, false, true, false]",
+        "timeofday": "12:25"
+    },
+    {
+        "title": "The Catcher in the Rye",
+        "author": "J.D. Salinger",
+        "pages": 309,
+        "cover": "_none",
+        "deadline": "2024-07-01",
+        "weekdays": "[true, false, true, false, false, true, true]",
+        "timeofday": "11:00"
+    },
+    {
+        "title": "The Lord of the Rings",
+        "author": "J.R.R. Tolkien",
+        "pages": 704,
+        "cover": "_none",
+        "deadline": "2024-06-24",
+        "weekdays": "[true, true, true, true, true, true, false]",
+        "timeofday": "10:00"
+    },
+    {
+        "title": "Jane Eyre",
+        "author": "Charlotte Brontë",
+        "pages": 371,
+        "cover": "_none",
+        "deadline": "2024-06-20",
+        "weekdays": "[true, false, true, false, true, false, false]",
+        "timeofday": "13:00"
+    },
+    {
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "pages": 262,
+        "cover": "_none",
+        "deadline": "2024-06-10",
+        "weekdays": "[true, false, true, false, false, false, true]",
+        "timeofday": "15:00"
+    },
+    {
+        "title": "Crime and Punishment",
+        "author": "Fyodor Dostoevsky",
+        "pages": 484,
+        "cover": "_none",
+        "deadline": "2024-06-12",
+        "weekdays": "[true, false, true, false, true, false, true]",
+        "timeofday": "17:00"
+    },
+    {
+        "title": "The Brothers Karamazov",
+        "author": "Fyodor Dostoevsky",
+        "pages": 591,
+        "cover": "_none",
+        "deadline": "2024-06-17",
+        "weekdays": "[true, false, true, false, true, false, true]",
+        "timeofday": "21:30"
+    },
+    {
+        "title": "Brave New World",
+        "author": "Aldous Huxley",
+        "pages": 265,
+        "cover": "_none",
+        "deadline": "2024-06-24",
+        "weekdays": "[true, false, false, false, false, false, false]",
+        "timeofday": "22:00"
+    },
+    {
+        "title": "Wuthering Heights",
+        "author": "Emily Brontë",
+        "pages": 298,
+        "cover": "_none",
+        "deadline": "2024-06-20",
+        "weekdays": "[true, false, true, false, true, true, true]",
+        "timeofday": "15:23"
+    },
+    {
+        "title": "The Odyssey",
+        "author": "Homer",
+        "pages": 199,
+        "cover": "_none",
+        "deadline": "2024-06-29",
+        "weekdays": "[true, false, true, false, false, true, false]",
+        "timeofday": "07:38"
+    },
+    {
+        "title": "The Divine Comedy",
+        "author": "Dante Alighieri",
+        "pages": 273,
+        "cover": "_none",
+        "deadline": "2024-06-10",
+        "weekdays": "[true, false, true, false, false, false, false]",
+        "timeofday": "09:00"
+    },
+    {
+        "title": "Les Misérables",
+        "author": "Victor Hugo",
+        "pages": 264,
+        "cover": "_none",
+        "deadline": "2024-06-23",
+        "weekdays": "[true, false, true, false, false, false, false]",
+        "timeofday": "19:00"
+    },
+    {
+        "title": "Anna Karenina",
+        "author": "Leo Tolstoy",
+        "pages": 641,
+        "cover": "_none",
+        "deadline": "2024-06-21",
+        "weekdays": "[true, false, true, false, false, false, false]",
+        "timeofday": "18:00"
+    },
+    {
+        "title": "Madame Bovary",
+        "author": "Gustave Flaubert",
+        "pages": 274,
+        "cover": "_none",
+        "deadline": "2024-06-14",
+        "weekdays": "[true, false, true, false, false, false, false]",
+        "timeofday": "17:30"
+    },
+    {
+        "title": "The Count of Monte Cristo",
+        "author": "Alexandre Dumas",
+        "pages": 197,
+        "cover": "_none",
+        "deadline": "2024-07-04",
+        "weekdays": "[true, false, true, false, false, false, false]",
+        "timeofday": "21:45"
+    }
+]
