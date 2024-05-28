@@ -20,7 +20,7 @@ public class WebSimulation extends Simulation {
                 .body(StringBody("{\"email\": \"test@example.com\", \"name\": \"Test\"}"))
                 .check(jmesPath("token").saveAs("token")));
 
-    private static ChainBuilder getAllPlans =
+    private static ChainBuilder getPlans =
         exec(http("Get all plans")
                 .get("/bookplan/list")
                 .header("Authorization", "Bearer #{token}"));
@@ -29,24 +29,30 @@ public class WebSimulation extends Simulation {
         exec(http("Add plan")
                 .post("/bookplan/add")
                 .header("Authorization", "Bearer #{token}")
-                .body(StringBody("{\"title\": \"Title\", \"author\': \"Author\", \"cover\": \"_none\", \"pages\": 200, \"deadline\": \"2024-06-31\", \"weekdays\": [true, false, true, false, false, false, false], \"timeofday\": \"11:00\"}")));
+                .body(StringBody("{\"title\": \"Title\", \"author\": \"Author\", \"cover\": \"_none\", \"pages\": 200, \"deadline\": \"2024-06-30\", \"weekdays\": [true, false, true, false, false, false, false], \"timeofday\": \"11:00\"}"))
+                .check(jmesPath("id").saveAs("planId")));
 
     private static ChainBuilder getPlan =
         exec(http("Get plan")
-                .get("/bookplan/get/1")
+                .get("/bookplan/get/#{planId}")
                 .header("Authorization", "Bearer #{token}"));
 
     private static ChainBuilder removePlan =
         exec(http("Delete plan")
                 .post("/bookplan/remove")
                 .header("Authorization", "Bearer #{token}")
-                .body(StringBody("{\"id\": 1}")));
+                .body(StringBody("{\"id\": #{planId}}")));
 
     private ScenarioBuilder scn = scenario("BookQuest load test")
         .exec(authenticate)
         .pause(1)
-        .exec(getAllPlans)
-        .pause(1);
+        .exec(getPlans)
+        .pause(1)
+        .exec(addPlan)
+        .pause(1)
+        .exec(getPlan)
+        .pause(1)
+        .exec(removePlan);
 
     {
         setUp(
